@@ -3,7 +3,24 @@ import React, { useState, useEffect } from 'react';
 
 const activityTypes = ['Sports', 'Run', 'Weight Lifting', 'Conditioning', 'Recovery'];
 
-const sportOptions = ['Basketball', 'Soccer', 'Track', 'Volleyball', 'Baseball', 'Lacrosse'];
+const sportOptions = [
+    'Basketball',
+    'Soccer',
+    'Track',
+    'Volleyball',
+    'Baseball',
+    'Lacrosse',
+    'Ice Hockey',
+    'Football',
+    'Tennis',
+    'Swimming',
+    'Golf',
+    'Wrestling',
+    'Softball',
+    'CrossFit',
+    'Cycling',
+    'Rowing'
+];
 
 const sportSubtypes = {
     Basketball: ['Practice', 'Game'],
@@ -11,7 +28,17 @@ const sportSubtypes = {
     Track: ['Sprint', 'Distance', 'Meet'],
     Volleyball: ['Practice', 'Game'],
     Baseball: ['Practice', 'Game', 'Bullpen'],
-    Lacrosse: ['Practice', 'Game']
+    Lacrosse: ['Practice', 'Game'],
+    IceHockey: ['Practice', 'Game'],
+    Football: ['Practice', 'Game', 'Scrimmage'],
+    Tennis: ['Practice', 'Match'],
+    Swimming: ['Practice', 'Meet'],
+    Golf: ['Practice', 'Tournament'],
+    Wrestling: ['Practice', 'Match'],
+    Softball: ['Practice', 'Game'],
+    CrossFit: ['WOD', 'Competition'],
+    Cycling: ['Ride', 'Race'],
+    Rowing: ['Practice', 'Race']
 };
 
 const WorkoutPage = () => {
