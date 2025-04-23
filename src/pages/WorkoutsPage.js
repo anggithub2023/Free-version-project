@@ -23,22 +23,22 @@ const sportOptions = [
 ];
 
 const sportSubtypes = {
-    Basketball: ['Practice', 'Game'],
-    Soccer: ['Practice', 'Game'],
-    Track: ['Sprint', 'Distance', 'Meet'],
-    Volleyball: ['Practice', 'Game'],
-    Baseball: ['Practice', 'Game', 'Bullpen'],
-    Lacrosse: ['Practice', 'Game'],
-    IceHockey: ['Practice', 'Game'],
-    Football: ['Practice', 'Game', 'Scrimmage'],
-    Tennis: ['Practice', 'Match'],
-    Swimming: ['Practice', 'Meet'],
-    Golf: ['Practice', 'Tournament'],
-    Wrestling: ['Practice', 'Match'],
-    Softball: ['Practice', 'Game'],
-    CrossFit: ['WOD', 'Competition'],
-    Cycling: ['Ride', 'Race'],
-    Rowing: ['Practice', 'Race']
+    'Basketball': ['Practice', 'Game'],
+    'Soccer': ['Practice', 'Game'],
+    'Track': ['Sprint', 'Distance', 'Meet'],
+    'Volleyball': ['Practice', 'Game'],
+    'Baseball': ['Practice', 'Game', 'Bullpen'],
+    'Lacrosse': ['Practice', 'Game'],
+    'Ice Hockey': ['Practice', 'Game'],
+    'Football': ['Practice', 'Game', 'Scrimmage'],
+    'Tennis': ['Practice', 'Match'],
+    'Swimming': ['Practice', 'Meet'],
+    'Golf': ['Practice', 'Tournament'],
+    'Wrestling': ['Practice', 'Match'],
+    'Softball': ['Practice', 'Game'],
+    'CrossFit': ['WOD', 'Competition'],
+    'Cycling': ['Ride', 'Race'],
+    'Rowing': ['Practice', 'Race']
 };
 
 const WorkoutPage = () => {
@@ -59,7 +59,8 @@ const WorkoutPage = () => {
     }, []);
 
     const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setForm((prevForm) => ({ ...prevForm, [name]: value }));
     };
 
     const handleSubmit = (e) => {
@@ -84,7 +85,6 @@ const WorkoutPage = () => {
                     </button>
                 </div>
 
-                {/* Modal */}
                 {showModal && (
                     <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
                         <div className="bg-white dark:bg-gray-900 w-full max-w-xl p-6 rounded-lg shadow-lg">
@@ -124,7 +124,7 @@ const WorkoutPage = () => {
                                             </select>
                                         </div>
 
-                                        {form.sport && (
+                                        {form.sport && sportSubtypes[form.sport] && (
                                             <div>
                                                 <label className="block mb-1 font-medium">Activity</label>
                                                 <select
@@ -199,7 +199,6 @@ const WorkoutPage = () => {
                     </div>
                 )}
 
-                {/* Workout Table */}
                 <div className="bg-white dark:bg-gray-900 shadow-md rounded-lg overflow-x-auto">
                     <table className="min-w-full text-sm text-left">
                         <thead className="bg-indigo-100 dark:bg-gray-700 text-indigo-800 dark:text-white">
