@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FaDumbbell } from 'react-icons/fa';
 
 const WorkoutPage = () => {
     const [workouts, setWorkouts] = useState([]);
@@ -20,7 +21,10 @@ const WorkoutPage = () => {
     }, []);
 
     const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        const numericFields = ['duration', 'miles'];
+        if (numericFields.includes(name) && value !== '' && !/^\d*\.?\d*$/.test(value)) return;
+        setForm({ ...form, [name]: value });
     };
 
     const handleSubmit = (e) => {
@@ -44,6 +48,10 @@ const WorkoutPage = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-6 text-gray-900 dark:text-white">
             <div className="max-w-4xl mx-auto">
+                <div className="text-center mb-10">
+                    <h1 className="text-4xl font-extrabold text-indigo-700 dark:text-indigo-300 tracking-tight">Own Your Grind: Track Every Rep, Every Step</h1>
+                </div>
+
                 <div className="mb-8">
                     <h2 className="text-xl font-semibold mb-2">Fitness Snapshot</h2>
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
@@ -71,7 +79,9 @@ const WorkoutPage = () => {
                 </div>
 
                 <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-3xl font-bold">Workout Tracker</h1>
+                    <h2 className="text-2xl font-bold flex items-center gap-2">
+                        <FaDumbbell className="text-indigo-600 dark:text-indigo-300" /> Workout Tracker
+                    </h2>
                     <button
                         onClick={() => setShowModal(true)}
                         className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow"
@@ -116,13 +126,13 @@ const WorkoutPage = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block mb-1 font-medium">Duration</label>
+                                    <label className="block mb-1 font-medium">Duration (in minutes)</label>
                                     <input
                                         type="text"
                                         name="duration"
                                         value={form.duration}
                                         onChange={handleChange}
-                                        placeholder="e.g., 45 mins or 3 miles"
+                                        placeholder="e.g., 45"
                                         className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700"
                                     />
                                 </div>
