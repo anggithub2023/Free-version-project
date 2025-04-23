@@ -1,6 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { FaDumbbell } from 'react-icons/fa';
 
+const activityTypes = ['Run', 'Weight Lifting', 'Recovery', 'Conditioning', 'Sports'];
+
+const sportOptions = [
+    'Basketball', 'Soccer', 'Track', 'Volleyball', 'Baseball', 'Lacrosse', 'Ice Hockey',
+    'Football', 'Tennis', 'Swimming', 'Golf', 'Wrestling', 'Softball', 'CrossFit', 'Cycling', 'Rowing'
+];
+
+const sportSubtypes = {
+    Basketball: ['Practice', 'Game'],
+    Soccer: ['Practice', 'Game'],
+    Track: ['Sprint', 'Distance', 'Meet'],
+    Volleyball: ['Practice', 'Game'],
+    Baseball: ['Practice', 'Game', 'Bullpen'],
+    Lacrosse: ['Practice', 'Game'],
+    'Ice Hockey': ['Practice', 'Game'],
+    Football: ['Practice', 'Game', 'Scrimmage'],
+    Tennis: ['Practice', 'Match'],
+    Swimming: ['Practice', 'Meet'],
+    Golf: ['Practice', 'Tournament'],
+    Wrestling: ['Practice', 'Match'],
+    Softball: ['Practice', 'Game'],
+    CrossFit: ['WOD', 'Competition'],
+    Cycling: ['Ride', 'Race'],
+    Rowing: ['Practice', 'Race']
+};
+
+const muscleGroups = ['Legs', 'Arms', 'Back', 'Chest', 'Shoulders', 'Core'];
+const runTypes = ['Distance', 'Sprints', 'Interval', 'Cross Country', 'Hill'];
+const conditioningTypes = ['Agility', 'Plyometrics', 'HIIT', 'Circuit'];
+const recoveryTypes = ['Stretching', 'Foam Rolling', 'Ice Bath', 'Massage'];
+
 const WorkoutPage = () => {
     const [workouts, setWorkouts] = useState([]);
     const [form, setForm] = useState({
@@ -36,17 +67,8 @@ const WorkoutPage = () => {
         setWorkouts(updated);
         localStorage.setItem('athleteWorkouts', JSON.stringify(updated));
         setForm({
-            activityType: '',
-            sport: '',
-            subtype: '',
-            date: '',
-            duration: '',
-            notes: '',
-            miles: '',
-            muscleGroup: '',
-            runType: '',
-            conditioningType: '',
-            recoveryType: ''
+            activityType: '', sport: '', subtype: '', date: '', duration: '', notes: '', miles: '',
+            muscleGroup: '', runType: '', conditioningType: '', recoveryType: ''
         });
         setShowModal(false);
     };
@@ -129,11 +151,61 @@ const WorkoutPage = () => {
                         <div className="bg-white dark:bg-gray-900 p-6 rounded-lg w-full max-w-xl">
                             <form onSubmit={handleSubmit} className="space-y-4">
                                 <input name="date" type="date" value={form.date} onChange={handleChange} className="w-full p-2 border rounded" required />
-                                <input name="activityType" placeholder="Activity Type" value={form.activityType} onChange={handleChange} className="w-full p-2 border rounded" required />
-                                <input name="sport" placeholder="Sport" value={form.sport} onChange={handleChange} className="w-full p-2 border rounded" />
-                                <input name="subtype" placeholder="Subtype" value={form.subtype} onChange={handleChange} className="w-full p-2 border rounded" />
+
+                                <select name="activityType" value={form.activityType} onChange={handleChange} className="w-full p-2 border rounded" required>
+                                    <option value="">Select Activity Type</option>
+                                    {activityTypes.map(type => <option key={type}>{type}</option>)}
+                                </select>
+
+                                {form.activityType === 'Sports' && (
+                                    <select name="sport" value={form.sport} onChange={handleChange} className="w-full p-2 border rounded">
+                                        <option value="">Select Sport</option>
+                                        {sportOptions.map(s => <option key={s}>{s}</option>)}
+                                    </select>
+                                )}
+
+                                {form.sport && sportSubtypes[form.sport] && (
+                                    <select name="subtype" value={form.subtype} onChange={handleChange} className="w-full p-2 border rounded">
+                                        <option value="">Select Subtype</option>
+                                        {sportSubtypes[form.sport].map(st => <option key={st}>{st}</option>)}
+                                    </select>
+                                )}
+
+                                {form.activityType === 'Run' && (
+                                    <select name="runType" value={form.runType} onChange={handleChange} className="w-full p-2 border rounded">
+                                        <option value="">Run Type</option>
+                                        {runTypes.map(t => <option key={t}>{t}</option>)}
+                                    </select>
+                                )}
+
+                                {form.activityType === 'Weight Lifting' && (
+                                    <select name="muscleGroup" value={form.muscleGroup} onChange={handleChange} className="w-full p-2 border rounded">
+                                        <option value="">Muscle Group</option>
+                                        {muscleGroups.map(g => <option key={g}>{g}</option>)}
+                                    </select>
+                                )}
+
+                                {form.activityType === 'Conditioning' && (
+                                    <select name="conditioningType" value={form.conditioningType} onChange={handleChange} className="w-full p-2 border rounded">
+                                        <option value="">Conditioning Type</option>
+                                        {conditioningTypes.map(t => <option key={t}>{t}</option>)}
+                                    </select>
+                                )}
+
+                                {form.activityType === 'Recovery' && (
+                                    <select name="recoveryType" value={form.recoveryType} onChange={handleChange} className="w-full p-2 border rounded">
+                                        <option value="">Recovery Type</option>
+                                        {recoveryTypes.map(t => <option key={t}>{t}</option>)}
+                                    </select>
+                                )}
+
+                                {form.activityType === 'Run' && (
+                                    <input name="miles" placeholder="Miles" value={form.miles} onChange={handleChange} className="w-full p-2 border rounded" />
+                                )}
+
                                 <input name="duration" placeholder="Duration (min)" value={form.duration} onChange={handleChange} className="w-full p-2 border rounded" />
                                 <input name="notes" placeholder="Notes" value={form.notes} onChange={handleChange} className="w-full p-2 border rounded" />
+
                                 <div className="flex justify-end gap-4">
                                     <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 bg-gray-400 text-white rounded">Cancel</button>
                                     <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded">Save</button>
