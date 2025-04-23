@@ -26,6 +26,10 @@ const sportSubtypes = {
     Rowing: ['Practice', 'Race']
 };
 
+const muscleGroups = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core'];
+const conditioningFocus = ['Endurance', 'Agility', 'Speed', 'Power', 'Stamina'];
+const recoveryFocus = ['Stretching', 'Ice Bath', 'Massage', 'Foam Rolling', 'Rest'];
+
 const WorkoutPage = () => {
     const [workouts, setWorkouts] = useState([]);
     const [form, setForm] = useState({
@@ -151,26 +155,54 @@ const WorkoutPage = () => {
                                 {form.activityType === 'Weight Lifting' && (
                                     <div>
                                         <label className="block mb-1 font-medium">Muscle Group</label>
-                                        <input
-                                            type="text"
+                                        <select
                                             name="muscleGroup"
                                             value={form.muscleGroup}
                                             onChange={handleChange}
+                                            required
                                             className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700"
-                                        />
+                                        >
+                                            <option value="">Select</option>
+                                            {muscleGroups.map((group) => (
+                                                <option key={group} value={group}>{group}</option>
+                                            ))}
+                                        </select>
                                     </div>
                                 )}
 
-                                {(form.activityType === 'Conditioning' || form.activityType === 'Recovery') && (
+                                {form.activityType === 'Conditioning' && (
                                     <div>
                                         <label className="block mb-1 font-medium">Focus Area</label>
-                                        <input
-                                            type="text"
+                                        <select
                                             name="focusArea"
                                             value={form.focusArea}
                                             onChange={handleChange}
+                                            required
                                             className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700"
-                                        />
+                                        >
+                                            <option value="">Select</option>
+                                            {conditioningFocus.map((focus) => (
+                                                <option key={focus} value={focus}>{focus}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
+
+                                {form.activityType === 'Recovery' && (
+                                    <div>
+                                        <label className="block mb-1 font-medium">Focus Area</label>
+                                        <select
+                                            name="focusArea"
+                                            value={form.focusArea}
+                                            onChange={handleChange}
+                                            required
+                                            className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700"
+                                        >
+                                            <option value="">Select</option>
+                                            {recoveryFocus.map((focus) => (
+                                                <option key={focus} value={focus}>{focus}</option>
+                                            ))}
+                                        </select>
                                     </div>
                                 )}
 
