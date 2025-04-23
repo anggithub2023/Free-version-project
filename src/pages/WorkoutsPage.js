@@ -11,7 +11,10 @@ const WorkoutPage = () => {
         duration: '',
         notes: '',
         miles: '',
-        muscleGroup: ''
+        muscleGroup: '',
+        runType: '',
+        conditioningType: '',
+        recoveryType: ''
     });
     const [showModal, setShowModal] = useState(false);
 
@@ -32,7 +35,7 @@ const WorkoutPage = () => {
         const updated = [...workouts, form];
         setWorkouts(updated);
         localStorage.setItem('athleteWorkouts', JSON.stringify(updated));
-        setForm({ activityType: '', sport: '', subtype: '', date: '', duration: '', notes: '', miles: '', muscleGroup: '' });
+        setForm({ activityType: '', sport: '', subtype: '', date: '', duration: '', notes: '', miles: '', muscleGroup: '', runType: '', conditioningType: '', recoveryType: '' });
         setShowModal(false);
     };
 
@@ -56,24 +59,9 @@ const WorkoutPage = () => {
                     <h2 className="text-xl font-semibold mb-2">Fitness Snapshot</h2>
                     <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
                         <div className="flex h-6 text-xs font-medium text-white">
-                            <div
-                                className="bg-blue-500 text-center"
-                                style={{ width: `${(cardioCount / totalCount) * 100}%` }}
-                            >
-                                Cardio
-                            </div>
-                            <div
-                                className="bg-green-500 text-center"
-                                style={{ width: `${(strengthCount / totalCount) * 100}%` }}
-                            >
-                                Strength
-                            </div>
-                            <div
-                                className="bg-yellow-500 text-center"
-                                style={{ width: `${(recoveryCount / totalCount) * 100}%` }}
-                            >
-                                Recovery
-                            </div>
+                            <div className="bg-blue-500 text-center" style={{ width: `${(cardioCount / totalCount) * 100}%` }}>Cardio</div>
+                            <div className="bg-green-500 text-center" style={{ width: `${(strengthCount / totalCount) * 100}%` }}>Strength</div>
+                            <div className="bg-yellow-500 text-center" style={{ width: `${(recoveryCount / totalCount) * 100}%` }}>Recovery</div>
                         </div>
                     </div>
                 </div>
@@ -112,6 +100,92 @@ const WorkoutPage = () => {
                                         <option value="Sports">Sports</option>
                                     </select>
                                 </div>
+
+                                {form.activityType === 'Weight Lifting' && (
+                                    <div>
+                                        <label className="block mb-1 font-medium">Muscle Group</label>
+                                        <select
+                                            name="muscleGroup"
+                                            value={form.muscleGroup}
+                                            onChange={handleChange}
+                                            className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700"
+                                        >
+                                            <option value="">Select</option>
+                                            <option value="Chest">Chest</option>
+                                            <option value="Back">Back</option>
+                                            <option value="Legs">Legs</option>
+                                            <option value="Arms">Arms</option>
+                                            <option value="Shoulders">Shoulders</option>
+                                            <option value="Core">Core</option>
+                                        </select>
+                                    </div>
+                                )}
+
+                                {form.activityType === 'Conditioning' && (
+                                    <div>
+                                        <label className="block mb-1 font-medium">Conditioning Type</label>
+                                        <select
+                                            name="conditioningType"
+                                            value={form.conditioningType}
+                                            onChange={handleChange}
+                                            className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700"
+                                        >
+                                            <option value="">Select</option>
+                                            <option value="Agility">Agility</option>
+                                            <option value="Endurance">Endurance</option>
+                                            <option value="Speed">Speed</option>
+                                        </select>
+                                    </div>
+                                )}
+
+                                {form.activityType === 'Recovery' && (
+                                    <div>
+                                        <label className="block mb-1 font-medium">Recovery Type</label>
+                                        <select
+                                            name="recoveryType"
+                                            value={form.recoveryType}
+                                            onChange={handleChange}
+                                            className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700"
+                                        >
+                                            <option value="">Select</option>
+                                            <option value="Stretching">Stretching</option>
+                                            <option value="Massage">Massage</option>
+                                            <option value="Ice Bath">Ice Bath</option>
+                                            <option value="Rest">Rest</option>
+                                        </select>
+                                    </div>
+                                )}
+
+                                {form.activityType === 'Run' && (
+                                    <>
+                                        <div>
+                                            <label className="block mb-1 font-medium">Run Type</label>
+                                            <select
+                                                name="runType"
+                                                value={form.runType}
+                                                onChange={handleChange}
+                                                className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700"
+                                            >
+                                                <option value="">Select</option>
+                                                <option value="Sprint">Sprint</option>
+                                                <option value="Distance">Distance</option>
+                                                <option value="Cross Country">Cross Country</option>
+                                                <option value="Intervals">Intervals</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block mb-1 font-medium">Miles</label>
+                                            <input
+                                                type="text"
+                                                name="miles"
+                                                value={form.miles}
+                                                onChange={handleChange}
+                                                placeholder="e.g., 3.5"
+                                                className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700"
+                                            />
+                                        </div>
+                                    </>
+                                )}
 
                                 <div>
                                     <label className="block mb-1 font-medium">Date</label>
