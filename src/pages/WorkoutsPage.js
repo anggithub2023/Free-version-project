@@ -29,6 +29,7 @@ const sportSubtypes = {
 const muscleGroups = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core'];
 const conditioningFocus = ['Endurance', 'Agility', 'Speed', 'Power', 'Stamina'];
 const recoveryFocus = ['Stretching', 'Ice Bath', 'Massage', 'Foam Rolling', 'Rest'];
+const runTypes = ['Easy', 'Tempo', 'Intervals', 'Long Run', 'Recovery Run'];
 
 const WorkoutPage = () => {
     const [workouts, setWorkouts] = useState([]);
@@ -40,7 +41,9 @@ const WorkoutPage = () => {
         duration: '',
         notes: '',
         muscleGroup: '',
-        focusArea: ''
+        focusArea: '',
+        runType: '',
+        miles: ''
     });
     const [showModal, setShowModal] = useState(false);
 
@@ -75,7 +78,9 @@ const WorkoutPage = () => {
             duration: '',
             notes: '',
             muscleGroup: '',
-            focusArea: ''
+            focusArea: '',
+            runType: '',
+            miles: ''
         });
         setShowModal(false);
     };
@@ -97,6 +102,7 @@ const WorkoutPage = () => {
                             <th className="p-3">Date</th>
                             {type === 'Sports' && <><th className="p-3">Sport</th><th className="p-3">Subtype</th></>}
                             {type === 'Weight Lifting' && <th className="p-3">Muscle Group</th>}
+                            {type === 'Run' && <><th className="p-3">Run Type</th><th className="p-3">Miles</th></>}
                             {(type === 'Conditioning' || type === 'Recovery') && <th className="p-3">Focus Area</th>}
                             <th className="p-3">Duration</th>
                             <th className="p-3">Notes</th>
@@ -108,6 +114,7 @@ const WorkoutPage = () => {
                                 <td className="p-3 whitespace-nowrap">{entry.date}</td>
                                 {type === 'Sports' && <><td className="p-3 whitespace-nowrap">{entry.sport}</td><td className="p-3 whitespace-nowrap">{entry.subtype}</td></>}
                                 {type === 'Weight Lifting' && <td className="p-3 whitespace-nowrap">{entry.muscleGroup}</td>}
+                                {type === 'Run' && <><td className="p-3 whitespace-nowrap">{entry.runType}</td><td className="p-3 whitespace-nowrap">{entry.miles}</td></>}
                                 {(type === 'Conditioning' || type === 'Recovery') && <td className="p-3 whitespace-nowrap">{entry.focusArea}</td>}
                                 <td className="p-3 whitespace-nowrap">{entry.duration}</td>
                                 <td className="p-3 whitespace-pre-wrap">{entry.notes}</td>
@@ -215,6 +222,38 @@ const WorkoutPage = () => {
                                             ))}
                                         </select>
                                     </div>
+                                )}
+
+                                {form.activityType === 'Run' && (
+                                    <>
+                                        <div>
+                                            <label className="block mb-1 font-medium">Run Type</label>
+                                            <select
+                                                name="runType"
+                                                value={form.runType}
+                                                onChange={handleChange}
+                                                required
+                                                className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700"
+                                            >
+                                                <option value="">Select</option>
+                                                {runTypes.map((run) => (
+                                                    <option key={run} value={run}>{run}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block mb-1 font-medium">Miles</label>
+                                            <input
+                                                type="number"
+                                                name="miles"
+                                                value={form.miles}
+                                                onChange={handleChange}
+                                                className="w-full p-2 rounded bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700"
+                                                step="0.01"
+                                                min="0"
+                                            />
+                                        </div>
+                                    </>
                                 )}
 
                                 {['Conditioning', 'Recovery'].includes(form.activityType) && (
