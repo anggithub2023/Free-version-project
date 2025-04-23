@@ -51,14 +51,18 @@ const WorkoutPage = () => {
         setShowModal(false);
     };
 
-    const countCategory = (category) => {
-        return workouts.filter(entry => entry.activityType === category).length;
-    };
+    const countCategory = (category) => workouts.filter(entry => entry.activityType === category).length;
 
     const totalCount = workouts.length || 1;
     const cardioCount = countCategory('Run') + countCategory('Sports');
     const strengthCount = countCategory('Weight Lifting') + countCategory('Conditioning');
     const recoveryCount = countCategory('Recovery');
+
+    const groupedWorkouts = workouts.reduce((acc, entry) => {
+        if (!acc[entry.activityType]) acc[entry.activityType] = [];
+        acc[entry.activityType].push(entry);
+        return acc;
+    }, {});
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-6 text-gray-900 dark:text-white">
@@ -90,34 +94,35 @@ const WorkoutPage = () => {
                     </button>
                 </div>
 
-                {workouts.length > 0 && (
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full table-auto bg-white dark:bg-gray-800 rounded-lg overflow-hidden">
-                            <thead>
-                            <tr className="text-left bg-indigo-100 dark:bg-indigo-900">
-                                <th className="px-4 py-2">Date</th>
-                                <th className="px-4 py-2">Type</th>
-                                <th className="px-4 py-2">Sport</th>
-                                <th className="px-4 py-2">Subtype</th>
-                                <th className="px-4 py-2">Duration</th>
-                                <th className="px-4 py-2">Notes</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {workouts.map((w, i) => (
-                                <tr key={i} className="border-t border-gray-200 dark:border-gray-700">
-                                    <td className="px-4 py-2">{w.date}</td>
-                                    <td className="px-4 py-2">{w.activityType}</td>
-                                    <td className="px-4 py-2">{w.sport}</td>
-                                    <td className="px-4 py-2">{w.subtype}</td>
-                                    <td className="px-4 py-2">{w.duration} min</td>
-                                    <td className="px-4 py-2">{w.notes}</td>
+                {Object.entries(groupedWorkouts).map(([type, entries]) => (
+                    <div key={type} className="mb-8">
+                        <h3 className="text-xl font-semibold mb-2">{type} Workouts</h3>
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full table-auto bg-white dark:bg-gray-800 rounded-lg overflow-hidden">
+                                <thead>
+                                <tr className="text-left bg-indigo-100 dark:bg-indigo-900">
+                                    <th className="px-4 py-2">Date</th>
+                                    <th className="px-4 py-2">Sport</th>
+                                    <th className="px-4 py-2">Subtype</th>
+                                    <th className="px-4 py-2">Duration</th>
+                                    <th className="px-4 py-2">Notes</th>
                                 </tr>
-                            ))}
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                {entries.map((w, i) => (
+                                    <tr key={i} className="border-t border-gray-200 dark:border-gray-700">
+                                        <td className="px-4 py-2">{w.date}</td>
+                                        <td className="px-4 py-2">{w.sport}</td>
+                                        <td className="px-4 py-2">{w.subtype}</td>
+                                        <td className="px-4 py-2">{w.duration} min</td>
+                                        <td className="px-4 py-2">{w.notes}</td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                )}
+                ))}
 
                 {showModal && (
                     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
