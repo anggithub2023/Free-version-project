@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e26899b4-322b-4923-a887-5b56653fcf45" name="Changes" comment="created bball folder, moved questions" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;anggithub2023&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/anggithub2023/Free-version-project.git&quot;,
+    &quot;accountId&quot;: &quot;fb77bc63-1ece-4274-9700-ca3558cbe9f1&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2vx3uweM7GRLjlVuMmtTl4xf0ZV" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Node.js.HomePage.js.executor": "Debug",
+    "Node.js.ReflectionPage.js.executor": "Debug",
+    "Node.js.ResultsPage.js.executor": "Debug",
+    "Node.js.StatsPage.js.executor": "Debug",
+    "Node.js.VideosPage.js.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "/Users/ang/Documents/Webstorm Projects/Free-version-project",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_interpreter_path": "/Users/ang/Library/Application Support/JetBrains/WebStorm2025.1/node/versions/22.14.0/bin/node",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "ts.external.directory.path": "/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/data/Basketball" />
+      <recent name="$PROJECT_DIR$/src/components" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Node.js.ResultsPage.js">
+    <configuration name="HomePage.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/pages/HomePage.js" working-dir="$PROJECT_DIR$/src/pages">
+      <method v="2" />
+    </configuration>
+    <configuration name="ReflectionPage.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/pages/ReflectionPage.js" working-dir="$PROJECT_DIR$/src/pages">
+      <method v="2" />
+    </configuration>
+    <configuration name="ResultsPage.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/pages/ResultsPage.js" working-dir="$PROJECT_DIR$/src/pages">
+      <method v="2" />
+    </configuration>
+    <configuration name="StatsPage.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/pages/StatsPage.js" working-dir="$PROJECT_DIR$/src/pages">
+      <method v="2" />
+    </configuration>
+    <configuration name="VideosPage.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/pages/VideosPage.js" working-dir="$PROJECT_DIR$/src/pages">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Node.js.ResultsPage.js" />
+        <item itemvalue="Node.js.ReflectionPage.js" />
+        <item itemvalue="Node.js.VideosPage.js" />
+        <item itemvalue="Node.js.StatsPage.js" />
+        <item itemvalue="Node.js.HomePage.js" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-f27c65a3e318-JavaScript-WS-251.23774.424" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e26899b4-322b-4923-a887-5b56653fcf45" name="Changes" comment="" />
+      <created>1745073123201</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1745073123201</updated>
+      <workItem from="1745073124296" duration="1642000" />
+      <workItem from="1745099318775" duration="31316000" />
+      <workItem from="1745231145270" duration="7430000" />
+      <workItem from="1745320026635" duration="16996000" />
+      <workItem from="1745354991792" duration="14000" />
+      <workItem from="1745363426198" duration="2101000" />
+      <workItem from="1745369089305" duration="14000" />
+      <workItem from="1745369112293" duration="4077000" />
+      <workItem from="1745400788836" duration="3637000" />
+    </task>
+    <task id="LOCAL-00078" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745178330804</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1745178330804</updated>
+    </task>
+    <task id="LOCAL-00079" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745178347004</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1745178347004</updated>
+    </task>
+    <task id="LOCAL-00080" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745178556866</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1745178556866</updated>
+    </task>
+    <task id="LOCAL-00081" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745178818160</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1745178818160</updated>
+    </task>
+    <task id="LOCAL-00082" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745179081435</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1745179081435</updated>
+    </task>
+    <task id="LOCAL-00083" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745179775792</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1745179775792</updated>
+    </task>
+    <task id="LOCAL-00084" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745180790511</created>
+      <option name="number" value="00084" />
+      <option name="presentableId" value="LOCAL-00084" />
+      <option name="project" value="LOCAL" />
+      <updated>1745180790511</updated>
+    </task>
+    <task id="LOCAL-00085" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745181216253</created>
+      <option name="number" value="00085" />
+      <option name="presentableId" value="LOCAL-00085" />
+      <option name="project" value="LOCAL" />
+      <updated>1745181216253</updated>
+    </task>
+    <task id="LOCAL-00086" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745181573270</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1745181573270</updated>
+    </task>
+    <task id="LOCAL-00087" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745182447548</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1745182447548</updated>
+    </task>
+    <task id="LOCAL-00088" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745182461066</created>
+      <option name="number" value="00088" />
+      <option name="presentableId" value="LOCAL-00088" />
+      <option name="project" value="LOCAL" />
+      <updated>1745182461066</updated>
+    </task>
+    <task id="LOCAL-00089" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745189152619</created>
+      <option name="number" value="00089" />
+      <option name="presentableId" value="LOCAL-00089" />
+      <option name="project" value="LOCAL" />
+      <updated>1745189152619</updated>
+    </task>
+    <task id="LOCAL-00090" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745189501065</created>
+      <option name="number" value="00090" />
+      <option name="presentableId" value="LOCAL-00090" />
+      <option name="project" value="LOCAL" />
+      <updated>1745189501065</updated>
+    </task>
+    <task id="LOCAL-00091" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745190550095</created>
+      <option name="number" value="00091" />
+      <option name="presentableId" value="LOCAL-00091" />
+      <option name="project" value="LOCAL" />
+      <updated>1745190550095</updated>
+    </task>
+    <task id="LOCAL-00092" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745191044392</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1745191044392</updated>
+    </task>
+    <task id="LOCAL-00093" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745232286958</created>
+      <option name="number" value="00093" />
+      <option name="presentableId" value="LOCAL-00093" />
+      <option name="project" value="LOCAL" />
+      <updated>1745232286958</updated>
+    </task>
+    <task id="LOCAL-00094" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745232639352</created>
+      <option name="number" value="00094" />
+      <option name="presentableId" value="LOCAL-00094" />
+      <option name="project" value="LOCAL" />
+      <updated>1745232639352</updated>
+    </task>
+    <task id="LOCAL-00095" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745257857532</created>
+      <option name="number" value="00095" />
+      <option name="presentableId" value="LOCAL-00095" />
+      <option name="project" value="LOCAL" />
+      <updated>1745257857532</updated>
+    </task>
+    <task id="LOCAL-00096" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745260565933</created>
+      <option name="number" value="00096" />
+      <option name="presentableId" value="LOCAL-00096" />
+      <option name="project" value="LOCAL" />
+      <updated>1745260565933</updated>
+    </task>
+    <task id="LOCAL-00097" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745264334188</created>
+      <option name="number" value="00097" />
+      <option name="presentableId" value="LOCAL-00097" />
+      <option name="project" value="LOCAL" />
+      <updated>1745264334188</updated>
+    </task>
+    <task id="LOCAL-00098" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745264891202</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1745264891202</updated>
+    </task>
+    <task id="LOCAL-00099" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745269693314</created>
+      <option name="number" value="00099" />
+      <option name="presentableId" value="LOCAL-00099" />
+      <option name="project" value="LOCAL" />
+      <updated>1745269693315</updated>
+    </task>
+    <task id="LOCAL-00100" summary="button changes">
+      <option name="closed" value="true" />
+      <created>1745270277972</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1745270277972</updated>
+    </task>
+    <task id="LOCAL-00101" summary="change re-direct to home page">
+      <option name="closed" value="true" />
+      <created>1745330528027</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1745330528027</updated>
+    </task>
+    <task id="LOCAL-00102" summary="change re-direct to home page">
+      <option name="closed" value="true" />
+      <created>1745333326309</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1745333326309</updated>
+    </task>
+    <task id="LOCAL-00103" summary="change re-direct to home page">
+      <option name="closed" value="true" />
+      <created>1745333756031</created>
+      <option name="number" value="00103" />
+      <option name="presentableId" value="LOCAL-00103" />
+      <option name="project" value="LOCAL" />
+      <updated>1745333756031</updated>
+    </task>
+    <task id="LOCAL-00104" summary="average logic change for answered questions">
+      <option name="closed" value="true" />
+      <created>1745333847233</created>
+      <option name="number" value="00104" />
+      <option name="presentableId" value="LOCAL-00104" />
+      <option name="project" value="LOCAL" />
+      <updated>1745333847234</updated>
+    </task>
+    <task id="LOCAL-00105" summary="average logic change for answered questions">
+      <option name="closed" value="true" />
+      <created>1745333871962</created>
+      <option name="number" value="00105" />
+      <option name="presentableId" value="LOCAL-00105" />
+      <option name="project" value="LOCAL" />
+      <updated>1745333871962</updated>
+    </task>
+    <task id="LOCAL-00106" summary="changed readiness quote">
+      <option name="closed" value="true" />
+      <created>1745334745020</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1745334745020</updated>
+    </task>
+    <task id="LOCAL-00107" summary="added new button for injure prevention">
+      <option name="closed" value="true" />
+      <created>1745336355681</created>
+      <option name="number" value="00107" />
+      <option name="presentableId" value="LOCAL-00107" />
+      <option name="project" value="LOCAL" />
+      <updated>1745336355681</updated>
+    </task>
+    <task id="LOCAL-00108" summary="added new button for injure prevention">
+      <option name="closed" value="true" />
+      <created>1745336635796</created>
+      <option name="number" value="00108" />
+      <option name="presentableId" value="LOCAL-00108" />
+      <option name="project" value="LOCAL" />
+      <updated>1745336635796</updated>
+    </task>
+    <task id="LOCAL-00109" summary="added injury page and code for the injury page">
+      <option name="closed" value="true" />
+      <created>1745337037995</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1745337037995</updated>
+    </task>
+    <task id="LOCAL-00110" summary="added import and route for Injury">
+      <option name="closed" value="true" />
+      <created>1745337286077</created>
+      <option name="number" value="00110" />
+      <option name="presentableId" value="LOCAL-00110" />
+      <option name="project" value="LOCAL" />
+      <updated>1745337286077</updated>
+    </task>
+    <task id="LOCAL-00111" summary="changed Video color to Teal">
+      <option name="closed" value="true" />
+      <created>1745338033044</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1745338033044</updated>
+    </task>
+    <task id="LOCAL-00112" summary="changed button description for Injury">
+      <option name="closed" value="true" />
+      <created>1745338699713</created>
+      <option name="number" value="00112" />
+      <option name="presentableId" value="LOCAL-00112" />
+      <option name="project" value="LOCAL" />
+      <updated>1745338699713</updated>
+    </task>
+    <task id="LOCAL-00113" summary="changed button description for Injury">
+      <option name="closed" value="true" />
+      <created>1745339702484</created>
+      <option name="number" value="00113" />
+      <option name="presentableId" value="LOCAL-00113" />
+      <option name="project" value="LOCAL" />
+      <updated>1745339702484</updated>
+    </task>
+    <task id="LOCAL-00114" summary="changed button description for Injury">
+      <option name="closed" value="true" />
+      <created>1745340243042</created>
+      <option name="number" value="00114" />
+      <option name="presentableId" value="LOCAL-00114" />
+      <option name="project" value="LOCAL" />
+      <updated>1745340243042</updated>
+    </task>
+    <task id="LOCAL-00115" summary="changed button description for Injury">
+      <option name="closed" value="true" />
+      <created>1745340342715</created>
+      <option name="number" value="00115" />
+      <option name="presentableId" value="LOCAL-00115" />
+      <option name="project" value="LOCAL" />
+      <updated>1745340342715</updated>
+    </task>
+    <task id="LOCAL-00116" summary="updated Injure page template">
+      <option name="closed" value="true" />
+      <created>1745340520152</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1745340520152</updated>
+    </task>
+    <task id="LOCAL-00117" summary="updated Injure page template - new icons and modern design">
+      <option name="closed" value="true" />
+      <created>1745340745230</created>
+      <option name="number" value="00117" />
+      <option name="presentableId" value="LOCAL-00117" />
+      <option name="project" value="LOCAL" />
+      <updated>1745340745230</updated>
+    </task>
+    <task id="LOCAL-00118" summary="updated path to data/basketball">
+      <option name="closed" value="true" />
+      <created>1745353464789</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1745353464789</updated>
+    </task>
+    <task id="LOCAL-00119" summary="created bball folder, moved questions">
+      <option name="closed" value="true" />
+      <created>1745353516649</created>
+      <option name="number" value="00119" />
+      <option name="presentableId" value="LOCAL-00119" />
+      <option name="project" value="LOCAL" />
+      <updated>1745353516649</updated>
+    </task>
+    <task id="LOCAL-00120" summary="created bball folder, moved questions">
+      <option name="closed" value="true" />
+      <created>1745353882378</created>
+      <option name="number" value="00120" />
+      <option name="presentableId" value="LOCAL-00120" />
+      <option name="project" value="LOCAL" />
+      <updated>1745353882378</updated>
+    </task>
+    <task id="LOCAL-00121" summary="created bball folder, moved questions">
+      <option name="closed" value="true" />
+      <created>1745369785867</created>
+      <option name="number" value="00121" />
+      <option name="presentableId" value="LOCAL-00121" />
+      <option name="project" value="LOCAL" />
+      <updated>1745369785867</updated>
+    </task>
+    <task id="LOCAL-00122" summary="created bball folder, moved questions">
+      <option name="closed" value="true" />
+      <created>1745370023441</created>
+      <option name="number" value="00122" />
+      <option name="presentableId" value="LOCAL-00122" />
+      <option name="project" value="LOCAL" />
+      <updated>1745370023441</updated>
+    </task>
+    <task id="LOCAL-00123" summary="created bball folder, moved questions">
+      <option name="closed" value="true" />
+      <created>1745370051988</created>
+      <option name="number" value="00123" />
+      <option name="presentableId" value="LOCAL-00123" />
+      <option name="project" value="LOCAL" />
+      <updated>1745370051988</updated>
+    </task>
+    <task id="LOCAL-00124" summary="created bball folder, moved questions">
+      <option name="closed" value="true" />
+      <created>1745370151054</created>
+      <option name="number" value="00124" />
+      <option name="presentableId" value="LOCAL-00124" />
+      <option name="project" value="LOCAL" />
+      <updated>1745370151054</updated>
+    </task>
+    <task id="LOCAL-00125" summary="created bball folder, moved questions">
+      <option name="closed" value="true" />
+      <created>1745370426153</created>
+      <option name="number" value="00125" />
+      <option name="presentableId" value="LOCAL-00125" />
+      <option name="project" value="LOCAL" />
+      <updated>1745370426153</updated>
+    </task>
+    <task id="LOCAL-00126" summary="created bball folder, moved questions">
+      <option name="closed" value="true" />
+      <created>1745371393233</created>
+      <option name="number" value="00126" />
+      <option name="presentableId" value="LOCAL-00126" />
+      <option name="project" value="LOCAL" />
+      <updated>1745371393233</updated>
+    </task>
+    <option name="localTasksCounter" value="127" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="button changes" />
+    <MESSAGE value="change re-direct to home page" />
+    <MESSAGE value="average logic change for answered questions" />
+    <MESSAGE value="changed readiness quote" />
+    <MESSAGE value="added new button for injure prevention" />
+    <MESSAGE value="added injury page and code for the injury page" />
+    <MESSAGE value="added import and route for Injury" />
+    <MESSAGE value="changed Video color to Teal" />
+    <MESSAGE value="changed button description for Injury" />
+    <MESSAGE value="updated Injure page template" />
+    <MESSAGE value="updated Injure page template - new icons and modern design" />
+    <MESSAGE value="updated path to data/basketball" />
+    <MESSAGE value="created bball folder, moved questions" />
+    <option name="LAST_COMMIT_MESSAGE" value="created bball folder, moved questions" />
+  </component>
+</project>
