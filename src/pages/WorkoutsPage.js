@@ -37,6 +37,11 @@ const WorkoutPage = () => {
         setForm({ date: '', type: '', duration: '', notes: '' });
     };
 
+    const activitySummary = activityTypes.map((type) => {
+        const count = workouts.filter((w) => w.type === type).length;
+        return { type, count };
+    });
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-6 text-gray-900 dark:text-white">
             <div className="max-w-4xl mx-auto">
@@ -106,6 +111,27 @@ const WorkoutPage = () => {
                         </button>
                     </div>
                 </form>
+
+                {/* Activity Summary Table */}
+                <div className="bg-white dark:bg-gray-900 shadow-md rounded-lg mb-8 overflow-x-auto">
+                    <h2 className="text-xl font-semibold px-6 pt-6">Activity Summary</h2>
+                    <table className="min-w-full text-sm text-left mt-2">
+                        <thead className="bg-indigo-100 dark:bg-gray-700 text-indigo-800 dark:text-white">
+                        <tr>
+                            <th className="p-3">Activity</th>
+                            <th className="p-3">Count</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {activitySummary.map(({ type, count }) => (
+                            <tr key={type} className="border-t border-gray-200 dark:border-gray-700">
+                                <td className="p-3 whitespace-nowrap">{type}</td>
+                                <td className="p-3 whitespace-nowrap">{count}</td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
 
                 {/* Table */}
                 <div className="bg-white dark:bg-gray-900 shadow-md rounded-lg overflow-x-auto">
