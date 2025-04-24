@@ -14,6 +14,7 @@ function StatsPage() {
         turnovers: '', minutes: '', freeThrows: ''
     });
     const [showConfirm, setShowConfirm] = useState(false);
+    const [hasScrolled, setHasScrolled] = useState(false);
     const tableRef = useRef(null);
     const navigate = useNavigate();
 
@@ -35,10 +36,11 @@ function StatsPage() {
     }, [newStat]);
 
     useEffect(() => {
-        if (tableRef.current && gameStats.length > 0) {
-            tableRef.current.scrollIntoView({ behavior: 'smooth' });
+        if (gameStats.length > 0 && !hasScrolled) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setHasScrolled(true);
         }
-    }, [gameStats.length]);
+    }, [gameStats.length, hasScrolled]);
 
     const confirmAddStat = () => {
         const updatedStats = [...gameStats, newStat];
