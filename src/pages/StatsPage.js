@@ -1,9 +1,11 @@
+// StatsPage.js
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DownloadButton from '../components/DownloadButton';
 import StatForm from '../components/StatForm';
 import StatsTable from '../components/StatsTable';
 import AveragesPanel from '../components/AveragesPanel';
+import ConfirmModal from '../components/ConfirmModal';
 
 function StatsPage() {
     const [gameStats, setGameStats] = useState([]);
@@ -11,6 +13,7 @@ function StatsPage() {
         date: '', opponent: '', points: '', assists: '', rebounds: '', steals: '',
         turnovers: '', minutes: '', freeThrows: ''
     });
+    const [showConfirm, setShowConfirm] = useState(false);
     const tableRef = useRef(null);
     const navigate = useNavigate();
 
@@ -19,39 +22,31 @@ function StatsPage() {
         turnovers: '', minutes: '', freeThrows: ''
     };
 
-    // Load playerStats and draft
     useEffect(() => {
-        try {
-            const storedStats = JSON.parse(localStorage.getItem("playerStats")) || [];
-            setGameStats(storedStats);
+        const storedStats = JSON.parse(localStorage.getItem("playerStats")) || [];
+        setGameStats(storedStats);
 
-            const draft = JSON.parse(localStorage.getItem("newStatDraft"));
-            if (draft) setNewStat(draft);
-        } catch (err) {
-            console.error("Failed to load player stats:", err);
-        }
+        const draft = JSON.parse(localStorage.getItem("newStatDraft"));
+        if (draft) setNewStat(draft);
     }, []);
 
-    // Save stat draft as user types
     useEffect(() => {
         localStorage.setItem("newStatDraft", JSON.stringify(newStat));
     }, [newStat]);
 
-    // Scroll to table if new stat added
     useEffect(() => {
         if (tableRef.current && gameStats.length > 0) {
             tableRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [gameStats.length]);
 
-    const handleAddStat = () => {
-        if (!window.confirm("Are you sure you want to clear this form and add the stat?")) return;
-
+    const confirmAddStat = () => {
         const updatedStats = [...gameStats, newStat];
         setGameStats(updatedStats);
         setNewStat(defaultStat);
         localStorage.removeItem("newStatDraft");
         localStorage.setItem("playerStats", JSON.stringify(updatedStats));
+        setShowConfirm(false);
     };
 
     const calculateAverage = (key) => {
@@ -61,7 +56,6 @@ function StatsPage() {
         return +(total / values.length).toFixed(1);
     };
 
-    // History used only for AveragesPanel reflection scores
     const history = JSON.parse(localStorage.getItem("processHistory")) || [];
 
     return (
@@ -70,7 +64,7 @@ function StatsPage() {
                 Track greatness. Start logging your stats.
             </h2>
 
-            <StatForm newStat={newStat} setNewStat={setNewStat} handleAddStat={handleAddStat} />
+            <StatForm newStat={newStat} setNewStat={setNewStat} handleAddStat={() => setShowConfirm(true)} />
 
             {gameStats.length > 0 && (
                 <div className="mt-6">
@@ -95,6 +89,13 @@ function StatsPage() {
                     />
                 </div>
             </div>
+
+            <ConfirmModal
+                open={showConfirm}
+                message="Lock in this game performance and reset the form?"
+                onConfirm={confirmAddStat}
+                onCancel={() => setShowConfirm(false)}
+            />
         </div>
     );
 }
