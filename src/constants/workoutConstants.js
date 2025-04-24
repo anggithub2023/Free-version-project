@@ -9,7 +9,7 @@ export const sportSubtypes = {
     Volleyball: ['Practice', 'Game'],
     Baseball: ['Practice', 'Game', 'Bullpen'],
     Lacrosse: ['Practice', 'Game'],
-    Ice Hockey: ['Practice', 'Game'],
+    'Ice Hockey': ['Practice', 'Game'],
     Football: ['Practice', 'Game', 'Scrimmage'],
     Tennis: ['Practice', 'Match'],
     Swimming: ['Practice', 'Meet'],
@@ -28,3 +28,10 @@ export const recoveryOptions = ['Ice Bath', 'Stretching', 'Foam Rolling', 'Massa
 export const conditioningOptions = ['Agility Drills', 'Plyometrics', 'HIIT', 'Circuit Training'];
 
 export const muscleGroups = ['Chest', 'Back', 'Legs', 'Arms', 'Shoulders', 'Core'];
+
+// NOTES:
+// - activityTypes: used to control the first dropdown in WorkoutFormModal.
+// - sportOptions: conditionally shown if 'Sports' is selected as activityType.
+// - sportSubtypes: mapped dynamically in WorkoutFormModal based on sport selection.
+// - runTypes, recoveryOptions, conditioningOptions, muscleGroups: shown conditionally based on activityType.
+// - This constants file is imported into WorkoutFormModal.jsx to supply select field values.
