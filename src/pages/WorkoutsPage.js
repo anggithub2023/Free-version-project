@@ -48,9 +48,10 @@ const WorkoutPage = () => {
                         Workout Tracker
                     </h2>
                     <div className="flex flex-col space-y-2 items-end">
+                        {/* Desktop Add Button */}
                         <button
                             onClick={() => setShowModal(true)}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base whitespace-nowrap"
+                            className="hidden sm:block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base whitespace-nowrap"
                         >
                             Add Workout
                         </button>
@@ -63,13 +64,13 @@ const WorkoutPage = () => {
                     </div>
                 </div>
 
-                {/* Fitness snapshot section */}
+                {/* Fitness Snapshot */}
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     Fitness Snapshot – Stay on Track, Achieve Your Goals
                 </h3>
                 <FitnessSnapshot workouts={workouts} />
 
-                {/* Workout entries section */}
+                {/* Workout Entries */}
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 mt-6">
                     Workout Entries – Review and Reflect
                 </h3>
@@ -85,6 +86,16 @@ const WorkoutPage = () => {
                 ))}
             </div>
 
+            {/* Floating Action Button - Mobile Only */}
+            <button
+                onClick={() => setShowModal(true)}
+                className="sm:hidden fixed bottom-6 right-6 z-50 bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg text-3xl flex items-center justify-center transition duration-300 ease-in-out"
+                aria-label="Add Workout"
+            >
+                +
+            </button>
+
+            {/* Modal */}
             {showModal && (
                 <WorkoutFormModal
                     onClose={() => setShowModal(false)}
