@@ -13,11 +13,7 @@ const WorkoutPage = () => {
     useEffect(() => {
         const saved = JSON.parse(localStorage.getItem('athleteWorkouts')) || [];
         setWorkouts(saved);
-
-        const timer = setTimeout(() => {
-            setShowTitle(false);
-        }, 2000);
-
+        const timer = setTimeout(() => setShowTitle(false), 2000);
         return () => clearTimeout(timer);
     }, []);
 
@@ -43,31 +39,28 @@ const WorkoutPage = () => {
         <div className="min-h-screen bg-gradient-to-br from-white to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-6 text-gray-900 dark:text-white">
             <div className="max-w-4xl mx-auto">
                 {showTitle && (
-                    <div className="text-center mb-10">
+                    <div className="text-center mb-6">
                         <h1 className="text-4xl font-extrabold text-indigo-700 dark:text-indigo-300 tracking-tight">
                             Own Your Grind: Track Every Rep, Every Step
                         </h1>
                     </div>
                 )}
 
-                <div className="sm:flex sm:justify-between sm:items-start mb-6 space-y-4 sm:space-y-0">
-                    <div className="sm:w-1/2">
-                        <div className="text-2xl font-bold flex sm:flex-col items-start gap-1 sm:gap-0">
-                            <FaDumbbell className="text-indigo-600 dark:text-indigo-300 text-3xl" />
-                            <span>Workout Tracker</span>
-                        </div>
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center max-w-[60%]">
+                        <FaDumbbell className="text-indigo-600 dark:text-indigo-300 text-2xl mb-1 sm:mb-0 sm:mr-2" />
+                        <h2 className="text-xl sm:text-2xl font-bold">Workout Tracker</h2>
                     </div>
-
-                    <div className="sm:w-1/2 flex sm:flex-col items-end gap-2">
+                    <div className="flex sm:flex-row flex-col sm:space-x-2 space-y-2 sm:space-y-0 mt-2 sm:mt-0 sm:ml-auto">
                         <button
                             onClick={() => setShowModal(true)}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-3 text-base rounded shadow"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2 rounded shadow text-sm"
                         >
                             Add Workout
                         </button>
                         <button
                             onClick={() => window.location.href = '/'}
-                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-5 py-3 text-base rounded shadow"
+                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-5 py-2 rounded shadow text-sm"
                         >
                             Home
                         </button>
