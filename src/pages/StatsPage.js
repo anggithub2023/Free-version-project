@@ -77,16 +77,7 @@ function StatsPage() {
 
             {gameStats.length > 0 && (
                 <div className="mt-6">
-                    <div className="flex justify-between items-center mb-2">
-                        <h3 className="text-xl font-semibold text-indigo-700 dark:text-indigo-300">Game Stats</h3>
-                        <button
-                            onClick={() => setShowResetConfirm(true)}
-                            className="text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
-                        >
-                            Clear All Stats
-                        </button>
-                    </div>
-                    <StatsTable gameStats={gameStats} tableRef={tableRef} />
+                    <StatsTable gameStats={gameStats} tableRef={tableRef} onClear={() => setShowResetConfirm(true)} />
                 </div>
             )}
 
