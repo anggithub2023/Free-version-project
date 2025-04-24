@@ -9,7 +9,9 @@ import {
     muscleGroups
 } from '../../constants/workoutConstants';
 
-// ✅ Reusable initial form state
+import FormField from './FormField';
+import FormSelect from './FormSelect';
+
 const initialFormState = {
     activityType: '',
     sport: '',
@@ -26,6 +28,7 @@ const initialFormState = {
 
 const WorkoutFormModal = ({ onClose, onSubmit }) => {
     const [form, setForm] = useState(initialFormState);
+    const [error, setError] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -49,103 +52,73 @@ const WorkoutFormModal = ({ onClose, onSubmit }) => {
         } else {
             setForm({ ...form, [name]: value });
         }
+
+        setError('');
+    };
+
+    const validate = () => {
+        if (!form.activityType || !form.date || !form.duration) {
+            setError('Activity type, date, and duration are required.');
+            return false;
+        }
+        return true;
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const workoutWithId = { ...form, id: Date.now() }; // ✅ Unique ID
+        if (!validate()) return;
+
+        const workoutWithId = { ...form, id: Date.now() };
         onSubmit(workoutWithId);
-        setForm(initialFormState); // ✅ Reset with extracted constant
+        setForm(initialFormState);
         onClose();
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-4">
             <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 w-full max-w-2xl">
                 <h3 className="text-2xl font-bold mb-4 text-indigo-700 dark:text-indigo-300">Add Workout</h3>
-                <form onSubmit={handleSubmit} className="space-y-4">
 
-                    <label htmlFor="activityType">Activity Type</label>
-                    <select id="activityType" name="activityType" value={form.activityType} onChange={handleChange} className="w-full p-2 rounded border">
-                        <option value="">Select Activity Type</option>
-                        {activityTypes.map(type => <option key={type} value={type}>{type}</option>)}
-                    </select>
+                {error && <p className="text-red-600 text-sm mb-3">{error}</p>}
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <FormSelect id="activityType" label="Activity Type" options={activityTypes} value={form.activityType} onChange={handleChange} />
 
                     {form.activityType === 'Sports' && (
                         <>
-                            <label htmlFor="sport">Sport</label>
-                            <select id="sport" name="sport" value={form.sport} onChange={handleChange} className="w-full p-2 rounded border">
-                                <option value="">Select Sport</option>
-                                {sportOptions.map(s => <option key={s} value={s}>{s}</option>)}
-                            </select>
-
+                            <FormSelect id="sport" label="Sport" options={sportOptions} value={form.sport} onChange={handleChange} />
                             {form.sport && sportSubtypes[form.sport] && (
-                                <>
-                                    <label htmlFor="subtype">Subtype</label>
-                                    <select id="subtype" name="subtype" value={form.subtype} onChange={handleChange} className="w-full p-2 rounded border">
-                                        <option value="">Select Subtype</option>
-                                        {sportSubtypes[form.sport].map(sub => <option key={sub} value={sub}>{sub}</option>)}
-                                    </select>
-                                </>
+                                <FormSelect id="subtype" label="Subtype" options={sportSubtypes[form.sport]} value={form.subtype} onChange={handleChange} />
                             )}
                         </>
                     )}
 
                     {form.activityType === 'Run' && (
                         <>
-                            <label htmlFor="runType">Run Type</label>
-                            <select id="runType" name="runType" value={form.runType} onChange={handleChange} className="w-full p-2 rounded border">
-                                <option value="">Select Run Type</option>
-                                {runTypes.map(type => <option key={type} value={type}>{type}</option>)}
-                            </select>
-
-                            <label htmlFor="miles">Miles</label>
-                            <input id="miles" type="text" name="miles" value={form.miles} onChange={handleChange} placeholder="Miles" className="w-full p-2 rounded border" />
+                            <FormSelect id="runType" label="Run Type" options={runTypes} value={form.runType} onChange={handleChange} />
+                            <FormField id="miles" label="Miles" type="text" value={form.miles} onChange={handleChange} />
                         </>
                     )}
 
                     {form.activityType === 'Weight Lifting' && (
-                        <>
-                            <label htmlFor="muscleGroup">Muscle Group</label>
-                            <select id="muscleGroup" name="muscleGroup" value={form.muscleGroup} onChange={handleChange} className="w-full p-2 rounded border">
-                                <option value="">Select Muscle Group</option>
-                                {muscleGroups.map(group => <option key={group} value={group}>{group}</option>)}
-                            </select>
-                        </>
+                        <FormSelect id="muscleGroup" label="Muscle Group" options={muscleGroups} value={form.muscleGroup} onChange={handleChange} />
                     )}
 
                     {form.activityType === 'Conditioning' && (
-                        <>
-                            <label htmlFor="conditioningType">Conditioning Type</label>
-                            <select id="conditioningType" name="conditioningType" value={form.conditioningType} onChange={handleChange} className="w-full p-2 rounded border">
-                                <option value="">Select Conditioning Type</option>
-                                {conditioningOptions.map(c => <option key={c} value={c}>{c}</option>)}
-                            </select>
-                        </>
+                        <FormSelect id="conditioningType" label="Conditioning Type" options={conditioningOptions} value={form.conditioningType} onChange={handleChange} />
                     )}
 
                     {form.activityType === 'Recovery' && (
-                        <>
-                            <label htmlFor="recoveryType">Recovery Type</label>
-                            <select id="recoveryType" name="recoveryType" value={form.recoveryType} onChange={handleChange} className="w-full p-2 rounded border">
-                                <option value="">Select Recovery Type</option>
-                                {recoveryOptions.map(r => <option key={r} value={r}>{r}</option>)}
-                            </select>
-                        </>
+                        <FormSelect id="recoveryType" label="Recovery Type" options={recoveryOptions} value={form.recoveryType} onChange={handleChange} />
                     )}
 
-                    <label htmlFor="date">Date</label>
-                    <input id="date" type="date" name="date" value={form.date} onChange={handleChange} className="w-full p-2 rounded border" />
+                    <FormField id="date" label="Date" type="date" value={form.date} onChange={handleChange} />
+                    <FormField id="duration" label="Duration (minutes)" type="text" value={form.duration} onChange={handleChange} />
+                    <FormField id="notes" label="Notes" type="textarea" value={form.notes} onChange={handleChange} />
 
-                    <label htmlFor="duration">Duration (minutes)</label>
-                    <input id="duration" type="text" name="duration" value={form.duration} onChange={handleChange} placeholder="Duration (min)" className="w-full p-2 rounded border" />
-
-                    <label htmlFor="notes">Notes</label>
-                    <textarea id="notes" name="notes" value={form.notes} onChange={handleChange} placeholder="Notes" className="w-full p-2 rounded border" />
-
-                    <div className="flex justify-end space-x-2">
-                        <button type="button" onClick={onClose} className="bg-gray-500 text-white px-4 py-2 rounded">Cancel</button>
-                        <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded">Save</button>
+                    <div className="flex justify-end gap-2 pt-2">
+                        <button type="button" onClick={onClose} className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Cancel</button>
+                        <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-500">Save</button>
                     </div>
                 </form>
             </div>
