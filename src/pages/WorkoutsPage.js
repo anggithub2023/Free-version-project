@@ -42,12 +42,12 @@ const WorkoutPage = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-6 text-gray-900 dark:text-white">
             <div className="max-w-4xl mx-auto">
-                {/* 🔒 Header with vertical button stack */}
-                <div className="flex justify-between items-start mb-6 gap-4 flex-wrap">
+                {/* Header with vertically stacked buttons */}
+                <div className="flex flex-wrap items-start justify-between mb-6 gap-4">
                     <h2 className="text-2xl font-bold text-indigo-700 dark:text-indigo-300 whitespace-nowrap">
                         Workout Tracker
                     </h2>
-                    <div className="flex flex-col items-end gap-2">
+                    <div className="flex flex-col space-y-2 items-end">
                         <button
                             onClick={() => setShowModal(true)}
                             className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base whitespace-nowrap"
@@ -63,13 +63,13 @@ const WorkoutPage = () => {
                     </div>
                 </div>
 
-                {/* Fitness Snapshot */}
+                {/* Fitness snapshot section */}
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     Fitness Snapshot – Stay on Track, Achieve Your Goals
                 </h3>
                 <FitnessSnapshot workouts={workouts} />
 
-                {/* Workout Entries */}
+                {/* Workout entries section */}
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 mt-6">
                     Workout Entries – Review and Reflect
                 </h3>
