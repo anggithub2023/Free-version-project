@@ -13,10 +13,11 @@ const WorkoutPage = () => {
     useEffect(() => {
         const saved = JSON.parse(localStorage.getItem('athleteWorkouts')) || [];
         setWorkouts(saved);
-    }, []);
 
-    useEffect(() => {
-        const timer = setTimeout(() => setShowTitle(false), 2000);
+        const timer = setTimeout(() => {
+            setShowTitle(false);
+        }, 2000);
+
         return () => clearTimeout(timer);
     }, []);
 
@@ -49,21 +50,24 @@ const WorkoutPage = () => {
                     </div>
                 )}
 
-                <div className="flex flex-wrap justify-between items-start sm:items-center mb-6">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-                        <FaDumbbell className="text-indigo-600 dark:text-indigo-300 text-2xl" />
-                        <h2 className="text-2xl font-bold">Workout Tracker</h2>
+                <div className="sm:flex sm:justify-between sm:items-start mb-6 space-y-4 sm:space-y-0">
+                    <div className="sm:w-1/2">
+                        <div className="text-2xl font-bold flex sm:flex-col items-start gap-1 sm:gap-0">
+                            <FaDumbbell className="text-indigo-600 dark:text-indigo-300 text-3xl" />
+                            <span>Workout Tracker</span>
+                        </div>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-2 mt-2 sm:mt-0 sm:ml-auto">
+
+                    <div className="sm:w-1/2 flex sm:flex-col items-end gap-2">
                         <button
                             onClick={() => setShowModal(true)}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow text-sm"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-3 text-base rounded shadow"
                         >
                             Add Workout
                         </button>
                         <button
                             onClick={() => window.location.href = '/'}
-                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow text-sm"
+                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-5 py-3 text-base rounded shadow"
                         >
                             Home
                         </button>
