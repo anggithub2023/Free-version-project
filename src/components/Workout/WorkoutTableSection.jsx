@@ -4,13 +4,13 @@ const WorkoutTableSection = ({ type, workouts, expanded, toggleSection }) => {
     const getVisibleColumns = () => {
         switch (type) {
             case 'Run':
-                return ['date', 'sport', 'subtype', 'duration', 'miles', 'runType', 'notes'];
+                return ['date', 'duration', 'miles', 'runType', 'notes'];
             case 'Weight Lifting':
-                return ['date', 'sport', 'subtype', 'duration', 'muscleGroup', 'notes'];
+                return ['date', 'duration', 'muscleGroup', 'notes'];
             case 'Conditioning':
-                return ['date', 'sport', 'subtype', 'duration', 'conditioningType', 'notes'];
+                return ['date', 'duration', 'conditioningType', 'notes'];
             case 'Recovery':
-                return ['date', 'sport', 'subtype', 'duration', 'recoveryType', 'notes'];
+                return ['date', 'duration', 'recoveryType', 'notes'];
             case 'Sports':
             default:
                 return ['date', 'sport', 'subtype', 'duration', 'notes'];
