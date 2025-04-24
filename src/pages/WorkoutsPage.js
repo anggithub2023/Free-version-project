@@ -45,16 +45,16 @@ const WorkoutPage = () => {
                     <h2 className="text-2xl font-bold flex items-center gap-2">
                         <FaDumbbell className="text-indigo-600 dark:text-indigo-300" /> Workout Tracker
                     </h2>
-                    <div className="space-x-2">
+                    <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0">
                         <button
                             onClick={() => setShowModal(true)}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow w-full sm:w-auto"
                         >
                             + Add Workout
                         </button>
                         <button
                             onClick={() => window.location.href = '/'}
-                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow"
+                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow w-full sm:w-auto"
                         >
                             Home
                         </button>
