@@ -20,6 +20,12 @@ const WorkoutPage = () => {
         setShowModal(false);
     };
 
+    const handleDelete = (entryToDelete) => {
+        const updated = workouts.filter((entry) => entry !== entryToDelete);
+        setWorkouts(updated);
+        localStorage.setItem('athleteWorkouts', JSON.stringify(updated));
+    };
+
     const toggleSection = (type) => {
         setExpandedSections((prev) => ({ ...prev, [type]: !prev[type] }));
     };
@@ -69,6 +75,7 @@ const WorkoutPage = () => {
                         workouts={groupedWorkouts[type]}
                         expanded={expandedSections[type]}
                         toggleSection={toggleSection}
+                        handleDelete={handleDelete}
                     />
                 ))}
             </div>
