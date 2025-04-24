@@ -13,14 +13,8 @@ const WorkoutPage = () => {
     useEffect(() => {
         const saved = JSON.parse(localStorage.getItem('athleteWorkouts')) || [];
         setWorkouts(saved);
-    }, []);
-
-    useEffect(() => {
-        const isMobile = window.innerWidth < 640;
-        if (isMobile) {
-            const timer = setTimeout(() => setShowTitle(false), 2000);
-            return () => clearTimeout(timer);
-        }
+        const timeout = setTimeout(() => setShowTitle(false), 2000);
+        return () => clearTimeout(timeout);
     }, []);
 
     const handleSubmit = (form) => {
@@ -45,30 +39,28 @@ const WorkoutPage = () => {
         <div className="min-h-screen bg-gradient-to-br from-white to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-6 text-gray-900 dark:text-white">
             <div className="max-w-4xl mx-auto">
                 {showTitle && (
-                    <div className="text-center mb-10 sm:mb-10">
+                    <div className="text-center mb-10">
                         <h1 className="text-4xl font-extrabold text-indigo-700 dark:text-indigo-300 tracking-tight">
                             Own Your Grind: Track Every Rep, Every Step
                         </h1>
                     </div>
                 )}
 
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 space-y-2 sm:space-y-0">
-                    <div className="text-left">
-                        <h2 className="text-2xl font-bold flex flex-col sm:flex-row items-start sm:items-center gap-2">
-                            <FaDumbbell className="text-indigo-600 dark:text-indigo-300" />
-                            <span>Workout Tracker</span>
-                        </h2>
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-4">
+                    <div className="flex flex-col items-start sm:flex-row sm:items-center gap-2">
+                        <FaDumbbell className="text-indigo-600 dark:text-indigo-300 text-2xl" />
+                        <h2 className="text-2xl font-bold">Workout Tracker</h2>
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-2">
+                    <div className="flex flex-col sm:flex-col items-end gap-2">
                         <button
                             onClick={() => setShowModal(true)}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow w-full sm:w-auto"
                         >
                             Add Workout
                         </button>
                         <button
                             onClick={() => window.location.href = '/'}
-                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow"
+                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow w-full sm:w-auto"
                         >
                             Home
                         </button>
