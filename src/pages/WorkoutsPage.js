@@ -10,13 +10,8 @@ const WorkoutPage = () => {
     const [expandedSections, setExpandedSections] = useState({});
 
     useEffect(() => {
-        try {
-            const saved = JSON.parse(localStorage.getItem('athleteWorkouts')) || [];
-            setWorkouts(saved);
-        } catch (error) {
-            console.error("Failed to load workouts from localStorage:", error);
-            setWorkouts([]);
-        }
+        const saved = JSON.parse(localStorage.getItem('athleteWorkouts')) || [];
+        setWorkouts(saved);
     }, []);
 
     const handleSubmit = (form) => {
@@ -30,14 +25,12 @@ const WorkoutPage = () => {
         setExpandedSections(prev => ({ ...prev, [type]: !prev[type] }));
     };
 
-    const groupedWorkouts = React.useMemo(() => {
-        return workouts.reduce((acc, workout) => {
-            const key = workout.activityType;
-            if (!acc[key]) acc[key] = [];
-            acc[key].push(workout);
-            return acc;
-        }, {});
-    }, [workouts]);
+    const groupedWorkouts = workouts.reduce((acc, workout) => {
+        const key = workout.activityType;
+        if (!acc[key]) acc[key] = [];
+        acc[key].push(workout);
+        return acc;
+    }, {});
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-6 text-gray-900 dark:text-white">
@@ -70,12 +63,12 @@ const WorkoutPage = () => {
 
                 <FitnessSnapshot workouts={workouts} />
 
-                {Object.keys(groupedWorkouts).map(type => (
+                {Object.keys(groupedWorkouts).map((type) => (
                     <WorkoutTableSection
                         key={type}
                         type={type}
                         workouts={groupedWorkouts[type]}
-                        isExpanded={expandedSections[type]}
+                        expanded={expandedSections[type]}
                         toggleSection={toggleSection}
                     />
                 ))}
