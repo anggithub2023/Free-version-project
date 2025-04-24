@@ -1,56 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { FaDumbbell, FaChevronDown, FaChevronRight } from 'react-icons/fa';
-
-const activityTypes = [
-    'Run', 'Weight Lifting', 'Conditioning', 'Recovery', 'Sports'
-];
-
-const sportOptions = [
-    'Basketball', 'Soccer', 'Track', 'Volleyball', 'Baseball', 'Lacrosse', 'Ice Hockey',
-    'Football', 'Tennis', 'Swimming', 'Golf', 'Wrestling', 'Softball', 'CrossFit', 'Cycling', 'Rowing'
-];
-
-const sportSubtypes = {
-    Basketball: ['Practice', 'Game'],
-    Soccer: ['Practice', 'Game'],
-    Track: ['Sprint', 'Distance', 'Meet'],
-    Volleyball: ['Practice', 'Game'],
-    Baseball: ['Practice', 'Game', 'Bullpen'],
-    Lacrosse: ['Practice', 'Game'],
-    'Ice Hockey': ['Practice', 'Game'],
-    Football: ['Practice', 'Game', 'Scrimmage'],
-    Tennis: ['Practice', 'Match'],
-    Swimming: ['Practice', 'Meet'],
-    Golf: ['Practice', 'Tournament'],
-    Wrestling: ['Practice', 'Match'],
-    Softball: ['Practice', 'Game'],
-    CrossFit: ['WOD', 'Competition'],
-    Cycling: ['Ride', 'Race'],
-    Rowing: ['Practice', 'Race']
-};
-
-const runTypes = ['Sprint', 'Jog', 'Long Distance', 'Intervals'];
-const muscleGroups = ['Upper Body', 'Lower Body', 'Full Body', 'Core'];
-const conditioningTypes = ['Agility', 'Speed', 'Endurance', 'Plyometrics'];
-const recoveryTypes = ['Stretching', 'Foam Rolling', 'Ice Bath', 'Massage'];
+import { FaDumbbell } from 'react-icons/fa';
+import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 
 const WorkoutPage = () => {
     const [workouts, setWorkouts] = useState([]);
     const [form, setForm] = useState({
-        activityType: '',
-        sport: '',
-        subtype: '',
-        date: '',
-        duration: '',
-        notes: '',
-        miles: '',
-        muscleGroup: '',
-        runType: '',
-        conditioningType: '',
-        recoveryType: ''
+        activityType: '', sport: '', subtype: '', date: '', duration: '', notes: '', miles: '', muscleGroup: '', runType: '', conditioningType: '', recoveryType: ''
     });
-    const [showModal, setShowModal] = useState(false);
     const [expandedSections, setExpandedSections] = useState({});
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const saved = JSON.parse(localStorage.getItem('athleteWorkouts')) || [];
@@ -69,25 +27,9 @@ const WorkoutPage = () => {
         const updated = [...workouts, form];
         setWorkouts(updated);
         localStorage.setItem('athleteWorkouts', JSON.stringify(updated));
-        setForm({
-            activityType: '', sport: '', subtype: '', date: '', duration: '', notes: '',
-            miles: '', muscleGroup: '', runType: '', conditioningType: '', recoveryType: ''
-        });
+        setForm({ activityType: '', sport: '', subtype: '', date: '', duration: '', notes: '', miles: '', muscleGroup: '', runType: '', conditioningType: '', recoveryType: '' });
         setShowModal(false);
     };
-
-    const toggleSection = (type) => {
-        setExpandedSections(prev => ({ ...prev, [type]: !prev[type] }));
-    };
-
-    const countCategory = (category) => {
-        return workouts.filter(entry => entry.activityType === category).length;
-    };
-
-    const totalCount = workouts.length || 1;
-    const cardioCount = countCategory('Run') + countCategory('Sports');
-    const strengthCount = countCategory('Weight Lifting') + countCategory('Conditioning');
-    const recoveryCount = countCategory('Recovery');
 
     const groupedWorkouts = workouts.reduce((acc, workout) => {
         const key = workout.activityType;
@@ -96,22 +38,15 @@ const WorkoutPage = () => {
         return acc;
     }, {});
 
+    const toggleSection = (type) => {
+        setExpandedSections(prev => ({ ...prev, [type]: !prev[type] }));
+    };
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-6 text-gray-900 dark:text-white">
             <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-10">
                     <h1 className="text-4xl font-extrabold text-indigo-700 dark:text-indigo-300 tracking-tight">Own Your Grind: Track Every Rep, Every Step</h1>
-                </div>
-
-                <div className="mb-8">
-                    <h2 className="text-xl font-semibold mb-2">Fitness Snapshot</h2>
-                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden">
-                        <div className="flex h-6 text-xs font-medium text-white">
-                            <div className="bg-blue-500 text-center" style={{ width: `${(cardioCount / totalCount) * 100}%` }}>Cardio</div>
-                            <div className="bg-green-500 text-center" style={{ width: `${(strengthCount / totalCount) * 100}%` }}>Strength</div>
-                            <div className="bg-yellow-500 text-center" style={{ width: `${(recoveryCount / totalCount) * 100}%` }}>Recovery</div>
-                        </div>
-                    </div>
                 </div>
 
                 <div className="flex justify-between items-center mb-6">
@@ -127,98 +62,52 @@ const WorkoutPage = () => {
                 </div>
 
                 {Object.keys(groupedWorkouts).map(type => (
-                    <div key={type} className="mb-4 border rounded-lg overflow-hidden">
-                        <div
+                    <div key={type} className="mb-4">
+                        <button
+                            className="flex justify-between items-center w-full bg-indigo-100 dark:bg-gray-800 px-4 py-2 font-semibold rounded"
                             onClick={() => toggleSection(type)}
-                            className="cursor-pointer bg-indigo-100 dark:bg-gray-800 px-4 py-2 flex items-center justify-between text-lg font-semibold"
                         >
-                            <span>{type} Activities</span>
-                            {expandedSections[type] ? <FaChevronDown /> : <FaChevronRight />}
-                        </div>
+                            <span>{type}</span>
+                            {expandedSections[type] ? <MdExpandLess /> : <MdExpandMore />}
+                        </button>
                         {expandedSections[type] && (
-                            <table className="w-full text-sm text-left border-t">
-                                <thead className="bg-indigo-200 dark:bg-gray-700">
-                                <tr>
-                                    <th className="px-4 py-2">Date</th>
-                                    <th className="px-4 py-2">Sport</th>
-                                    <th className="px-4 py-2">Subtype</th>
-                                    <th className="px-4 py-2">Duration</th>
-                                    <th className="px-4 py-2">Notes</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {groupedWorkouts[type].map((workout, idx) => (
-                                    <tr key={idx} className="border-t border-gray-300 dark:border-gray-600">
-                                        <td className="px-4 py-2">{workout.date}</td>
-                                        <td className="px-4 py-2">{workout.sport}</td>
-                                        <td className="px-4 py-2">{workout.subtype}</td>
-                                        <td className="px-4 py-2">{workout.duration} min</td>
-                                        <td className="px-4 py-2">{workout.notes}</td>
+                            <div className="overflow-x-auto mt-2">
+                                <table className="min-w-full table-auto border border-gray-300 dark:border-gray-700">
+                                    <thead>
+                                    <tr className="bg-indigo-200 dark:bg-gray-700">
+                                        <th className="px-4 py-2">Date</th>
+                                        <th className="px-4 py-2">Sport</th>
+                                        <th className="px-4 py-2">Subtype</th>
+                                        <th className="px-4 py-2">Duration</th>
+                                        <th className="px-4 py-2">Miles</th>
+                                        <th className="px-4 py-2">Muscle Group</th>
+                                        <th className="px-4 py-2">Run Type</th>
+                                        <th className="px-4 py-2">Conditioning Type</th>
+                                        <th className="px-4 py-2">Recovery Type</th>
+                                        <th className="px-4 py-2">Notes</th>
                                     </tr>
-                                ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                    {groupedWorkouts[type].map((entry, idx) => (
+                                        <tr key={idx} className="border-t border-gray-300 dark:border-gray-700">
+                                            <td className="px-4 py-2">{entry.date}</td>
+                                            <td className="px-4 py-2">{entry.sport}</td>
+                                            <td className="px-4 py-2">{entry.subtype}</td>
+                                            <td className="px-4 py-2">{entry.duration}</td>
+                                            <td className="px-4 py-2">{entry.miles}</td>
+                                            <td className="px-4 py-2">{entry.muscleGroup}</td>
+                                            <td className="px-4 py-2">{entry.runType}</td>
+                                            <td className="px-4 py-2">{entry.conditioningType}</td>
+                                            <td className="px-4 py-2">{entry.recoveryType}</td>
+                                            <td className="px-4 py-2">{entry.notes}</td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         )}
                     </div>
                 ))}
-
-                {showModal && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-                        <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-md">
-                            <h3 className="text-xl font-semibold mb-4">Add New Workout</h3>
-                            <input name="date" value={form.date} onChange={handleChange} type="date" className="w-full mb-2 p-2 border rounded" required />
-                            <select name="activityType" value={form.activityType} onChange={handleChange} className="w-full mb-2 p-2 border rounded" required>
-                                <option value="">Select Activity Type</option>
-                                {activityTypes.map((type, idx) => <option key={idx} value={type}>{type}</option>)}
-                            </select>
-                            {form.activityType === 'Sports' && (
-                                <>
-                                    <select name="sport" value={form.sport} onChange={handleChange} className="w-full mb-2 p-2 border rounded" required>
-                                        <option value="">Select Sport</option>
-                                        {sportOptions.map((sport, idx) => <option key={idx} value={sport}>{sport}</option>)}
-                                    </select>
-                                    <select name="subtype" value={form.subtype} onChange={handleChange} className="w-full mb-2 p-2 border rounded">
-                                        <option value="">Select Subtype</option>
-                                        {(sportSubtypes[form.sport] || []).map((sub, idx) => <option key={idx} value={sub}>{sub}</option>)}
-                                    </select>
-                                </>
-                            )}
-                            {form.activityType === 'Run' && (
-                                <>
-                                    <select name="runType" value={form.runType} onChange={handleChange} className="w-full mb-2 p-2 border rounded">
-                                        <option value="">Select Run Type</option>
-                                        {runTypes.map((type, idx) => <option key={idx} value={type}>{type}</option>)}
-                                    </select>
-                                    <input name="miles" value={form.miles} onChange={handleChange} placeholder="Miles" className="w-full mb-2 p-2 border rounded" />
-                                </>
-                            )}
-                            {form.activityType === 'Weight Lifting' && (
-                                <select name="muscleGroup" value={form.muscleGroup} onChange={handleChange} className="w-full mb-2 p-2 border rounded">
-                                    <option value="">Select Muscle Group</option>
-                                    {muscleGroups.map((group, idx) => <option key={idx} value={group}>{group}</option>)}
-                                </select>
-                            )}
-                            {form.activityType === 'Conditioning' && (
-                                <select name="conditioningType" value={form.conditioningType} onChange={handleChange} className="w-full mb-2 p-2 border rounded">
-                                    <option value="">Select Conditioning Type</option>
-                                    {conditioningTypes.map((type, idx) => <option key={idx} value={type}>{type}</option>)}
-                                </select>
-                            )}
-                            {form.activityType === 'Recovery' && (
-                                <select name="recoveryType" value={form.recoveryType} onChange={handleChange} className="w-full mb-2 p-2 border rounded">
-                                    <option value="">Select Recovery Type</option>
-                                    {recoveryTypes.map((type, idx) => <option key={idx} value={type}>{type}</option>)}
-                                </select>
-                            )}
-                            <input name="duration" value={form.duration} onChange={handleChange} placeholder="Duration (minutes)" className="w-full mb-2 p-2 border rounded" />
-                            <input name="notes" value={form.notes} onChange={handleChange} placeholder="Notes" className="w-full mb-2 p-2 border rounded" />
-                            <div className="flex justify-between">
-                                <button type="submit" className="bg-indigo-600 text-white px-4 py-2 rounded">Save</button>
-                                <button type="button" onClick={() => setShowModal(false)} className="text-red-500 font-semibold">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
-                )}
             </div>
         </div>
     );
