@@ -67,7 +67,7 @@ const WorkoutPage = () => {
                 </div>
 
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                    Fitness Snapshot – Stay on Track!
+                    Fitness Snapshot – Stay on Track, Achieve Your Goals
                 </h3>
                 <FitnessSnapshot workouts={workouts} />
 
