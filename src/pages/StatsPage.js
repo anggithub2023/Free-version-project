@@ -62,7 +62,7 @@ function StatsPage() {
 
     return (
         <div className="max-w-xl mx-auto text-left p-4">
-            <h2 className="text-3xl sm:text-4xl font-bold text-indigo-700 dark:text-indigo-200 mb-6 tracking-tight text-center">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-indigo-700 dark:text-indigo-200 mb-6 tracking-tight text-center">
                 Track greatness. Start logging your stats.
             </h2>
 
