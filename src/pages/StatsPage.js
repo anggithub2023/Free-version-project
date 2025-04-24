@@ -14,6 +14,7 @@ function StatsPage() {
         turnovers: '', minutes: '', freeThrows: ''
     });
     const [showConfirm, setShowConfirm] = useState(false);
+    const [showResetConfirm, setShowResetConfirm] = useState(false);
     const [hasScrolled, setHasScrolled] = useState(false);
     const tableRef = useRef(null);
     const navigate = useNavigate();
@@ -51,6 +52,12 @@ function StatsPage() {
         setShowConfirm(false);
     };
 
+    const confirmResetStats = () => {
+        setGameStats([]);
+        localStorage.removeItem("playerStats");
+        setShowResetConfirm(false);
+    };
+
     const calculateAverage = (key) => {
         const values = gameStats.map(gs => parseFloat(gs[key])).filter(n => !isNaN(n));
         if (!values.length) return 0;
@@ -70,6 +77,15 @@ function StatsPage() {
 
             {gameStats.length > 0 && (
                 <div className="mt-6">
+                    <div className="flex justify-between items-center mb-2">
+                        <h3 className="text-xl font-semibold text-indigo-700 dark:text-indigo-300">Game Stats</h3>
+                        <button
+                            onClick={() => setShowResetConfirm(true)}
+                            className="text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                        >
+                            Clear All Stats
+                        </button>
+                    </div>
                     <StatsTable gameStats={gameStats} tableRef={tableRef} />
                 </div>
             )}
@@ -97,6 +113,13 @@ function StatsPage() {
                 message="Lock in this game performance and reset the form?"
                 onConfirm={confirmAddStat}
                 onCancel={() => setShowConfirm(false)}
+            />
+
+            <ConfirmModal
+                open={showResetConfirm}
+                message="Are you sure you want to clear all game stats? This cannot be undone."
+                onConfirm={confirmResetStats}
+                onCancel={() => setShowResetConfirm(false)}
             />
         </div>
     );
