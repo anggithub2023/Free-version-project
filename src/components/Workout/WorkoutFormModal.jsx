@@ -7,12 +7,12 @@ const WorkoutFormModal = ({ onClose, onSubmit }) => {
         subtype: '',
         date: '',
         duration: '',
-        notes: '',
         miles: '',
         muscleGroup: '',
         runType: '',
         conditioningType: '',
-        recoveryType: ''
+        recoveryType: '',
+        notes: ''
     });
 
     const handleChange = (e) => {
@@ -31,12 +31,12 @@ const WorkoutFormModal = ({ onClose, onSubmit }) => {
             subtype: '',
             date: '',
             duration: '',
-            notes: '',
             miles: '',
             muscleGroup: '',
             runType: '',
             conditioningType: '',
-            recoveryType: ''
+            recoveryType: '',
+            notes: ''
         });
         onClose();
     };
@@ -68,3 +68,13 @@ const WorkoutFormModal = ({ onClose, onSubmit }) => {
 };
 
 export default WorkoutFormModal;
+
+/* 
+===== NOTES =====
+THIS COMPONENT RENDERS A MODAL FORM FOR WORKOUT INPUT.
+USES LOCAL STATE TO HANDLE FORM DATA.
+ON SUBMIT: PASSES FORM DATA TO PARENT AND CLOSES MODAL.
+DEPENDENCIES: REACT, TAILWIND FOR STYLING.
+INPUTS EXPECTED: ACTIVITY TYPE, SPORT, SUBTYPES, AND WORKOUT METRICS.
+THIS FILE IS USED INSIDE: WORKOUTPAGE.JSX
+*/
