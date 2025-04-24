@@ -13,8 +13,11 @@ const WorkoutPage = () => {
     useEffect(() => {
         const saved = JSON.parse(localStorage.getItem('athleteWorkouts')) || [];
         setWorkouts(saved);
-        const timeout = setTimeout(() => setShowTitle(false), 2000);
-        return () => clearTimeout(timeout);
+    }, []);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setShowTitle(false), 2000);
+        return () => clearTimeout(timer);
     }, []);
 
     const handleSubmit = (form) => {
@@ -46,21 +49,21 @@ const WorkoutPage = () => {
                     </div>
                 )}
 
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6 gap-4">
-                    <div className="flex flex-col items-start sm:flex-row sm:items-center gap-2">
+                <div className="flex flex-wrap justify-between items-start sm:items-center mb-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
                         <FaDumbbell className="text-indigo-600 dark:text-indigo-300 text-2xl" />
                         <h2 className="text-2xl font-bold">Workout Tracker</h2>
                     </div>
-                    <div className="flex flex-col sm:flex-col items-end gap-2">
+                    <div className="flex flex-col sm:flex-row gap-2 mt-2 sm:mt-0 sm:ml-auto">
                         <button
                             onClick={() => setShowModal(true)}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow w-full sm:w-auto"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow text-sm"
                         >
                             Add Workout
                         </button>
                         <button
                             onClick={() => window.location.href = '/'}
-                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow w-full sm:w-auto"
+                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow text-sm"
                         >
                             Home
                         </button>
