@@ -13,9 +13,6 @@ const WorkoutPage = () => {
     useEffect(() => {
         const saved = JSON.parse(localStorage.getItem('athleteWorkouts')) || [];
         setWorkouts(saved);
-    }, []);
-
-    useEffect(() => {
         const timer = setTimeout(() => setShowTitle(false), 2000);
         return () => clearTimeout(timer);
     }, []);
@@ -49,12 +46,12 @@ const WorkoutPage = () => {
                     </div>
                 )}
 
-                <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start mb-6">
-                    <div className="flex flex-col items-center sm:items-start">
-                        <FaDumbbell className="text-indigo-600 dark:text-indigo-300 text-3xl mb-1" />
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                        <FaDumbbell className="text-indigo-600 dark:text-indigo-300 text-2xl sm:text-3xl" />
                         <h2 className="text-2xl font-bold">Workout Tracker</h2>
                     </div>
-                    <div className="flex space-x-2 mt-4 sm:mt-0 sm:ml-auto">
+                    <div className="flex flex-col sm:flex-row sm:space-x-2 mt-2 sm:mt-0">
                         <button
                             onClick={() => setShowModal(true)}
                             className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow"
