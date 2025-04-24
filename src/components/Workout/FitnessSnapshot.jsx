@@ -1,64 +1,51 @@
 import React from 'react';
 
 const FitnessSnapshot = ({ workouts }) => {
-    const totals = workouts.reduce(
-        (acc, curr) => {
-            const duration = parseFloat(curr.duration) || 0;
-            if (curr.activityType === 'Run') acc.cardio += duration;
-            else if (curr.activityType === 'Weight Lifting') acc.strength += duration;
-            else if (curr.activityType === 'Conditioning') acc.conditioning += duration;
-            else if (curr.activityType === 'Recovery') acc.recovery += duration;
-            else acc.other += duration;
-            return acc;
-        },
-        { cardio: 0, strength: 0, conditioning: 0, recovery: 0, other: 0 }
-    );
+    const totalDays = 7;
+    const muscleGroups = ['Chest', 'Back', 'Legs', 'Arms', 'Shoulders', 'Core'];
+    const cardioGoal = 150; // CDC guideline in minutes
 
-    const total =
-        totals.cardio + totals.strength + totals.conditioning + totals.recovery + totals.other;
+    const thisWeek = workouts.slice(-7); // Assuming last 7 entries represent a week
+    const strengthSet = new Set();
+    let cardioMinutes = 0;
+    let recoverySessions = 0;
+    let restDays = 0;
 
-    const getPercentage = (val) => (total ? Math.round((val / total) * 100) : 0);
+    thisWeek.forEach((w) => {
+        if (w.activityType === 'Weight Lifting' && w.muscleGroup) strengthSet.add(w.muscleGroup);
+        if (w.activityType === 'Run' || w.activityType === 'Conditioning') cardioMinutes += parseFloat(w.duration || 0);
+        if (w.activityType === 'Recovery') recoverySessions++;
+        if (!w.activityType) restDays++;
+    });
 
-    const stats = [
-        { label: 'Cardio', value: totals.cardio, percent: getPercentage(totals.cardio) },
-        { label: 'Strength', value: totals.strength, percent: getPercentage(totals.strength) },
-        { label: 'Conditioning', value: totals.conditioning, percent: getPercentage(totals.conditioning) },
-        { label: 'Rest', value: totals.recovery, percent: getPercentage(totals.recovery) }
+    const strengthPct = Math.min((strengthSet.size / muscleGroups.length) * 100, 100);
+    const cardioPct = Math.min((cardioMinutes / cardioGoal) * 100, 100);
+    const recoveryPct = Math.min((recoverySessions / totalDays) * 100, 100);
+    const restPct = Math.min((restDays / totalDays) * 100, 100);
+
+    const tiles = [
+        { title: 'Strength', percent: strengthPct },
+        { title: 'Cardio', percent: cardioPct },
+        { title: 'Recovery', percent: recoveryPct },
+        { title: 'Rest', percent: restPct }
     ];
 
     return (
-        <div className="mb-10">
-            <h3 className="text-xl font-semibold mb-4 text-indigo-700 dark:text-indigo-300 text-center">
-                Fitness Snapshot
-            </h3>
-            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-                {stats.map((item, idx) => (
-                    <div
-                        key={idx}
-                        className="bg-indigo-100 dark:bg-gray-800 p-4 rounded-xl shadow flex flex-col items-center"
-                    >
-            <span className="text-md font-semibold text-indigo-800 dark:text-indigo-200">
-              {item.label}
-            </span>
-                        <div className="w-full h-3 bg-gray-300 dark:bg-gray-600 rounded-full mt-2">
-                            <div
-                                className="h-3 rounded-full"
-                                style={{
-                                    width: `${item.percent}%`,
-                                    backgroundColor: '#6366F1' // Indigo-500
-                                }}
-                            ></div>
-                        </div>
-                        <span className="text-sm text-gray-700 dark:text-gray-300 mt-1">
-              {item.percent}%
-            </span>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 mb-8">
+            {tiles.map(({ title, percent }) => (
+                <div key={title} className="bg-indigo-100 dark:bg-gray-700 rounded-2xl p-4 shadow text-center">
+                    <h3 className="font-semibold text-indigo-700 dark:text-indigo-200 mb-2">{title}</h3>
+                    <div className="w-full h-3 bg-white dark:bg-gray-800 rounded overflow-hidden">
+                        <div
+                            className="h-full bg-indigo-600"
+                            style={{ width: `${percent}%` }}
+                        ></div>
                     </div>
-                ))}
-            </div>
+                    <p className="mt-1 text-sm font-medium text-indigo-700 dark:text-indigo-200">{Math.round(percent)}%</p>
+                </div>
+            ))}
         </div>
     );
 };
 
 export default FitnessSnapshot;
-
-// FOOTER NOTES: FITNESS SNAPSHOT DISPLAYS WORKOUT TYPE RATIOS. USES GRID LAYOUT WITH DARK MODE STYLING. NOW INCLUDES "REST" TILE AND MOBILE-FRIENDLY SQUARE LAYOUT.
