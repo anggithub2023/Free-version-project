@@ -42,32 +42,34 @@ const WorkoutPage = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-6 text-gray-900 dark:text-white">
             <div className="max-w-4xl mx-auto">
-                {/* 💪 Fixed Mobile Header Layout */}
-                <div className="flex flex-row flex-wrap justify-between items-center gap-4 mb-6">
-                    <h2 className="text-2xl font-bold text-indigo-700 dark:text-indigo-300">
+                {/* 🔒 Header with fixed row layout */}
+                <div className="flex items-center justify-between mb-6 gap-4 flex-nowrap overflow-x-auto">
+                    <h2 className="text-2xl font-bold text-indigo-700 dark:text-indigo-300 whitespace-nowrap">
                         Workout Tracker
                     </h2>
-                    <div className="flex flex-row flex-wrap gap-2 justify-end">
+                    <div className="flex gap-2 shrink-0">
                         <button
                             onClick={() => setShowModal(true)}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base whitespace-nowrap"
                         >
                             Add Workout
                         </button>
                         <button
                             onClick={() => window.location.href = '/'}
-                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base"
+                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base whitespace-nowrap"
                         >
                             Home
                         </button>
                     </div>
                 </div>
 
+                {/* Fitness summary */}
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                     Fitness Snapshot – Stay on Track, Achieve Your Goals
                 </h3>
                 <FitnessSnapshot workouts={workouts} />
 
+                {/* Table entries */}
                 <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 mt-6">
                     Workout Entries – Review and Reflect
                 </h3>
