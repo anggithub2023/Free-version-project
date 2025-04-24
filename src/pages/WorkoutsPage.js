@@ -50,7 +50,7 @@ const WorkoutPage = () => {
                             onClick={() => setShowModal(true)}
                             className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow w-full sm:w-auto"
                         >
-                            + Add Workout
+                            Add Workout
                         </button>
                         <button
                             onClick={() => window.location.href = '/'}
