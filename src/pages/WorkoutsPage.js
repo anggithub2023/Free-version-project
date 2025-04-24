@@ -20,10 +20,16 @@ const WorkoutPage = () => {
         setShowModal(false);
     };
 
-    const handleDelete = (entryToDelete) => {
-        const updated = workouts.filter((entry) => entry !== entryToDelete);
-        setWorkouts(updated);
-        localStorage.setItem('athleteWorkouts', JSON.stringify(updated));
+    const handleDelete = (type, index) => {
+        const filtered = workouts.filter((_, idx) => {
+            const matchType = workouts[idx].activityType === type;
+            const matchIndex = workouts
+                .filter(w => w.activityType === type)
+                .indexOf(workouts[idx]) === index;
+            return !(matchType && matchIndex);
+        });
+        setWorkouts(filtered);
+        localStorage.setItem('athleteWorkouts', JSON.stringify(filtered));
     };
 
     const toggleSection = (type) => {
@@ -75,7 +81,7 @@ const WorkoutPage = () => {
                         workouts={groupedWorkouts[type]}
                         expanded={expandedSections[type]}
                         toggleSection={toggleSection}
-                        handleDelete={handleDelete}
+                        onDelete={handleDelete}
                     />
                 ))}
             </div>
