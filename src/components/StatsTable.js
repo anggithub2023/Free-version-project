@@ -16,7 +16,7 @@ function StatsTable({ gameStats, tableRef, onClear }) {
     return (
         <div className="mt-6 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700">
             <div className="flex justify-between items-center mb-4">
-                <h3 className="text-2xl font-semibold text-indigo-700 dark:text-indigo-300">Game Stats</h3>
+                <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-indigo-700 dark:text-indigo-300 text-center mb-4">Game Stats</h3>
                 <button
                     onClick={onClear}
                     className="text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
