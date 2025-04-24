@@ -1,12 +1,8 @@
 import React from 'react';
 import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 
-const WorkoutTableSection = ({ type, entries, isExpanded, toggleSection }) => {
-    const hasRun = entries.some(entry => entry.runType);
-    const hasMiles = entries.some(entry => entry.miles);
-    const hasMuscleGroup = entries.some(entry => entry.muscleGroup);
-    const hasConditioning = entries.some(entry => entry.conditioningType);
-    const hasRecovery = entries.some(entry => entry.recoveryType);
+const WorkoutTableSection = ({ type = 'Other', workouts = [], expanded = false, toggleSection = () => {} }) => {
+    if (!Array.isArray(workouts)) return null;
 
     return (
         <div className="mb-4">
@@ -15,9 +11,10 @@ const WorkoutTableSection = ({ type, entries, isExpanded, toggleSection }) => {
                 onClick={() => toggleSection(type)}
             >
                 <span>{type}</span>
-                {isExpanded ? <MdExpandLess /> : <MdExpandMore />}
+                {expanded ? <MdExpandLess /> : <MdExpandMore />}
             </button>
-            {isExpanded && (
+
+            {expanded && (
                 <div className="overflow-x-auto mt-2">
                     <table className="min-w-full table-auto border border-gray-300 dark:border-gray-700">
                         <thead>
@@ -26,26 +23,26 @@ const WorkoutTableSection = ({ type, entries, isExpanded, toggleSection }) => {
                             <th className="px-4 py-2">Sport</th>
                             <th className="px-4 py-2">Subtype</th>
                             <th className="px-4 py-2">Duration</th>
-                            {hasMiles && <th className="px-4 py-2">Miles</th>}
-                            {hasMuscleGroup && <th className="px-4 py-2">Muscle Group</th>}
-                            {hasRun && <th className="px-4 py-2">Run Type</th>}
-                            {hasConditioning && <th className="px-4 py-2">Conditioning Type</th>}
-                            {hasRecovery && <th className="px-4 py-2">Recovery Type</th>}
+                            <th className="px-4 py-2">Miles</th>
+                            <th className="px-4 py-2">Muscle Group</th>
+                            <th className="px-4 py-2">Run Type</th>
+                            <th className="px-4 py-2">Conditioning Type</th>
+                            <th className="px-4 py-2">Recovery Type</th>
                             <th className="px-4 py-2">Notes</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {entries.map((entry, idx) => (
+                        {workouts.map((entry, idx) => (
                             <tr key={idx} className="border-t border-gray-300 dark:border-gray-700">
                                 <td className="px-4 py-2">{entry.date}</td>
                                 <td className="px-4 py-2">{entry.sport}</td>
                                 <td className="px-4 py-2">{entry.subtype}</td>
                                 <td className="px-4 py-2">{entry.duration}</td>
-                                {hasMiles && <td className="px-4 py-2">{entry.miles}</td>}
-                                {hasMuscleGroup && <td className="px-4 py-2">{entry.muscleGroup}</td>}
-                                {hasRun && <td className="px-4 py-2">{entry.runType}</td>}
-                                {hasConditioning && <td className="px-4 py-2">{entry.conditioningType}</td>}
-                                {hasRecovery && <td className="px-4 py-2">{entry.recoveryType}</td>}
+                                <td className="px-4 py-2">{entry.miles}</td>
+                                <td className="px-4 py-2">{entry.muscleGroup}</td>
+                                <td className="px-4 py-2">{entry.runType}</td>
+                                <td className="px-4 py-2">{entry.conditioningType}</td>
+                                <td className="px-4 py-2">{entry.recoveryType}</td>
                                 <td className="px-4 py-2">{entry.notes}</td>
                             </tr>
                         ))}
