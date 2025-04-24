@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaDumbbell } from 'react-icons/fa';
-import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import WorkoutFormModal from '../components/Workout/WorkoutFormModal';
-import WorkoutTableSection from '../components/Workout/WorkoutTableSection';
 
 const WorkoutPage = () => {
     const [workouts, setWorkouts] = useState([]);
