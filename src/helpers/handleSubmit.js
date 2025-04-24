@@ -4,7 +4,7 @@ import { scoreValue } from './scoring';
 const handleSubmit = (answers, setScoreSummary, setShowModal) => {
     const allSections = Object.keys(questions);
 
-    // Ensure at least 5 answers per section
+    // ✅ Ensure at least 5 answers per section
     const allAnswered = allSections.every((section) => {
         const answeredCount = questions[section].filter((_, idx) => answers[`${section}-${idx}`]).length;
         return answeredCount >= 5;
@@ -27,7 +27,7 @@ const handleSubmit = (answers, setScoreSummary, setShowModal) => {
         return;
     }
 
-    // Score calculation per section
+    // ✅ Score calculation per section
     const calcSectionScore = (sectionKey) => {
         const rawScores = questions[sectionKey]
             .map((_, idx) => scoreValue(answers[`${sectionKey}-${idx}`]))
@@ -44,6 +44,7 @@ const handleSubmit = (answers, setScoreSummary, setShowModal) => {
 
     const total = Math.round((offensePct + defensePct + teamIdentityPct) / 3);
 
+    // ✅ Add empty gameStats to avoid downstream crashes
     const summary = {
         timestamp: new Date().toISOString(),
         total,
@@ -51,6 +52,7 @@ const handleSubmit = (answers, setScoreSummary, setShowModal) => {
         defense: defensePct,
         teamIdentity: teamIdentityPct,
         answers: { ...answers },
+        gameStats: [] // ✅ critical addition
     };
 
     const history = JSON.parse(localStorage.getItem('processHistory')) || [];
