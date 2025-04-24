@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FaDumbbell } from 'react-icons/fa';
-import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import WorkoutFormModal from '../components/Workout/WorkoutFormModal';
+import WorkoutTableSection from '../components/Workout/WorkoutTableSection';
+import FitnessSnapshot from '../components/Workout/FitnessSnapshot';
 
 const WorkoutPage = () => {
     const [workouts, setWorkouts] = useState([]);
@@ -9,8 +10,13 @@ const WorkoutPage = () => {
     const [expandedSections, setExpandedSections] = useState({});
 
     useEffect(() => {
-        const saved = JSON.parse(localStorage.getItem('athleteWorkouts')) || [];
-        setWorkouts(saved);
+        try {
+            const saved = JSON.parse(localStorage.getItem('athleteWorkouts')) || [];
+            setWorkouts(saved);
+        } catch (error) {
+            console.error("Failed to load workouts from localStorage:", error);
+            setWorkouts([]);
+        }
     }, []);
 
     const handleSubmit = (form) => {
@@ -24,12 +30,14 @@ const WorkoutPage = () => {
         setExpandedSections(prev => ({ ...prev, [type]: !prev[type] }));
     };
 
-    const groupedWorkouts = workouts.reduce((acc, workout) => {
-        const key = workout.activityType;
-        if (!acc[key]) acc[key] = [];
-        acc[key].push(workout);
-        return acc;
-    }, {});
+    const groupedWorkouts = React.useMemo(() => {
+        return workouts.reduce((acc, workout) => {
+            const key = workout.activityType;
+            if (!acc[key]) acc[key] = [];
+            acc[key].push(workout);
+            return acc;
+        }, {});
+    }, [workouts]);
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-6 text-gray-900 dark:text-white">
@@ -60,52 +68,16 @@ const WorkoutPage = () => {
                     </div>
                 </div>
 
+                <FitnessSnapshot workouts={workouts} />
+
                 {Object.keys(groupedWorkouts).map(type => (
-                    <div key={type} className="mb-4">
-                        <button
-                            className="flex justify-between items-center w-full bg-indigo-100 dark:bg-gray-800 px-4 py-2 font-semibold rounded"
-                            onClick={() => toggleSection(type)}
-                        >
-                            <span>{type}</span>
-                            {expandedSections[type] ? <MdExpandLess /> : <MdExpandMore />}
-                        </button>
-                        {expandedSections[type] && (
-                            <div className="overflow-x-auto mt-2">
-                                <table className="min-w-full table-auto border border-gray-300 dark:border-gray-700">
-                                    <thead>
-                                    <tr className="bg-indigo-200 dark:bg-gray-700">
-                                        <th className="px-4 py-2">Date</th>
-                                        <th className="px-4 py-2">Sport</th>
-                                        <th className="px-4 py-2">Subtype</th>
-                                        <th className="px-4 py-2">Duration</th>
-                                        <th className="px-4 py-2">Miles</th>
-                                        <th className="px-4 py-2">Muscle Group</th>
-                                        <th className="px-4 py-2">Run Type</th>
-                                        <th className="px-4 py-2">Conditioning Type</th>
-                                        <th className="px-4 py-2">Recovery Type</th>
-                                        <th className="px-4 py-2">Notes</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {groupedWorkouts[type].map((entry, idx) => (
-                                        <tr key={idx} className="border-t border-gray-300 dark:border-gray-700">
-                                            <td className="px-4 py-2">{entry.date}</td>
-                                            <td className="px-4 py-2">{entry.sport}</td>
-                                            <td className="px-4 py-2">{entry.subtype}</td>
-                                            <td className="px-4 py-2">{entry.duration}</td>
-                                            <td className="px-4 py-2">{entry.miles}</td>
-                                            <td className="px-4 py-2">{entry.muscleGroup}</td>
-                                            <td className="px-4 py-2">{entry.runType}</td>
-                                            <td className="px-4 py-2">{entry.conditioningType}</td>
-                                            <td className="px-4 py-2">{entry.recoveryType}</td>
-                                            <td className="px-4 py-2">{entry.notes}</td>
-                                        </tr>
-                                    ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
-                    </div>
+                    <WorkoutTableSection
+                        key={type}
+                        type={type}
+                        workouts={groupedWorkouts[type]}
+                        isExpanded={expandedSections[type]}
+                        toggleSection={toggleSection}
+                    />
                 ))}
             </div>
 
@@ -120,33 +92,3 @@ const WorkoutPage = () => {
 };
 
 export default WorkoutPage;
-
-/*
-===== WORKOUTPAGE.JSX FOOTER NOTES =====
-
-THIS PAGE SERVES AS THE MAIN DASHBOARD FOR ATHLETES TO TRACK THEIR WORKOUTS.
-
-FEATURES:
-- ALLOWS USERS TO ADD WORKOUTS VIA A MODAL FORM
-- WORKOUTS ARE GROUPED BY ACTIVITY TYPE AND DISPLAYED IN COLLAPSIBLE TABLES
-- DATA IS PERSISTED USING LOCALSTORAGE
-- INCLUDES A "BACK TO HOME" NAVIGATION BUTTON
-- USES TAILWINDCSS FOR STYLING
-- INTEGRATES WITH COMPONENTS: WORKOUTFORMMODAL.JSX
-
-DEPENDENCIES:
-- REACT ICONS (FADUMBBELL)
-- TAILWINDCSS
-- REACT HOOKS (useState, useEffect)
-- MODULAR COMPONENTS FROM /components/Workout
-
-DATA STRUCTURE:
-- EACH WORKOUT ENTRY CAPTURES ACTIVITY TYPE, SPORT, SUBTYPE, DATE, DURATION, MILES, MUSCLE GROUP, RUN TYPE, CONDITIONING TYPE, RECOVERY TYPE, AND NOTES
-
-MODAL STATE:
-- showModal HANDLES THE DISPLAY TOGGLE FOR THE FORM
-
-GROUPED DISPLAY:
-- WORKOUT ENTRIES ARE GROUPED DYNAMICALLY BASED ON ACTIVITY TYPE USING REDUCE
-
-*/
