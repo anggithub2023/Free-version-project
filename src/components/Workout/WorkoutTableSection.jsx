@@ -1,6 +1,7 @@
 import React from 'react';
+import { FaTrash } from 'react-icons/fa';
 
-const WorkoutTableSection = ({ type, workouts, expanded, toggleSection }) => {
+const WorkoutTableSection = ({ type, workouts, expanded, toggleSection, onDelete }) => {
     const getVisibleColumns = () => {
         switch (type) {
             case 'Run':
@@ -51,6 +52,7 @@ const WorkoutTableSection = ({ type, workouts, expanded, toggleSection }) => {
                                     {columnLabels[col]}
                                 </th>
                             ))}
+                            <th className="px-4 py-2">Delete</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -61,6 +63,11 @@ const WorkoutTableSection = ({ type, workouts, expanded, toggleSection }) => {
                                         {entry[col]}
                                     </td>
                                 ))}
+                                <td className="px-4 py-2 text-center">
+                                    <button onClick={() => onDelete(type, idx)}>
+                                        <FaTrash className="text-red-600 hover:text-red-800" />
+                                    </button>
+                                </td>
                             </tr>
                         ))}
                         </tbody>
