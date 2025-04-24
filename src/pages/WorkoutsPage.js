@@ -41,21 +41,21 @@ const WorkoutPage = () => {
                     </h1>
                 </div>
 
-                <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
-                    <div className="flex flex-col items-start">
-                        <FaDumbbell className="text-indigo-600 dark:text-indigo-300 text-3xl mb-1" />
+                <div className="flex justify-between items-center mb-6 flex-wrap sm:flex-nowrap gap-4">
+                    <div className="flex flex-col items-start sm:flex-row sm:items-center sm:gap-2">
+                        <FaDumbbell className="text-indigo-600 dark:text-indigo-300 text-2xl" />
                         <h2 className="text-2xl font-bold">Workout Tracker</h2>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-col sm:flex-row sm:space-x-2 space-y-2 sm:space-y-0 w-full sm:w-auto">
                         <button
                             onClick={() => setShowModal(true)}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow w-full sm:w-auto"
                         >
-                            + Add Workout
+                            Add Workout
                         </button>
                         <button
                             onClick={() => window.location.href = '/'}
-                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow"
+                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow w-full sm:w-auto"
                         >
                             Home
                         </button>
