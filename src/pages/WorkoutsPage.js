@@ -42,22 +42,25 @@ const WorkoutPage = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-6 text-gray-900 dark:text-white">
             <div className="max-w-4xl mx-auto">
-                {/* Header with vertically stacked buttons */}
-                <div className="flex flex-wrap items-start justify-between mb-6 gap-4">
-                    <h2 className="text-2xl font-bold text-indigo-700 dark:text-indigo-300 whitespace-nowrap">
-                        Workout Tracker
-                    </h2>
-                    <div className="flex flex-col space-y-2 items-end">
-                        {/* Desktop Add Button */}
+                {/* Header Section */}
+                <div className="mb-6">
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-2xl font-bold text-indigo-700 dark:text-indigo-300">
+                            Workout Tracker
+                        </h2>
+                        {/* Desktop "Add Workout" button */}
                         <button
                             onClick={() => setShowModal(true)}
-                            className="hidden sm:block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base whitespace-nowrap"
+                            className="hidden sm:inline-block bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base"
                         >
                             Add Workout
                         </button>
+                    </div>
+                    {/* Home button below title */}
+                    <div className="mt-2">
                         <button
                             onClick={() => window.location.href = '/'}
-                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base whitespace-nowrap"
+                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-3 py-1 rounded text-sm"
                         >
                             Home
                         </button>
@@ -86,10 +89,10 @@ const WorkoutPage = () => {
                 ))}
             </div>
 
-            {/* Floating Action Button - Mobile Only */}
+            {/* FAB - Mobile Only */}
             <button
                 onClick={() => setShowModal(true)}
-                className="sm:hidden fixed bottom-6 right-6 z-50 bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg text-3xl flex items-center justify-center transition duration-300 ease-in-out"
+                className="sm:hidden fixed bottom-6 right-6 z-50 bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg text-3xl flex items-center justify-center"
                 aria-label="Add Workout"
             >
                 +
