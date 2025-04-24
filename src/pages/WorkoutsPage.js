@@ -34,28 +34,29 @@ const WorkoutPage = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-6 text-gray-900 dark:text-white">
             <div className="max-w-4xl mx-auto">
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
-                    <h2 className="text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-4 sm:mb-0">
-                        Workout Tracker
-                    </h2>
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 w-full">
-                        <div className="flex flex-row justify-center space-x-2 w-full">
-                            <button
-                                onClick={() => setShowModal(true)}
-                                className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-3 rounded shadow w-1/2 text-sm sm:text-base"
-                            >
-                                Add Workout
-                            </button>
-                            <button
-                                onClick={() => window.location.href = '/'}
-                                className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-5 py-3 rounded shadow w-1/2 text-sm sm:text-base"
-                            >
-                                Home
-                            </button>
-                        </div>
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-2xl font-bold text-indigo-700 dark:text-indigo-300">Workout Tracker</h2>
+                    <div className="flex space-x-2">
+                        <button
+                            onClick={() => setShowModal(true)}
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base"
+                        >
+                            Add Workout
+                        </button>
+                        <button
+                            onClick={() => window.location.href = '/'}
+                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base"
+                        >
+                            Home
+                        </button>
                     </div>
                 </div>
 
+                <div className="mt-8 mb-4">
+                    <h3 className="text-sm font-medium text-indigo-600 dark:text-indigo-300 uppercase tracking-wide">
+                        Fitness Snapshot – Stay on Track!
+                    </h3>
+                </div>
                 <FitnessSnapshot workouts={workouts} />
 
                 {Object.keys(groupedWorkouts).map((type) => (
