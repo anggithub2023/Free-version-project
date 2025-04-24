@@ -12,14 +12,15 @@ const WorkoutPage = () => {
         setWorkouts(saved);
     }, []);
 
-    const handleAddWorkout = (newWorkout) => {
-        const updated = [...workouts, newWorkout];
+    const handleSubmit = (form) => {
+        const updated = [...workouts, form];
         setWorkouts(updated);
         localStorage.setItem('athleteWorkouts', JSON.stringify(updated));
+        setShowModal(false);
     };
 
     const toggleSection = (type) => {
-        setExpandedSections((prev) => ({ ...prev, [type]: !prev[type] }));
+        setExpandedSections(prev => ({ ...prev, [type]: !prev[type] }));
     };
 
     const groupedWorkouts = workouts.reduce((acc, workout) => {
@@ -42,7 +43,7 @@ const WorkoutPage = () => {
                     <h2 className="text-2xl font-bold flex items-center gap-2">
                         <FaDumbbell className="text-indigo-600 dark:text-indigo-300" /> Workout Tracker
                     </h2>
-                    <div className="flex gap-2">
+                    <div className="space-x-2">
                         <button
                             onClick={() => setShowModal(true)}
                             className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow"
@@ -51,28 +52,66 @@ const WorkoutPage = () => {
                         </button>
                         <button
                             onClick={() => window.location.href = '/'}
-                            className="bg-gray-600 hover:bg-gray-700 text-white font-semibold px-4 py-2 rounded shadow"
+                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow"
                         >
                             Home
                         </button>
                     </div>
                 </div>
 
-                {Object.keys(groupedWorkouts).map((type) => (
-                    <WorkoutTableSection
-                        key={type}
-                        type={type}
-                        workouts={groupedWorkouts[type]}
-                        expanded={expandedSections[type]}
-                        onToggle={() => toggleSection(type)}
-                    />
+                {Object.keys(groupedWorkouts).map(type => (
+                    <div key={type} className="mb-4">
+                        <button
+                            className="flex justify-between items-center w-full bg-indigo-100 dark:bg-gray-800 px-4 py-2 font-semibold rounded"
+                            onClick={() => toggleSection(type)}
+                        >
+                            <span>{type}</span>
+                            {expandedSections[type] ? <MdExpandLess /> : <MdExpandMore />}
+                        </button>
+                        {expandedSections[type] && (
+                            <div className="overflow-x-auto mt-2">
+                                <table className="min-w-full table-auto border border-gray-300 dark:border-gray-700">
+                                    <thead>
+                                    <tr className="bg-indigo-200 dark:bg-gray-700">
+                                        <th className="px-4 py-2">Date</th>
+                                        <th className="px-4 py-2">Sport</th>
+                                        <th className="px-4 py-2">Subtype</th>
+                                        <th className="px-4 py-2">Duration</th>
+                                        <th className="px-4 py-2">Miles</th>
+                                        <th className="px-4 py-2">Muscle Group</th>
+                                        <th className="px-4 py-2">Run Type</th>
+                                        <th className="px-4 py-2">Conditioning Type</th>
+                                        <th className="px-4 py-2">Recovery Type</th>
+                                        <th className="px-4 py-2">Notes</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {groupedWorkouts[type].map((entry, idx) => (
+                                        <tr key={idx} className="border-t border-gray-300 dark:border-gray-700">
+                                            <td className="px-4 py-2">{entry.date}</td>
+                                            <td className="px-4 py-2">{entry.sport}</td>
+                                            <td className="px-4 py-2">{entry.subtype}</td>
+                                            <td className="px-4 py-2">{entry.duration}</td>
+                                            <td className="px-4 py-2">{entry.miles}</td>
+                                            <td className="px-4 py-2">{entry.muscleGroup}</td>
+                                            <td className="px-4 py-2">{entry.runType}</td>
+                                            <td className="px-4 py-2">{entry.conditioningType}</td>
+                                            <td className="px-4 py-2">{entry.recoveryType}</td>
+                                            <td className="px-4 py-2">{entry.notes}</td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+                    </div>
                 ))}
             </div>
 
             {showModal && (
                 <WorkoutFormModal
                     onClose={() => setShowModal(false)}
-                    onSubmit={handleAddWorkout}
+                    onSubmit={handleSubmit}
                 />
             )}
         </div>
