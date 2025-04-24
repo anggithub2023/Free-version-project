@@ -1,6 +1,7 @@
+// StatsTable.jsx
 import React from 'react';
 
-function StatsTable({ gameStats, tableRef }) {
+function StatsTable({ gameStats, tableRef, onClear }) {
     const sortedStats = [...gameStats].sort((a, b) => new Date(b.date) - new Date(a.date));
 
     const formatStat = (val, threshold) => {
@@ -14,7 +15,15 @@ function StatsTable({ gameStats, tableRef }) {
 
     return (
         <div className="mt-6 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700">
-            <h3 className="text-2xl font-semibold text-indigo-700 dark:text-indigo-300 text-center mb-4">Game Stats</h3>
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="text-2xl font-semibold text-indigo-700 dark:text-indigo-300">Game Stats</h3>
+                <button
+                    onClick={onClear}
+                    className="text-sm bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
+                >
+                    Clear All Stats
+                </button>
+            </div>
             <div ref={tableRef} className="overflow-x-auto">
                 <table className="w-full table-fixed text-sm text-left border border-gray-200 dark:border-gray-700">
                     <thead className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
