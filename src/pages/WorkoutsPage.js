@@ -34,9 +34,11 @@ const WorkoutPage = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-6 text-gray-900 dark:text-white">
             <div className="max-w-4xl mx-auto">
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-indigo-700 dark:text-indigo-300">Workout Tracker</h2>
-                    <div className="flex space-x-2">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
+                    <h2 className="text-2xl font-bold text-indigo-700 dark:text-indigo-300 flex items-center gap-2">
+                        Workout Tracker
+                    </h2>
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mt-4 sm:mt-0">
                         <button
                             onClick={() => setShowModal(true)}
                             className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base"
@@ -45,20 +47,21 @@ const WorkoutPage = () => {
                         </button>
                         <button
                             onClick={() => window.location.href = '/'}
-                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base"
+                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base mt-2 sm:mt-0"
                         >
                             Home
                         </button>
                     </div>
                 </div>
 
-                <div className="mt-8 mb-4">
-                    <h3 className="text-sm font-medium text-indigo-600 dark:text-indigo-300 uppercase tracking-wide">
-                        Fitness Snapshot – Stay on Track!
-                    </h3>
-                </div>
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                    Fitness Snapshot – Stay on Track!
+                </h3>
                 <FitnessSnapshot workouts={workouts} />
 
+                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 mt-6">
+                    Workout Entries – Review and Reflect
+                </h3>
                 {Object.keys(groupedWorkouts).map((type) => (
                     <WorkoutTableSection
                         key={type}
