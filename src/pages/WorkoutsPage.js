@@ -25,14 +25,9 @@ const WorkoutPage = () => {
         setShowModal(false);
     };
 
-    const handleDelete = (type, index) => {
-        const filtered = workouts.filter((_, idx) => {
-            const matchType = workouts[idx].activityType === type;
-            const matchIndex = workouts
-                .filter(w => w.activityType === type)
-                .indexOf(workouts[idx]) === index;
-            return !(matchType && matchIndex);
-        });
+    // ✅ NEW ID-based deletion logic
+    const handleDelete = (id) => {
+        const filtered = workouts.filter(workout => workout.id !== id);
         setWorkouts(filtered);
     };
 
@@ -85,7 +80,7 @@ const WorkoutPage = () => {
                         workouts={groupedWorkouts[type]}
                         expanded={expandedSections[type]}
                         toggleSection={toggleSection}
-                        onDelete={handleDelete}
+                        onDelete={handleDelete} // ✅ Now passes only ID
                     />
                 ))}
             </div>
