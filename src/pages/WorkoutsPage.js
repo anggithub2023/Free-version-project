@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FaDumbbell } from 'react-icons/fa';
-import WorkoutFormModal from './/src/components/Workout/WorkoutFormModal';
-import WorkoutTableSection from './/src/components/Workout/WorkoutTableSection';
-import FitnessSnapshot from './/src/components/Workout/FitnessSnapshot';
+import WorkoutFormModal from '../components/Workout/WorkoutFormModal';
+import WorkoutTableSection from '../components/Workout/WorkoutTableSection';
+import FitnessSnapshot from '../components/Workout/FitnessSnapshot';
 
 const WorkoutPage = () => {
     const [workouts, setWorkouts] = useState([]);
