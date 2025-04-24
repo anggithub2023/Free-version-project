@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaDumbbell } from 'react-icons/fa';
+import { MdExpandLess, MdExpandMore } from 'react-icons/md';
 import WorkoutFormModal from '../components/Workout/WorkoutFormModal';
 
 const WorkoutPage = () => {
