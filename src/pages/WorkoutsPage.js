@@ -8,15 +8,20 @@ const WorkoutPage = () => {
     const [showModal, setShowModal] = useState(false);
     const [expandedSections, setExpandedSections] = useState({});
 
+    // Load workouts on mount
     useEffect(() => {
         const saved = JSON.parse(localStorage.getItem('athleteWorkouts')) || [];
         setWorkouts(saved);
     }, []);
 
+    // Save workouts on change
+    useEffect(() => {
+        localStorage.setItem('athleteWorkouts', JSON.stringify(workouts));
+    }, [workouts]);
+
     const handleSubmit = (form) => {
         const updated = [...workouts, form];
         setWorkouts(updated);
-        localStorage.setItem('athleteWorkouts', JSON.stringify(updated));
         setShowModal(false);
     };
 
@@ -29,7 +34,6 @@ const WorkoutPage = () => {
             return !(matchType && matchIndex);
         });
         setWorkouts(filtered);
-        localStorage.setItem('athleteWorkouts', JSON.stringify(filtered));
     };
 
     const toggleSection = (type) => {
@@ -97,5 +101,3 @@ const WorkoutPage = () => {
 };
 
 export default WorkoutPage;
-
-// FOOTER NOTES: WORKOUTPAGE.JSX HANDLES PAGE STRUCTURE, STATE MGMT, MODAL & TABLES. DEPENDENCIES: WorkoutFormModal, WorkoutTableSection, FitnessSnapshot
