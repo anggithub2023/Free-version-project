@@ -3,7 +3,9 @@ import React from 'react';
 function StatForm({ newStat, setNewStat, handleAddStat }) {
     return (
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-200 dark:border-gray-700">
-            <h3 className="text-2xl font-semibold text-indigo-700 dark:text-indigo-300 text-center mb-4">Game & Practice Stats Entry</h3>
+            <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-indigo-700 dark:text-indigo-300 text-center mb-4">
+                Game & Practice Stats Entry
+            </h3>
 
             <div className="space-y-3">
                 <input type="date" className="w-full border px-4 py-2 rounded-xl bg-white dark:bg-gray-900" placeholder="Date of Game" value={newStat.date} onChange={e => setNewStat({ ...newStat, date: e.target.value })} />
