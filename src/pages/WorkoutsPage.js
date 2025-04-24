@@ -40,23 +40,18 @@ const WorkoutPage = () => {
     }, {});
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-white to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-6 text-gray-900 dark:text-white">
-            <div className="max-w-4xl mx-auto">
-                {/* Header */}
-                <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-indigo-700 dark:text-indigo-300">
-                        Workout Tracker
-                    </h2>
-                </div>
+        <div style={{ minHeight: '100vh', padding: '24px', background: '#f9fafb', color: '#111' }}>
+            <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#4338ca' }}>
+                    Workout Tracker
+                </h2>
 
-                {/* Fitness Snapshot */}
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                <h3 style={{ marginTop: '24px', fontWeight: '600', color: '#4b5563' }}>
                     Fitness Snapshot – Stay on Track, Achieve Your Goals
                 </h3>
                 <FitnessSnapshot workouts={workouts} />
 
-                {/* Workout Entries */}
-                <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2 mt-6">
+                <h3 style={{ marginTop: '32px', fontWeight: '600', color: '#4b5563' }}>
                     Workout Entries – Review and Reflect
                 </h3>
                 {Object.keys(groupedWorkouts).map((type) => (
@@ -71,23 +66,54 @@ const WorkoutPage = () => {
                 ))}
             </div>
 
-            {/* FAB: Add Workout (Mobile Only) */}
-            <button
+            {/* FAB: Add Workout (Blue, Bottom-Right) */}
+            <div
                 onClick={() => setShowModal(true)}
-                className="sm:hidden fixed bottom-6 right-6 z-50 bg-indigo-600 hover:bg-indigo-700 text-white w-14 h-14 rounded-full shadow-lg text-3xl flex items-center justify-center"
+                style={{
+                    position: 'fixed',
+                    bottom: '20px',
+                    right: '20px',
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '30px',
+                    backgroundColor: '#3b82f6',
+                    color: 'white',
+                    fontSize: '30px',
+                    fontWeight: 'bold',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    zIndex: 1000
+                }}
                 aria-label="Add Workout"
             >
                 +
-            </button>
+            </div>
 
-            {/* FAB: Back/Home (Mobile Only) */}
-            <button
+            {/* FAB: Back/Home (Gray, Bottom-Left) */}
+            <div
                 onClick={() => window.location.href = '/'}
-                className="sm:hidden fixed bottom-6 left-6 z-50 bg-gray-600 hover:bg-gray-700 text-white w-14 h-14 rounded-full shadow-lg text-2xl flex items-center justify-center"
+                style={{
+                    position: 'fixed',
+                    bottom: '20px',
+                    left: '20px',
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '30px',
+                    backgroundColor: '#6b7280',
+                    color: 'white',
+                    fontSize: '26px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                    zIndex: 1000
+                }}
                 aria-label="Back Home"
             >
                 ←
-            </button>
+            </div>
 
             {/* Modal */}
             {showModal && (
