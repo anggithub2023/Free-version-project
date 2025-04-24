@@ -1,9 +1,6 @@
 export const activityTypes = ['Sports', 'Run', 'Weight Lifting', 'Conditioning', 'Recovery'];
 
-export const sportOptions = [
-    'Basketball', 'Soccer', 'Track', 'Volleyball', 'Baseball', 'Lacrosse', 'Ice Hockey',
-    'Football', 'Tennis', 'Swimming', 'Golf', 'Wrestling', 'Softball', 'CrossFit', 'Cycling', 'Rowing'
-];
+export const sportOptions = ['Basketball', 'Soccer', 'Track', 'Volleyball', 'Baseball', 'Lacrosse', 'Ice Hockey', 'Football', 'Tennis', 'Swimming', 'Golf', 'Wrestling', 'Softball', 'CrossFit', 'Cycling', 'Rowing'];
 
 export const sportSubtypes = {
     Basketball: ['Practice', 'Game'],
