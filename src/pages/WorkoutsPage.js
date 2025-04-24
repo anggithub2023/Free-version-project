@@ -29,6 +29,11 @@ const sportSubtypes = {
     Rowing: ['Practice', 'Race']
 };
 
+const runTypes = ['Sprint', 'Jog', 'Long Distance', 'Intervals'];
+const muscleGroups = ['Upper Body', 'Lower Body', 'Full Body', 'Core'];
+const conditioningTypes = ['Agility', 'Speed', 'Endurance', 'Plyometrics'];
+const recoveryTypes = ['Stretching', 'Foam Rolling', 'Ice Bath', 'Massage'];
+
 const WorkoutPage = () => {
     const [workouts, setWorkouts] = useState([]);
     const [form, setForm] = useState({
@@ -166,14 +171,45 @@ const WorkoutPage = () => {
                                 <option value="">Select Activity Type</option>
                                 {activityTypes.map((type, idx) => <option key={idx} value={type}>{type}</option>)}
                             </select>
-                            <select name="sport" value={form.sport} onChange={handleChange} className="w-full mb-2 p-2 border rounded" required>
-                                <option value="">Select Sport</option>
-                                {sportOptions.map((sport, idx) => <option key={idx} value={sport}>{sport}</option>)}
-                            </select>
-                            <select name="subtype" value={form.subtype} onChange={handleChange} className="w-full mb-2 p-2 border rounded">
-                                <option value="">Select Subtype</option>
-                                {(sportSubtypes[form.sport] || []).map((sub, idx) => <option key={idx} value={sub}>{sub}</option>)}
-                            </select>
+                            {form.activityType === 'Sports' && (
+                                <>
+                                    <select name="sport" value={form.sport} onChange={handleChange} className="w-full mb-2 p-2 border rounded" required>
+                                        <option value="">Select Sport</option>
+                                        {sportOptions.map((sport, idx) => <option key={idx} value={sport}>{sport}</option>)}
+                                    </select>
+                                    <select name="subtype" value={form.subtype} onChange={handleChange} className="w-full mb-2 p-2 border rounded">
+                                        <option value="">Select Subtype</option>
+                                        {(sportSubtypes[form.sport] || []).map((sub, idx) => <option key={idx} value={sub}>{sub}</option>)}
+                                    </select>
+                                </>
+                            )}
+                            {form.activityType === 'Run' && (
+                                <>
+                                    <select name="runType" value={form.runType} onChange={handleChange} className="w-full mb-2 p-2 border rounded">
+                                        <option value="">Select Run Type</option>
+                                        {runTypes.map((type, idx) => <option key={idx} value={type}>{type}</option>)}
+                                    </select>
+                                    <input name="miles" value={form.miles} onChange={handleChange} placeholder="Miles" className="w-full mb-2 p-2 border rounded" />
+                                </>
+                            )}
+                            {form.activityType === 'Weight Lifting' && (
+                                <select name="muscleGroup" value={form.muscleGroup} onChange={handleChange} className="w-full mb-2 p-2 border rounded">
+                                    <option value="">Select Muscle Group</option>
+                                    {muscleGroups.map((group, idx) => <option key={idx} value={group}>{group}</option>)}
+                                </select>
+                            )}
+                            {form.activityType === 'Conditioning' && (
+                                <select name="conditioningType" value={form.conditioningType} onChange={handleChange} className="w-full mb-2 p-2 border rounded">
+                                    <option value="">Select Conditioning Type</option>
+                                    {conditioningTypes.map((type, idx) => <option key={idx} value={type}>{type}</option>)}
+                                </select>
+                            )}
+                            {form.activityType === 'Recovery' && (
+                                <select name="recoveryType" value={form.recoveryType} onChange={handleChange} className="w-full mb-2 p-2 border rounded">
+                                    <option value="">Select Recovery Type</option>
+                                    {recoveryTypes.map((type, idx) => <option key={idx} value={type}>{type}</option>)}
+                                </select>
+                            )}
                             <input name="duration" value={form.duration} onChange={handleChange} placeholder="Duration (minutes)" className="w-full mb-2 p-2 border rounded" />
                             <input name="notes" value={form.notes} onChange={handleChange} placeholder="Notes" className="w-full mb-2 p-2 border rounded" />
                             <div className="flex justify-between">
