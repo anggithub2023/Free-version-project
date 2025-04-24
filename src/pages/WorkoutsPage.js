@@ -16,10 +16,8 @@ const WorkoutPage = () => {
     }, []);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setShowTitle(false);
-        }, 2000);
-        return () => clearTimeout(timer);
+        const timeout = setTimeout(() => setShowTitle(false), 2000);
+        return () => clearTimeout(timeout);
     }, []);
 
     const handleSubmit = (form) => {
@@ -51,21 +49,23 @@ const WorkoutPage = () => {
                     </div>
                 )}
 
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 gap-4">
-                    <div className="flex items-center space-x-2">
-                        <FaDumbbell className="text-indigo-600 dark:text-indigo-300 text-2xl" />
-                        <h2 className="text-2xl font-bold">Workout Tracker</h2>
-                    </div>
-                    <div className="flex flex-col sm:flex-row sm:space-x-2 w-full sm:w-auto">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 sm:gap-0">
+                    <h2 className="text-2xl font-bold flex items-start gap-2">
+                        <FaDumbbell className="text-indigo-600 dark:text-indigo-300 mt-1" />
+                        <span className="leading-tight">
+                            Workout<br />Tracker
+                        </span>
+                    </h2>
+                    <div className="flex flex-col sm:flex-row gap-2">
                         <button
                             onClick={() => setShowModal(true)}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow text-sm"
                         >
                             Add Workout
                         </button>
                         <button
                             onClick={() => window.location.href = '/'}
-                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow"
+                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow text-sm"
                         >
                             Home
                         </button>
