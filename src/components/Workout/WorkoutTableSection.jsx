@@ -42,6 +42,7 @@ const WorkoutTableSection = ({ type, workouts, expanded, toggleSection, onDelete
                 <span>{type}</span>
                 <span>{expanded ? '▲' : '▼'}</span>
             </button>
+
             {expanded && (
                 <div className="overflow-x-auto mt-2">
                     <table className="min-w-full table-auto border border-gray-300 dark:border-gray-700">
@@ -56,15 +57,15 @@ const WorkoutTableSection = ({ type, workouts, expanded, toggleSection, onDelete
                         </tr>
                         </thead>
                         <tbody>
-                        {workouts.map((entry, idx) => (
-                            <tr key={idx} className="border-t border-gray-300 dark:border-gray-700">
+                        {workouts.map((entry) => (
+                            <tr key={entry.id} className="border-t border-gray-300 dark:border-gray-700">
                                 {visibleColumns.map((col) => (
                                     <td key={col} className="px-4 py-2">
                                         {entry[col]}
                                     </td>
                                 ))}
                                 <td className="px-4 py-2 text-center">
-                                    <button onClick={() => onDelete(type, idx)}>
+                                    <button onClick={() => onDelete(entry.id)}>
                                         <FaTrash className="text-red-600 hover:text-red-800" />
                                     </button>
                                 </td>
