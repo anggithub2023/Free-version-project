@@ -1,47 +1,64 @@
 import React from 'react';
-import { FaHeartbeat, FaDumbbell, FaSpa } from 'react-icons/fa';
 
 const FitnessSnapshot = ({ workouts }) => {
-    const calculateCategoryScore = (category) => {
-        const count = workouts.filter(w => w.activityType === category).length;
-        return Math.min(100, count * 10);
-    };
+    const totals = workouts.reduce(
+        (acc, curr) => {
+            const duration = parseFloat(curr.duration) || 0;
+            if (curr.activityType === 'Run') acc.cardio += duration;
+            else if (curr.activityType === 'Weight Lifting') acc.strength += duration;
+            else if (curr.activityType === 'Conditioning') acc.conditioning += duration;
+            else if (curr.activityType === 'Recovery') acc.recovery += duration;
+            else acc.other += duration;
+            return acc;
+        },
+        { cardio: 0, strength: 0, conditioning: 0, recovery: 0, other: 0 }
+    );
 
-    const data = [
-        { label: 'Cardio', value: calculateCategoryScore('Run'), icon: <FaHeartbeat className="text-indigo-500" /> },
-        { label: 'Strength', value: calculateCategoryScore('Weight Lifting'), icon: <FaDumbbell className="text-emerald-500" /> },
-        { label: 'Recovery', value: calculateCategoryScore('Recovery'), icon: <FaSpa className="text-sky-500" /> }
+    const total =
+        totals.cardio + totals.strength + totals.conditioning + totals.recovery + totals.other;
+
+    const getPercentage = (val) => (total ? Math.round((val / total) * 100) : 0);
+
+    const stats = [
+        { label: 'Cardio', value: totals.cardio, percent: getPercentage(totals.cardio) },
+        { label: 'Strength', value: totals.strength, percent: getPercentage(totals.strength) },
+        { label: 'Conditioning', value: totals.conditioning, percent: getPercentage(totals.conditioning) },
+        { label: 'Rest', value: totals.recovery, percent: getPercentage(totals.recovery) }
     ];
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-            {data.map(({ label, value, icon }) => (
-                <div
-                    key={label}
-                    className="bg-white dark:bg-gray-900 bg-opacity-70 shadow-lg rounded-xl p-4 flex items-center justify-between"
-                >
-                    <div className="flex flex-col">
-                        <div className="flex items-center gap-2 text-lg font-bold text-gray-800 dark:text-white">
-                            {icon} {label}
-                        </div>
-                        <div className="relative w-full bg-gray-200 dark:bg-gray-700 h-3 rounded-full mt-2">
+        <div className="mb-10">
+            <h3 className="text-xl font-semibold mb-4 text-indigo-700 dark:text-indigo-300 text-center">
+                Fitness Snapshot
+            </h3>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                {stats.map((item, idx) => (
+                    <div
+                        key={idx}
+                        className="bg-indigo-100 dark:bg-gray-800 p-4 rounded-xl shadow flex flex-col items-center"
+                    >
+            <span className="text-md font-semibold text-indigo-800 dark:text-indigo-200">
+              {item.label}
+            </span>
+                        <div className="w-full h-3 bg-gray-300 dark:bg-gray-600 rounded-full mt-2">
                             <div
-                                className={`h-3 rounded-full ${
-                                    label === 'Cardio' ? 'bg-indigo-500' :
-                                        label === 'Strength' ? 'bg-emerald-500' :
-                                            'bg-sky-500'
-                                }`}
-                                style={{ width: `${value}%`, transition: 'width 0.6s ease-in-out' }}
+                                className="h-3 rounded-full"
+                                style={{
+                                    width: `${item.percent}%`,
+                                    backgroundColor: '#6366F1' // Indigo-500
+                                }}
                             ></div>
                         </div>
-                        <span className="text-xs mt-1 text-gray-600 dark:text-gray-300">{value}%</span>
+                        <span className="text-sm text-gray-700 dark:text-gray-300 mt-1">
+              {item.percent}%
+            </span>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
     );
 };
 
 export default FitnessSnapshot;
 
-// NOTES: THIS COMPONENT PROVIDES A SNAPSHOT BAR FOR RUN, WEIGHT LIFTING, AND RECOVERY ACTIVITY TYPES. IT TAKES `workouts` PROP FROM WORKOUTPAGE. THE BARS REFLECT PARTICIPATION LEVELS. COLOR-CODED AND ANIMATED FOR MODERN UX.
+// FOOTER NOTES: FITNESS SNAPSHOT DISPLAYS WORKOUT TYPE RATIOS. USES GRID LAYOUT WITH DARK MODE STYLING. NOW INCLUDES "REST" TILE AND MOBILE-FRIENDLY SQUARE LAYOUT.
