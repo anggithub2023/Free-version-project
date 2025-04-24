@@ -8,10 +8,18 @@ const WorkoutPage = () => {
     const [workouts, setWorkouts] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [expandedSections, setExpandedSections] = useState({});
+    const [showTitle, setShowTitle] = useState(true);
 
     useEffect(() => {
         const saved = JSON.parse(localStorage.getItem('athleteWorkouts')) || [];
         setWorkouts(saved);
+    }, []);
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            if (window.innerWidth < 640) setShowTitle(false);
+        }, 3000);
+        return () => clearTimeout(timeout);
     }, []);
 
     const handleSubmit = (form) => {
@@ -36,17 +44,19 @@ const WorkoutPage = () => {
         <div className="min-h-screen bg-gradient-to-br from-white to-indigo-50 dark:from-gray-900 dark:to-gray-800 p-6 text-gray-900 dark:text-white">
             <div className="max-w-4xl mx-auto">
                 <div className="text-center mb-10">
-                    <h1 className="text-4xl font-extrabold text-indigo-700 dark:text-indigo-300 tracking-tight">
-                        Own Your Grind: Track Every Rep, Every Step
-                    </h1>
+                    {showTitle && (
+                        <h1 className="text-4xl font-extrabold text-indigo-700 dark:text-indigo-300 tracking-tight">
+                            Own Your Grind: Track Every Rep, Every Step
+                        </h1>
+                    )}
                 </div>
 
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 space-y-4 sm:space-y-0">
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                        <FaDumbbell className="text-indigo-600 dark:text-indigo-300 text-2xl sm:mr-2 mx-auto sm:mx-0" />
-                        <h2 className="text-2xl font-bold text-center sm:text-left">Workout Tracker</h2>
+                        <FaDumbbell className="text-indigo-600 dark:text-indigo-300 text-2xl sm:text-3xl" />
+                        <h2 className="text-2xl font-bold">Workout Tracker</h2>
                     </div>
-                    <div className="flex justify-center sm:justify-end space-x-2 mt-4 sm:mt-0">
+                    <div className="flex gap-2 sm:ml-auto">
                         <button
                             onClick={() => setShowModal(true)}
                             className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow"
