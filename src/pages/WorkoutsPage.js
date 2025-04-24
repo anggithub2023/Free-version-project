@@ -22,11 +22,11 @@ const WorkoutPage = () => {
     };
 
     const toggleSection = (type) => {
-        setExpandedSections(prev => ({ ...prev, [type]: !prev[type] }));
+        setExpandedSections((prev) => ({ ...prev, [type]: !prev[type] }));
     };
 
     const groupedWorkouts = workouts.reduce((acc, workout) => {
-        const key = workout.activityType;
+        const key = workout.activityType || 'Other';
         if (!acc[key]) acc[key] = [];
         acc[key].push(workout);
         return acc;
@@ -85,3 +85,5 @@ const WorkoutPage = () => {
 };
 
 export default WorkoutPage;
+
+// FOOTER NOTES: WORKOUTPAGE.JSX HANDLES PAGE STRUCTURE, STATE MGMT, MODAL & TABLES. DEPENDENCIES: WorkoutFormModal, WorkoutTableSection, FitnessSnapshot
