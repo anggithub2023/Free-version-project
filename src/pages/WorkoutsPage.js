@@ -41,23 +41,23 @@ const WorkoutPage = () => {
                     </h1>
                 </div>
 
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6">
-                    <div className="flex flex-col items-center sm:flex-row sm:items-center sm:gap-4">
-                        <FaDumbbell className="text-indigo-600 dark:text-indigo-300 text-4xl" />
-                        <h2 className="text-2xl font-bold text-center sm:text-left">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-6">
+                    <div className="flex flex-col items-center sm:items-start sm:flex-row sm:gap-2">
+                        <FaDumbbell className="text-indigo-600 dark:text-indigo-300 text-4xl mb-1 sm:mb-0" />
+                        <h2 className="text-2xl font-bold text-center sm:text-left leading-tight">
                             Workout<br />Tracker
                         </h2>
                     </div>
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-2 mt-4 sm:mt-0">
+                    <div className="flex flex-col sm:flex-col sm:items-end space-y-2 sm:space-y-2 mt-4 sm:mt-0">
                         <button
                             onClick={() => setShowModal(true)}
-                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2 rounded shadow text-sm sm:text-base"
                         >
                             Add Workout
                         </button>
                         <button
                             onClick={() => window.location.href = '/'}
-                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded shadow text-sm sm:text-base mt-2 sm:mt-0"
+                            className="bg-gray-500 hover:bg-gray-600 text-white font-semibold px-5 py-2 rounded shadow text-sm sm:text-base"
                         >
                             Home
                         </button>
