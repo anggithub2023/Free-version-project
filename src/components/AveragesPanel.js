@@ -48,7 +48,7 @@ function AveragesPanel({ gameStats, history, calculateAverage }) {
 
             {/* Reflection Score History */}
             <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow border border-gray-200 dark:border-gray-700">
-                <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-indigo-700 dark:text-indigo-300 text-center mb-4">Reflection Score History</h3>
+                <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-indigo-700 dark:text-indigo-300 text-center mb-4"> Reflection Score History</h3>
                 <ul className="space-y-2 text-sm text-gray-800 dark:text-gray-100">
                     {sortedHistory.map((entry, idx) => {
                         const score = entry.total;
