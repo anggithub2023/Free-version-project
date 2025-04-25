@@ -1,7 +1,7 @@
 import React, { useReducer, useEffect, useState } from 'react';
 import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
 import SectionBlock from '../components/SectionBlock';
-import SportSelectionModal from '../components/ReflectionModal/SportSelectionModal'; // ✅ Correct import
+import SportSelectionModal from '../components/ReflectionModal/SportSelectionModal';
 import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
 import handleSubmit from '../helpers/handleSubmit';
@@ -10,10 +10,8 @@ function ReflectionPage() {
     const [showModal, setShowModal] = useState(false);
     const [scoreSummary, setScoreSummary] = useState(null);
 
-    // ✅ Read sport from localStorage OR null
-    const [selectedSport, setSelectedSport] = useState(() => {
-        return localStorage.getItem('selectedSport') || null;
-    });
+    // 🛠 FORCE selectedSport to null
+    const [selectedSport, setSelectedSport] = useState(null);
 
     const [answers, dispatch] = useReducer(answersReducer, {}, () => {
         return JSON.parse(localStorage.getItem('processAnswers')) || {};
