@@ -1,7 +1,9 @@
-import React from 'react';
-import { FaMedal } from 'react-icons/fa'; // 🥇 Importing the medal
+import React, { useEffect, useState } from 'react';
+import { FaMedal } from 'react-icons/fa'; // Import the medal icon
 
-function SectionBlock({ title, questions, sectionKey, answers, handleAnswer }) {
+function SectionBlock({ title, questions, sectionKey, answers, handleAnswer, onSectionComplete }) {
+  const [sectionCompleted, setSectionCompleted] = useState(false); // ✅ Track if this section completed once
+
   const getFeedbackText = (value) => {
     switch (value) {
       case 'yes':
@@ -47,6 +49,14 @@ function SectionBlock({ title, questions, sectionKey, answers, handleAnswer }) {
         return 'bg-indigo-500';
     }
   };
+
+  // ✅ When user finishes 5 answers, call onSectionComplete ONCE
+  useEffect(() => {
+    if (!sectionCompleted && answeredCount >= 5) {
+      onSectionComplete?.(); // Optional chaining in case not passed
+      setSectionCompleted(true);
+    }
+  }, [answeredCount, sectionCompleted, onSectionComplete]);
 
   return (
       <div className="mb-16 relative">
