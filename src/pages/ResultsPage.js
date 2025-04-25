@@ -1,17 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function ResultsPage() {
     const [latestScore, setLatestScore] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const location = useLocation();
+    const passedScore = location.state?.total;
 
     useEffect(() => {
         const history = JSON.parse(localStorage.getItem('processHistory')) || [];
         const last = history.length ? history[history.length - 1] : null;
-        if (last) setLatestScore(last);
+
+        if (passedScore !== undefined) {
+            const newEntry = {
+                timestamp: Date.now(),
+                total: passedScore,
+                offense: 0,
+                defense: 0,
+                teamIdentity: 0
+            };
+
+            // Save to localStorage
+            localStorage.setItem('processHistory', JSON.stringify([...history, newEntry]));
+            setLatestScore(newEntry);
+        } else if (last) {
+            setLatestScore(last);
+        }
+
         setLoading(false);
-    }, []);
+    }, [passedScore]);
 
     const exportToCSV = () => {
         const history = JSON.parse(localStorage.getItem('processHistory')) || [];
