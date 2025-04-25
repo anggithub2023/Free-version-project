@@ -4,11 +4,10 @@ import { useNavigate } from 'react-router-dom';
 function ReflectionModal({ total }) {
     const navigate = useNavigate();
 
-    const handleNavigate = (path) => {
-        navigate(path);
+    const handleNavigate = (path, data = {}) => {
+        navigate(path, { state: data });
     };
 
-    // Parse and strictly clamp total between 0-100
     const parsedTotal = Math.round(parseFloat(total));
     const safeTotal = Math.min(100, Math.max(0, parsedTotal));
 
@@ -39,6 +38,13 @@ function ReflectionModal({ total }) {
                         className="bg-green-600 hover:bg-green-500 text-white font-semibold py-2 px-4 rounded-full shadow"
                     >
                         📊 Track Game Stats
+                    </button>
+
+                    <button
+                        onClick={() => handleNavigate('/results', { total: safeTotal })}
+                        className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-full shadow"
+                    >
+                        🏆 See Reflection Results
                     </button>
 
                     <button
