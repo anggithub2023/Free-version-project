@@ -164,6 +164,38 @@ const QUESTIONS = {
             "Did I encourage teammates in tough moments?"
         ]
     },
+    baseball: {
+        offense: [
+            "Did I make solid contact at the plate?",
+            "Did I advance runners when possible?",
+            "Did I have quality at-bats regardless of outcome?",
+            "Did I communicate with base coaches and teammates?",
+            "Did I use good baserunning instincts?",
+            "Did I stay patient and disciplined at the plate?",
+            "Did I execute bunts or situational hitting when called upon?",
+            "Did I stay aggressive but smart on the bases?"
+        ],
+        defense: [
+            "Did I make routine plays on defense?",
+            "Did I back up throws and plays when needed?",
+            "Did I stay focused every pitch?",
+            "Did I communicate with teammates in the field?",
+            "Did I support the pitcher with strong defense?",
+            "Did I keep throws accurate and quick?",
+            "Did I adjust my positioning based on the hitter and situation?",
+            "Did I anticipate plays instead of reacting late?"
+        ],
+        teamIdentity: [
+            "Did I encourage teammates after plays?",
+            "Did I show hustle on and off the field?",
+            "Did I stay mentally locked in between innings?",
+            "Did I maintain a positive attitude regardless of my stats?",
+            "Did I act as a leader through actions and words?",
+            "Did I respect umpires, coaches, and opponents at all times?",
+            "Did I lift teammates up after mistakes?",
+            "Did I show appreciation for teammates' efforts and successes?"
+        ]
+    },
 
     // 🏃 INDIVIDUAL SPORTS: Focus / Preparation / Execution
     golf: {
