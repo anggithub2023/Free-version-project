@@ -37,7 +37,7 @@ function SectionBlock({ title, questions, sectionKey, answers, handleAnswer }) {
   const getSectionColor = (section) => {
     switch (section) {
       case 'offense':
-        return 'bg-teal-500'; // 🟢 switched from orange to teal!
+        return 'bg-teal-500';
       case 'defense':
         return 'bg-blue-500';
       case 'teamIdentity':
@@ -49,7 +49,6 @@ function SectionBlock({ title, questions, sectionKey, answers, handleAnswer }) {
 
   return (
       <div className="mb-16 relative">
-        {/* Sticky colored header */}
         <div className={`sticky top-16 z-10 ${getSectionColor(sectionKey)} text-white py-3 px-4 rounded-b-xl shadow-md`}>
           <div className="flex justify-between items-center">
             <h2 className="text-lg sm:text-xl font-bold tracking-wide uppercase">{title}</h2>
@@ -57,8 +56,7 @@ function SectionBlock({ title, questions, sectionKey, answers, handleAnswer }) {
             {answeredCount}/{totalQuestions}
           </span>
           </div>
-          <div className="relative w-full h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full mt-2 overflow-hidden">
-            {/* Glow pulse when section completed (5/5) */}
+          <div className="relative w-full h-1.5 bg-gray-400 dark:bg-gray-600 rounded-full mt-2 overflow-hidden">
             {answeredCount >= 5 && (
                 <div className="absolute inset-0 animate-pulse bg-green-400 opacity-20 rounded-full"></div>
             )}
@@ -69,7 +67,6 @@ function SectionBlock({ title, questions, sectionKey, answers, handleAnswer }) {
           </div>
         </div>
 
-        {/* Questions */}
         <div className="space-y-4 mt-6">
           {questions.map((q, idx) => {
             const key = `${sectionKey}-${idx}`;
