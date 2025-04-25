@@ -8,21 +8,22 @@ function ReflectionModal({ total }) {
         navigate(path);
     };
 
-    // Parse and format total score safely
+    // Parse and strictly clamp total between 0-100
     const parsedTotal = Math.round(parseFloat(total));
+    const safeTotal = Math.min(100, Math.max(0, parsedTotal));
 
     return (
         <div
             className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-            onClick={() => handleNavigate('/')} // Close on background click
+            onClick={() => handleNavigate('/')}
         >
             <div
                 className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-6 rounded-lg shadow-lg max-w-sm w-full text-center animate-scale-in"
-                onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+                onClick={(e) => e.stopPropagation()}
             >
                 <h2 className="text-2xl font-bold mb-4">🔥 Great Work Reflecting! 🔥</h2>
                 <p className="text-lg font-semibold mb-2">
-                    Total Score: {isNaN(parsedTotal) ? "N/A" : `${parsedTotal}%`}
+                    Total Score: {isNaN(safeTotal) ? "N/A" : `${safeTotal}%`}
                 </p>
 
                 <div className="my-4 flex flex-col space-y-3">
