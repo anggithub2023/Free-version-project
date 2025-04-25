@@ -6,6 +6,7 @@ import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
 import handleSubmit from '../helpers/handleSubmit';
 
+// 🎯 Mapping of sports to emojis
 const sportEmojis = {
     basketball: '🏀',
     soccer: '⚽',
@@ -21,7 +22,6 @@ function ReflectionPage() {
     const [showModal, setShowModal] = useState(true);
     const [selectedSport, setSelectedSport] = useState(null);
     const [scoreSummary, setScoreSummary] = useState(null);
-    const [showChangeSportFAB, setShowChangeSportFAB] = useState(true);
 
     const [answers, dispatch] = useReducer(answersReducer, {}, () => {
         return {};
@@ -50,42 +50,33 @@ function ReflectionPage() {
         setSelectedSport(null);
     };
 
-    // 🛠 Scroll Listener to hide/reveal Change Sport FAB
-    useEffect(() => {
-        let lastScrollY = window.scrollY;
-
-        const handleScroll = () => {
-            const currentScrollY = window.scrollY;
-
-            if (currentScrollY > lastScrollY) {
-                // Scrolling down
-                setShowChangeSportFAB(false);
-            } else {
-                // Scrolling up
-                setShowChangeSportFAB(true);
-            }
-            lastScrollY = currentScrollY;
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-slate-100 dark:from-gray-900 dark:to-gray-800 relative">
             <div className="max-w-xl mx-auto p-4">
 
+                {/* 🛠 Sport selection modal */}
                 {showModal && (
                     <SportSelectionModal onSelect={handleSelectSport} />
                 )}
 
+                {/* 🛠 Main content */}
                 {!showModal && (
                     <>
-                        {/* Title Section */}
-                        <div className="flex items-center justify-between mb-6">
-                            <h1 className="text-lg sm:text-xl md:text-2xl font-extrabold text-gray-800 dark:text-white tracking-wide uppercase flex items-center gap-2">
+                        {/* Title with Dynamic FAB */}
+                        <div className="flex items-center justify-center mb-6 relative">
+                            <h1 className="text-lg sm:text-xl md:text-2xl font-extrabold text-gray-800 dark:text-white tracking-wide uppercase flex items-center gap-2 text-center">
                                 <span className="text-2xl">{sportEmojis[selectedSport]}</span>
                                 Focus. Reflect. Dominate.
+                                {/* Inline dynamic FAB */}
+                                {selectedSport && (
+                                    <button
+                                        onClick={handleResetSport}
+                                        className="ml-2 p-2 rounded-full bg-indigo-500 hover:bg-indigo-400 text-white text-lg shadow-md transition-all"
+                                        title="Change Sport"
+                                    >
+                                        {sportEmojis[selectedSport]}
+                                    </button>
+                                )}
                             </h1>
                         </div>
 
@@ -117,10 +108,10 @@ function ReflectionPage() {
                     </>
                 )}
 
-                {/* Floating Action Buttons */}
+                {/* 🛠 Floating Action Buttons */}
                 {!showModal && (
                     <div className="fixed bottom-6 right-6 flex flex-col items-center gap-4">
-                        {/* Submit FAB */}
+                        {/* Submit Reflection FAB */}
                         <button
                             onClick={() => handleSubmit(answers, setScoreSummary, setShowModal)}
                             className="bg-indigo-600 hover:bg-indigo-500 text-white p-4 rounded-full shadow-lg"
@@ -133,25 +124,14 @@ function ReflectionPage() {
                         <button
                             onClick={() => window.location.href = '/'}
                             className="bg-green-600 hover:bg-green-500 text-white p-4 rounded-full shadow-lg"
-                            title="Home"
+                            title="Back Home"
                         >
                             🏠
-                        </button>
-
-                        {/* Change Sport FAB */}
-                        <button
-                            onClick={handleResetSport}
-                            className={`bg-red-500 hover:bg-red-400 text-white p-4 rounded-full shadow-lg transition-all duration-300 ${
-                                showChangeSportFAB ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                            }`}
-                            title="Change Sport"
-                        >
-                            🔄
                         </button>
                     </div>
                 )}
 
-                {/* Score Modal after submitting */}
+                {/* 🛠 Score modal after reflection submit */}
                 {scoreSummary && (
                     <ReflectionModal
                         total={scoreSummary.total}
