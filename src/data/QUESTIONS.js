@@ -200,6 +200,16 @@ const QUESTIONS = {
     },
 
     trackCrossCountry: {
+        focus: [
+            "Did I approach the race with a positive mindset?",
+            "Did I visualize my race strategy before starting?",
+            "Did I stay mentally locked in despite distractions?",
+            "Did I stay confident and trust my training?",
+            "Did I set realistic but challenging goals for the race?",
+            "Did I control pre-race nerves effectively?",
+            "Did I stay focused through each lap or mile?",
+            "Did I maintain a strong mental attitude during the toughest parts?"
+        ],
         preparation: [
             "Did I warm up properly?",
             "Did I fuel and hydrate effectively?",
@@ -209,16 +219,6 @@ const QUESTIONS = {
             "Did I shake off nerves or distractions?",
             "Did I stretch and activate properly?",
             "Did I start the race with the right mindset?"
-        ],
-        effort: [
-            "Did I give my best effort from start to finish?",
-            "Did I push through pain or fatigue?",
-            "Did I stay mentally strong when it got hard?",
-            "Did I challenge myself when it mattered?",
-            "Did I maintain pace even when tired?",
-            "Did I fight for position?",
-            "Did I close strong in the final stretch?",
-            "Did I walk away knowing I left it all out there?"
         ],
         execution: [
             "Did I race with smart pacing?",
