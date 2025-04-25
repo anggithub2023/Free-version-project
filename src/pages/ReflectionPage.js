@@ -10,12 +10,13 @@ function ReflectionPage() {
     const [showModal, setShowModal] = useState(false);
     const [scoreSummary, setScoreSummary] = useState(null);
 
-    // 🛠 SAFELY load selectedSport from localStorage
+    // 🛠 Load selectedSport safely
     const [selectedSport, setSelectedSport] = useState(() => {
         const rawSport = localStorage.getItem('selectedSport');
         return rawSport && rawSport !== 'null' && rawSport !== '' ? rawSport : null;
     });
 
+    // 🛠 Load saved answers if any
     const [answers, dispatch] = useReducer(answersReducer, {}, () => {
         return JSON.parse(localStorage.getItem('processAnswers')) || {};
     });
@@ -34,7 +35,7 @@ function ReflectionPage() {
         setSelectedSport(null);
     };
 
-    // ✅ BEFORE rendering anything else — if no sport, open sport selector
+    // ✅ IF no selectedSport, show SportSelectionModal
     if (!selectedSport) {
         return (
             <SportSelectionModal onSelect={(sport) => setSelectedSport(sport)} />
@@ -44,6 +45,7 @@ function ReflectionPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-slate-100 dark:from-gray-900 dark:to-gray-800">
             <div className="max-w-xl mx-auto p-4">
+                {/* Title and reset */}
                 <div className="flex justify-between items-center mb-6">
                     <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-800 dark:text-white tracking-wide uppercase">
                         Focus. Reflect. Dominate.
@@ -56,6 +58,7 @@ function ReflectionPage() {
                     </button>
                 </div>
 
+                {/* Sections */}
                 <SectionBlock
                     title={<>Offense <span className="text-sm text-gray-500">(5 required)</span></>}
                     questions={QUESTIONS[selectedSport]?.offense || []}
@@ -83,6 +86,7 @@ function ReflectionPage() {
                     bgClass="from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-800 bg-opacity-90 backdrop-blur-md shadow-lg rounded-xl p-4"
                 />
 
+                {/* Buttons */}
                 <div className="mt-6 flex justify-between gap-4">
                     <button
                         onClick={() => handleSubmit(answers, setScoreSummary, setShowModal)}
@@ -98,6 +102,7 @@ function ReflectionPage() {
                     </button>
                 </div>
 
+                {/* Reflection result modal */}
                 {showModal && scoreSummary && (
                     <ReflectionModal
                         total={scoreSummary.total}
