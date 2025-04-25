@@ -53,7 +53,7 @@ const WorkoutPage = () => {
                         </h2>
                     </div>
 
-                    {/* Buttons (Desktop Only) */}
+                    {/* Desktop Buttons */}
                     <div className="hidden sm:flex gap-3">
                         <button
                             onClick={() => window.location.href = '/'}
@@ -86,22 +86,24 @@ const WorkoutPage = () => {
                 ))}
             </div>
 
-            {/* FAB: Add Workout (Mobile Only) */}
+            {/* Labeled FAB: Add Workout (Mobile Only) */}
             <button
                 onClick={() => setShowModal(true)}
-                className="sm:hidden fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-blue-600 text-white text-3xl flex items-center justify-center shadow-lg hover:bg-blue-700"
+                className="sm:hidden fixed bottom-6 right-6 z-50 flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-full shadow-lg text-base font-semibold transition-transform duration-300 ease-in-out hover:scale-105"
                 aria-label="Add Workout"
             >
-                +
+                <span className="text-2xl">＋</span>
+                <span>Add Workout</span>
             </button>
 
-            {/* FAB: Back/Home (Mobile Only) */}
+            {/* Labeled FAB: Back/Home (Mobile Only) */}
             <button
                 onClick={() => window.location.href = '/'}
-                className="sm:hidden fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-gray-600 text-white text-2xl flex items-center justify-center shadow-lg hover:bg-gray-700"
+                className="sm:hidden fixed bottom-6 left-6 z-50 flex items-center gap-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-3 rounded-full shadow-lg text-base font-semibold transition-transform duration-300 ease-in-out hover:scale-105"
                 aria-label="Back"
             >
-                ←
+                <span className="text-2xl">←</span>
+                <span>Back</span>
             </button>
 
             {/* Modal */}
