@@ -19,7 +19,7 @@ const sportEmojis = {
     golf: '🏌️',
 };
 
-const teamSports = ['basketball', 'soccer', 'football', 'lacrosse', 'iceHockey'];
+const teamSports = ['basketball', 'soccer', 'football', 'lacrosse', 'iceHockey', 'baseball'];
 const individualSports = ['golf', 'trackCrossCountry'];
 
 function ReflectionPage() {
