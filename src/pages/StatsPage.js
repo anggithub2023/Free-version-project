@@ -1,117 +1,58 @@
-// StatsPage.js
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import DownloadButton from '../components/DownloadButton';
+import React, { useState, useEffect } from 'react';
 import StatForm from '../components/StatForm';
 import StatsTable from '../components/StatsTable';
-import AveragesPanel from '../components/AveragesPanel';
+import DownloadButton from '../components/DownloadButton';
 import ConfirmModal from '../components/ConfirmModal';
 
 function StatsPage() {
     const [gameStats, setGameStats] = useState([]);
-    const [newStat, setNewStat] = useState({
-        date: '', opponent: '', points: '', assists: '', rebounds: '', steals: '',
-        turnovers: '', minutes: '', freeThrows: ''
-    });
-    const [showConfirm, setShowConfirm] = useState(false);
-    const [showResetConfirm, setShowResetConfirm] = useState(false);
-    const [hasScrolled, setHasScrolled] = useState(false);
-    const tableRef = useRef(null);
-    const navigate = useNavigate();
-
-    const defaultStat = {
-        date: '', opponent: '', points: '', assists: '', rebounds: '', steals: '',
-        turnovers: '', minutes: '', freeThrows: ''
-    };
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
-        const storedStats = JSON.parse(localStorage.getItem("playerStats")) || [];
-        setGameStats(storedStats);
-
-        const draft = JSON.parse(localStorage.getItem("newStatDraft"));
-        if (draft) setNewStat(draft);
+        const savedStats = JSON.parse(localStorage.getItem('gameStats')) || [];
+        setGameStats(savedStats);
     }, []);
 
-    useEffect(() => {
-        localStorage.setItem("newStatDraft", JSON.stringify(newStat));
-    }, [newStat]);
-
-    useEffect(() => {
-        if (gameStats.length > 0 && !hasScrolled) {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            setHasScrolled(true);
-        }
-    }, [gameStats.length, hasScrolled]);
-
-    const confirmAddStat = () => {
+    const handleAddStat = (newStat) => {
         const updatedStats = [...gameStats, newStat];
         setGameStats(updatedStats);
-        setNewStat(defaultStat);
-        localStorage.removeItem("newStatDraft");
-        localStorage.setItem("playerStats", JSON.stringify(updatedStats));
-        setShowConfirm(false);
+        localStorage.setItem('gameStats', JSON.stringify(updatedStats));
     };
 
-    const confirmResetStats = () => {
+    const handleClearStats = () => {
         setGameStats([]);
-        localStorage.removeItem("playerStats");
-        setShowResetConfirm(false);
+        localStorage.removeItem('gameStats');
     };
-
-    const calculateAverage = (key) => {
-        const values = gameStats.map(gs => parseFloat(gs[key])).filter(n => !isNaN(n));
-        if (!values.length) return 0;
-        const total = values.reduce((sum, val) => sum + val, 0);
-        return +(total / values.length).toFixed(1);
-    };
-
-    const history = JSON.parse(localStorage.getItem("processHistory")) || [];
 
     return (
-        <div className="max-w-xl mx-auto text-left p-4">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-indigo-700 dark:text-indigo-200 mb-6 tracking-tight text-center">
-                Track greatness. Start logging your stats.
-            </h2>
+        <div className="max-w-5xl mx-auto px-4 py-8">
+            <h1 className="text-3xl font-bold text-center mb-6">📈 Game Stats Tracker</h1>
 
-            <StatForm newStat={newStat} setNewStat={setNewStat} handleAddStat={() => setShowConfirm(true)} />
-
-            {gameStats.length > 0 && (
-                <div className="mt-6">
-                    <StatsTable gameStats={gameStats} tableRef={tableRef} onClear={() => setShowResetConfirm(true)} />
-                </div>
-            )}
-
-            <AveragesPanel gameStats={gameStats} history={history} calculateAverage={calculateAverage} />
-
-            <div className="mt-6 flex justify-between gap-4">
-                <button
-                    onClick={() => navigate('/')}
-                    className="w-1/2 bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600 text-sm"
-                >
-                    Back Home
-                </button>
-                <div className="w-1/2">
-                    <DownloadButton
-                        gameStats={gameStats}
-                        history={history}
-                        calculateAverage={calculateAverage}
-                    />
-                </div>
+            <div className="mb-8">
+                <StatForm onAddStat={handleAddStat} />
             </div>
 
-            <ConfirmModal
-                open={showConfirm}
-                message="Lock in this game performance and reset the form?"
-                onConfirm={confirmAddStat}
-                onCancel={() => setShowConfirm(false)}
-            />
+            <div className="mb-8">
+                <StatsTable stats={gameStats} />
+            </div>
 
-            <ConfirmModal
-                open={showResetConfirm}
-                message="Are you sure you want to clear all game stats? This cannot be undone."
-                onConfirm={confirmResetStats}
-                onCancel={() => setShowResetConfirm(false)}
-            />
+            <div className="flex justify-center space-x-4">
+                <DownloadButton stats={gameStats} />
+                <button
+                    onClick={() => setShowModal(true)}
+                    className="bg-red-600 hover:bg-red-500 text-white px-6 py-3 rounded-full shadow"
+                >
+                    Clear Stats
+                </button>
+            </div>
+
+            {showModal && (
+                <ConfirmModal
+                    message="Are you sure you want to clear all game stats?"
+                    onConfirm={handleClearStats}
+                    onCancel={() => setShowModal(false)}
+                />
+            )}
         </div>
     );
 }
