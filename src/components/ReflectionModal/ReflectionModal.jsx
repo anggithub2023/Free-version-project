@@ -41,13 +41,6 @@ function ReflectionModal({ total }) {
                     </button>
 
                     <button
-                        onClick={() => handleNavigate('/results', { total: safeTotal })}
-                        className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-full shadow"
-                    >
-                        🏆 See Reflection Results
-                    </button>
-
-                    <button
                         onClick={() => handleNavigate('/')}
                         className="bg-gray-500 hover:bg-gray-400 text-white font-semibold py-2 px-4 rounded-full shadow"
                     >
