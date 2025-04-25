@@ -105,7 +105,7 @@ function HomePage() {
                                 {section.icon}
                                 <h3 className={`text-xl font-semibold ${section.color}`}>{section.label}</h3>
                             </div>
-                            <p className="text-gray-600 dark:text-gray-300 text-sm">
+                            <p className="text-gray-600 dark:text-gray-300 text-sm transition-all duration-300 ease-in-out group-hover:font-semibold group-hover:text-base">
                                 {section.description}
                             </p>
                         </button>
