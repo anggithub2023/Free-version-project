@@ -16,8 +16,8 @@ function SportSelectionModal({ onSelect }) {
 
     const handleStart = () => {
         if (selectedSport) {
-            localStorage.setItem('selectedSport', selectedSport);
-            onSelect(selectedSport);
+            localStorage.setItem('selectedSport', selectedSport); // ✅ Save to localStorage
+            onSelect(selectedSport); // ✅ Tell parent ReflectionPage to set sport
         }
     };
 
