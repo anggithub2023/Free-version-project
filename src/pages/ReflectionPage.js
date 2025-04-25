@@ -5,6 +5,8 @@ import SportSelectionModal from '../components/ReflectionModal/SportSelectionMod
 import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
 import handleSubmit from '../helpers/handleSubmit';
+import { MdOutlineSend } from 'react-icons/md';
+import { AiOutlineHome } from 'react-icons/ai';
 
 // 🎯 Mapping of sports to emojis
 const sportEmojis = {
@@ -117,7 +119,7 @@ function ReflectionPage() {
                             className="bg-indigo-600 hover:bg-indigo-500 text-white p-4 rounded-full shadow-lg"
                             title="Submit Reflection"
                         >
-                            📝
+                            <MdOutlineSend size={24} />
                         </button>
 
                         {/* Home FAB */}
@@ -126,7 +128,7 @@ function ReflectionPage() {
                             className="bg-green-600 hover:bg-green-500 text-white p-4 rounded-full shadow-lg"
                             title="Back Home"
                         >
-                            🏠
+                            <AiOutlineHome size={24} />
                         </button>
                     </div>
                 )}
