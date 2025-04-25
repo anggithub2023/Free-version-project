@@ -40,10 +40,30 @@ const WorkoutPage = () => {
     }, {});
 
     return (
-        <div style={{ minHeight: '100vh', padding: '20px', backgroundColor: '#f3f4f6' }}>
-            <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <div className="min-h-screen bg-gray-100 p-6 text-gray-900">
+            <div className="max-w-4xl mx-auto">
+                {/* Header buttons for desktop */}
+                <div className="flex justify-between items-center mb-6">
+                    <div className="hidden sm:inline-flex gap-3">
+                        <button
+                            onClick={() => window.location.href = '/'}
+                            className="bg-gray-600 text-white px-4 py-2 rounded shadow hover:bg-gray-700 text-sm"
+                        >
+                            ← Back
+                        </button>
+                        <button
+                            onClick={() => setShowModal(true)}
+                            className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 text-sm"
+                        >
+                            + Add Workout
+                        </button>
+                    </div>
+                </div>
+
+                {/* Fitness Snapshot */}
                 <FitnessSnapshot workouts={workouts} />
 
+                {/* Workout Entries */}
                 {Object.keys(groupedWorkouts).map((type) => (
                     <WorkoutTableSection
                         key={type}
@@ -56,29 +76,24 @@ const WorkoutPage = () => {
                 ))}
             </div>
 
-            {/* Guaranteed Floating Add Workout FAB */}
+            {/* FABs for mobile only */}
             <button
                 onClick={() => setShowModal(true)}
-                style={{
-                    position: 'fixed',
-                    bottom: '20px',
-                    right: '20px',
-                    width: '60px',
-                    height: '60px',
-                    borderRadius: '50%',
-                    backgroundColor: '#2563eb',
-                    color: 'white',
-                    fontSize: '32px',
-                    border: 'none',
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                    zIndex: 9999
-                }}
+                className="sm:hidden fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-blue-600 text-white text-3xl flex items-center justify-center shadow-lg hover:bg-blue-700"
                 aria-label="Add Workout"
             >
                 +
             </button>
 
+            <button
+                onClick={() => window.location.href = '/'}
+                className="sm:hidden fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-gray-600 text-white text-2xl flex items-center justify-center shadow-lg hover:bg-gray-700"
+                aria-label="Back"
+            >
+                ←
+            </button>
+
+            {/* Modal */}
             {showModal && (
                 <WorkoutFormModal
                     onClose={() => setShowModal(false)}
