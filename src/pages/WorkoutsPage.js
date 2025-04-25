@@ -3,6 +3,7 @@ import { FaDumbbell } from 'react-icons/fa';
 import WorkoutFormModal from '../components/Workout/WorkoutFormModal';
 import WorkoutTableSection from '../components/Workout/WorkoutTableSection';
 import FitnessSnapshot from '../components/Workout/FitnessSnapshot';
+import DownloadButton from '../components/Workout/DownloadButton';
 
 const WorkoutPage = () => {
     const [workouts, setWorkouts] = useState([]);
@@ -84,6 +85,11 @@ const WorkoutPage = () => {
                         onDelete={handleDelete}
                     />
                 ))}
+                {workouts.length > 0 && (
+                    <div className="mt-8 flex justify-center sm:justify-start">
+                        <DownloadButton workouts={workouts} />
+                    </div>
+                )}
             </div>
 
             {/* Labeled FAB: Add Workout (Mobile Only) */}
