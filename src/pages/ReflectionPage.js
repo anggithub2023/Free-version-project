@@ -1,131 +1,98 @@
 import React, { useReducer, useEffect, useState } from 'react';
-import ReflectionModal from '../components/ReflectionModal';
+import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
 import SectionBlock from '../components/SectionBlock';
-
-import QUESTIONS from '../data/basketball/questions';
+import SportSelectionModal from '../components/ReflectionModal/SportSelectionModal'; // ✅ Import SportSelectionModal
+import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
 import handleSubmit from '../helpers/handleSubmit';
 
 function ReflectionPage() {
     const [showModal, setShowModal] = useState(false);
     const [scoreSummary, setScoreSummary] = useState(null);
-    const [hideHeader, setHideHeader] = useState(false);
+    const [selectedSport, setSelectedSport] = useState(() => {
+        return localStorage.getItem('selectedSport') || null;
+    });
 
-    // 🏆 LocalStorage medal + trophy tracking
-    const [medals, setMedals] = useState(() => parseInt(localStorage.getItem('medals')) || 0);
-    const [trophies, setTrophies] = useState(() => parseInt(localStorage.getItem('trophies')) || 0);
-
-    const [answers, dispatch] = useReducer(
-        answersReducer,
-        {},
-        () => JSON.parse(localStorage.getItem('processAnswers')) || {}
-    );
+    const [answers, dispatch] = useReducer(answersReducer, {}, () => {
+        return JSON.parse(localStorage.getItem('processAnswers')) || {};
+    });
 
     useEffect(() => {
         localStorage.setItem('processAnswers', JSON.stringify(answers));
     }, [answers]);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            if (window.scrollY > 50) {
-                setHideHeader(true);
-            }
-        };
-
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
 
     const handleAnswer = (section, idx, value) => {
         const key = `${section}-${idx}`;
         dispatch({ type: 'SET_ANSWER', key, value });
     };
 
-    // 🥇 Function to call when a section is completed
-    const handleSectionComplete = () => {
-        setMedals((prev) => {
-            const updated = prev + 1;
-            if (updated >= 10) {
-                setTrophies((t) => {
-                    localStorage.setItem('trophies', t + 1);
-                    return t + 1;
-                });
-                localStorage.setItem('medals', updated - 10);
-                return updated - 10;
-            }
-            localStorage.setItem('medals', updated);
-            return updated;
-        });
-    };
+    if (!selectedSport) {
+        return (
+            <SportSelectionModal
+                onSelect={(sport) => setSelectedSport(sport)}
+            />
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-slate-100 dark:from-gray-900 dark:to-gray-800">
-            <header className={`sticky top-0 z-40 w-full bg-gradient-to-r from-indigo-500 to-indigo-700 dark:from-indigo-700 dark:to-indigo-900 bg-opacity-90 backdrop-blur-md shadow-md py-6 px-4 sm:px-6 transition-transform duration-300 ${hideHeader ? '-translate-y-full' : 'translate-y-0'}`}>
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-white tracking-wide uppercase">
+            <div className="max-w-xl mx-auto p-4">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-center text-gray-800 tracking-wide uppercase mb-8">
                     Focus. Reflect. Dominate.
                 </h1>
 
-                {/* 🥇 Display Medals and Trophies */}
-                <div className="flex justify-center gap-6 mt-2 text-white text-sm">
-                    <span>🎖️ Medals: {medals}</span>
-                    <span>🏆 Trophies: {trophies}</span>
-                </div>
-            </header>
-
-            <main className="max-w-3xl mx-auto p-4 sm:p-6 space-y-12">
                 <SectionBlock
-                    title={<>Offense <span className="text-sm text-gray-100">(5 required)</span></>}
-                    questions={QUESTIONS.offense}
+                    title={<>Offense <span className="text-sm text-gray-500">(5 required)</span></>}
+                    questions={QUESTIONS[selectedSport]?.offense || []}
                     sectionKey="offense"
                     answers={answers}
                     handleAnswer={handleAnswer}
-                    onSectionComplete={handleSectionComplete} // ✅ NEW
+                    bgClass="from-teal-50 to-teal-100 dark:from-teal-900 dark:to-teal-800 bg-opacity-90 backdrop-blur-md shadow-lg rounded-xl p-4"
                 />
 
                 <SectionBlock
-                    title={<>Defense <span className="text-sm text-gray-100">(5 required)</span></>}
-                    questions={QUESTIONS.defense}
+                    title={<>Defense <span className="text-sm text-gray-500">(5 required)</span></>}
+                    questions={QUESTIONS[selectedSport]?.defense || []}
                     sectionKey="defense"
                     answers={answers}
                     handleAnswer={handleAnswer}
-                    onSectionComplete={handleSectionComplete} // ✅ NEW
+                    bgClass="from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 bg-opacity-90 backdrop-blur-md shadow-lg rounded-xl p-4"
                 />
 
                 <SectionBlock
-                    title={<>Team Identity & Culture <span className="text-sm text-gray-100">(5 required)</span></>}
-                    questions={QUESTIONS.teamIdentity}
+                    title={<>Team Identity & Culture <span className="text-sm text-gray-500">(5 required)</span></>}
+                    questions={QUESTIONS[selectedSport]?.teamIdentity || []}
                     sectionKey="teamIdentity"
                     answers={answers}
                     handleAnswer={handleAnswer}
-                    onSectionComplete={handleSectionComplete} // ✅ NEW
+                    bgClass="from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-800 bg-opacity-90 backdrop-blur-md shadow-lg rounded-xl p-4"
                 />
 
-                <div className="flex flex-col sm:flex-row gap-4 pt-6">
+                <div className="mt-6 flex justify-between gap-4">
                     <button
                         onClick={() => handleSubmit(answers, setScoreSummary, setShowModal)}
-                        className="flex-1 bg-indigo-700 text-white px-6 py-3 rounded-xl hover:bg-indigo-600 transition-all"
+                        className="flex-1 bg-indigo-700 text-white px-6 py-3 rounded hover:bg-indigo-600"
                     >
                         Submit Reflection
                     </button>
-
                     <button
                         onClick={() => window.location.href = '/'}
-                        className="flex-1 bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-500 transition-all"
+                        className="flex-1 bg-green-600 text-white px-6 py-3 rounded hover:bg-green-500"
                     >
                         Back Home
                     </button>
                 </div>
-            </main>
 
-            {showModal && scoreSummary && (
-                <ReflectionModal
-                    total={scoreSummary.total}
-                    offense={scoreSummary.offense}
-                    defense={scoreSummary.defense}
-                    culture={scoreSummary.culture}
-                    onClose={() => window.location.href = '/'}
-                />
-            )}
+                {showModal && scoreSummary && (
+                    <ReflectionModal
+                        total={scoreSummary.total}
+                        offense={scoreSummary.offense}
+                        defense={scoreSummary.defense}
+                        culture={scoreSummary.culture}
+                        onClose={() => window.location.href = '/'}
+                    />
+                )}
+            </div>
         </div>
     );
 }
