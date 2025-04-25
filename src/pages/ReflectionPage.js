@@ -1,7 +1,7 @@
 import React, { useReducer, useEffect, useState } from 'react';
 import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
 import SectionBlock from '../components/SectionBlock';
-import SportSelectionModal from '../components/ReflectionModal/SportSelectionModal'; // ✅ Import SportSelectionModal
+import SportSelectionModal from '../components/ReflectionModal/SportSelectionModal'; // ✅ Correct import
 import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
 import handleSubmit from '../helpers/handleSubmit';
@@ -9,6 +9,8 @@ import handleSubmit from '../helpers/handleSubmit';
 function ReflectionPage() {
     const [showModal, setShowModal] = useState(false);
     const [scoreSummary, setScoreSummary] = useState(null);
+
+    // ✅ Read sport from localStorage OR null
     const [selectedSport, setSelectedSport] = useState(() => {
         return localStorage.getItem('selectedSport') || null;
     });
@@ -26,20 +28,32 @@ function ReflectionPage() {
         dispatch({ type: 'SET_ANSWER', key, value });
     };
 
+    const handleResetSport = () => {
+        localStorage.removeItem('selectedSport');
+        setSelectedSport(null);
+    };
+
+    // ✅ BEFORE rendering anything else — if no sport, open sport selector
     if (!selectedSport) {
         return (
-            <SportSelectionModal
-                onSelect={(sport) => setSelectedSport(sport)}
-            />
+            <SportSelectionModal onSelect={(sport) => setSelectedSport(sport)} />
         );
     }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-slate-100 dark:from-gray-900 dark:to-gray-800">
             <div className="max-w-xl mx-auto p-4">
-                <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-center text-gray-800 tracking-wide uppercase mb-8">
-                    Focus. Reflect. Dominate.
-                </h1>
+                <div className="flex justify-between items-center mb-6">
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-800 dark:text-white tracking-wide uppercase">
+                        Focus. Reflect. Dominate.
+                    </h1>
+                    <button
+                        onClick={handleResetSport}
+                        className="text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-400"
+                    >
+                        Change Sport
+                    </button>
+                </div>
 
                 <SectionBlock
                     title={<>Offense <span className="text-sm text-gray-500">(5 required)</span></>}
