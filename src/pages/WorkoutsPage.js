@@ -40,20 +40,10 @@ const WorkoutPage = () => {
     }, {});
 
     return (
-        <div style={{ minHeight: '100vh', padding: '24px', background: '#f9fafb', color: '#111' }}>
+        <div style={{ minHeight: '100vh', padding: '20px', backgroundColor: '#f3f4f6' }}>
             <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-                <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#4338ca' }}>
-                    Workout Tracker
-                </h2>
-
-                <h3 style={{ marginTop: '24px', fontWeight: '600', color: '#4b5563' }}>
-                    Fitness Snapshot – Stay on Track, Achieve Your Goals
-                </h3>
                 <FitnessSnapshot workouts={workouts} />
 
-                <h3 style={{ marginTop: '32px', fontWeight: '600', color: '#4b5563' }}>
-                    Workout Entries – Review and Reflect
-                </h3>
                 {Object.keys(groupedWorkouts).map((type) => (
                     <WorkoutTableSection
                         key={type}
@@ -66,8 +56,8 @@ const WorkoutPage = () => {
                 ))}
             </div>
 
-            {/* FAB: Add Workout (Blue, Bottom-Right) */}
-            <div
+            {/* Guaranteed Floating Add Workout FAB */}
+            <button
                 onClick={() => setShowModal(true)}
                 style={{
                     position: 'fixed',
@@ -75,47 +65,20 @@ const WorkoutPage = () => {
                     right: '20px',
                     width: '60px',
                     height: '60px',
-                    borderRadius: '30px',
-                    backgroundColor: '#3b82f6',
+                    borderRadius: '50%',
+                    backgroundColor: '#2563eb',
                     color: 'white',
-                    fontSize: '30px',
-                    fontWeight: 'bold',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    fontSize: '32px',
+                    border: 'none',
                     cursor: 'pointer',
-                    zIndex: 1000
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                    zIndex: 9999
                 }}
                 aria-label="Add Workout"
             >
                 +
-            </div>
+            </button>
 
-            {/* FAB: Back/Home (Gray, Bottom-Left) */}
-            <div
-                onClick={() => window.location.href = '/'}
-                style={{
-                    position: 'fixed',
-                    bottom: '20px',
-                    left: '20px',
-                    width: '60px',
-                    height: '60px',
-                    borderRadius: '30px',
-                    backgroundColor: '#6b7280',
-                    color: 'white',
-                    fontSize: '26px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    zIndex: 1000
-                }}
-                aria-label="Back Home"
-            >
-                ←
-            </div>
-
-            {/* Modal */}
             {showModal && (
                 <WorkoutFormModal
                     onClose={() => setShowModal(false)}
