@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { FaDumbbell } from 'react-icons/fa';
 import WorkoutFormModal from '../components/Workout/WorkoutFormModal';
 import WorkoutTableSection from '../components/Workout/WorkoutTableSection';
 import FitnessSnapshot from '../components/Workout/FitnessSnapshot';
@@ -42,9 +43,17 @@ const WorkoutPage = () => {
     return (
         <div className="min-h-screen bg-gray-100 p-6 text-gray-900">
             <div className="max-w-4xl mx-auto">
+                {/* Title with dumbbell icon */}
+                <div className="flex items-center gap-3 mb-4">
+                    <FaDumbbell className="text-blue-600 text-2xl" />
+                    <h2 className="text-xl sm:text-2xl font-bold text-indigo-700 dark:text-indigo-300">
+                        Workout Tracker
+                    </h2>
+                </div>
+
                 {/* Header buttons for desktop */}
-                <div className="flex justify-between items-center mb-6">
-                    <div className="hidden sm:inline-flex gap-3">
+                <div className="hidden sm:flex justify-between items-center mb-6">
+                    <div className="flex gap-3">
                         <button
                             onClick={() => window.location.href = '/'}
                             className="bg-gray-600 text-white px-4 py-2 rounded shadow hover:bg-gray-700 text-sm"
@@ -76,7 +85,7 @@ const WorkoutPage = () => {
                 ))}
             </div>
 
-            {/* FABs for mobile only */}
+            {/* FAB: Add Workout (Mobile Only) */}
             <button
                 onClick={() => setShowModal(true)}
                 className="sm:hidden fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-blue-600 text-white text-3xl flex items-center justify-center shadow-lg hover:bg-blue-700"
@@ -85,6 +94,7 @@ const WorkoutPage = () => {
                 +
             </button>
 
+            {/* FAB: Back/Home (Mobile Only) */}
             <button
                 onClick={() => window.location.href = '/'}
                 className="sm:hidden fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-gray-600 text-white text-2xl flex items-center justify-center shadow-lg hover:bg-gray-700"
