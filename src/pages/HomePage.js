@@ -1,84 +1,104 @@
 import React from 'react';
-import { FaBrain, FaChartBar, FaVideo } from 'react-icons/fa';
-import { GiLevelEndFlag } from 'react-icons/gi';
-import {MdHealthAndSafety, MdOutlineEditNote} from 'react-icons/md';
-import { GiMuscleUp } from 'react-icons/gi';
 import { useNavigate } from 'react-router-dom';
+import { FaBrain, FaChartBar, FaVideo } from 'react-icons/fa';
+import { GiLevelEndFlag, GiMuscleUp } from 'react-icons/gi';
+import { MdHealthAndSafety, MdOutlineEditNote } from 'react-icons/md';
 
 function HomePage() {
     const navigate = useNavigate();
 
+    const sections = [
+        {
+            label: 'Reflection',
+            icon: <MdOutlineEditNote className="text-white bg-indigo-500 rounded-full p-1 text-4xl" />,
+            color: 'text-indigo-700',
+            shadow: 'hover:shadow-indigo-300',
+            route: '/reflect',
+            description:
+                'Complete your daily reflection to stay focused on the process and track progress over time.'
+        },
+        {
+            label: 'Readiness',
+            icon: <FaBrain className="text-white bg-purple-500 rounded-full p-1 text-4xl" />,
+            color: 'text-purple-700',
+            shadow: 'hover:shadow-purple-300',
+            route: '/readiness',
+            description:
+                'Check in on your mental and physical readiness before each session — build focus, recover smarter, and show up prepared.'
+        },
+        {
+            label: 'Injury Prevention',
+            icon: <MdHealthAndSafety className="text-white bg-rose-500 rounded-full p-1 text-4xl" />,
+            color: 'text-rose-600',
+            shadow: 'hover:shadow-rose-300',
+            route: '/injury',
+            description:
+                'Learn how to prevent injuries with real-life strategies from a Certified Athletic Trainer — warm-ups, recovery tips, and more.'
+        },
+        {
+            label: 'Player Stats',
+            icon: <FaChartBar className="text-white bg-green-500 rounded-full p-1 text-4xl" />,
+            color: 'text-green-700',
+            shadow: 'hover:shadow-green-300',
+            route: '/stats',
+            description:
+                'Track your game-by-game performance, see averages, and download your progress.'
+        },
+        {
+            label: 'Workouts',
+            icon: <GiMuscleUp className="text-white bg-yellow-500 rounded-full p-1 text-4xl" />,
+            color: 'text-yellow-600',
+            shadow: 'hover:shadow-yellow-300',
+            route: '/workouts',
+            description: 'Browse workouts or training plans that align with your goals.'
+        },
+        {
+            label: 'Videos',
+            icon: <FaVideo className="text-white bg-teal-500 rounded-full p-1 text-4xl" />,
+            color: 'text-teal-600',
+            shadow: 'hover:shadow-teal-300',
+            route: '/videos',
+            description: 'Watch practice footage, breakdowns, or motivational clips.'
+        }
+    ];
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white dark:from-gray-900 dark:to-gray-800 flex flex-col items-center overflow-x-hidden overflow-y-auto">
-            <header className="w-full text-center py-6 bg-white dark:bg-gray-900 bg-opacity-80 shadow-md sticky top-0 z-50">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white dark:from-gray-900 dark:to-gray-800">
+            <header className="w-full text-center py-6 bg-white dark:bg-gray-900 bg-opacity-80 shadow-sm sticky top-0 z-50">
                 <h1 className="flex items-center justify-center gap-2 text-3xl sm:text-4xl font-bold text-indigo-700 dark:text-indigo-200 tracking-tight">
-                    <GiLevelEndFlag className="text-white bg-indigo-500 rounded-full p-1 text-4xl transition-transform duration-200 group-hover:scale-110" /> Elevate: Train, Reflect, Compete
+                    <GiLevelEndFlag className="text-white bg-indigo-500 rounded-full p-2 text-5xl" /> Elevate
                 </h1>
+                <p className="text-indigo-600 dark:text-indigo-300 text-sm sm:text-base font-medium mt-2 px-4 max-w-xl mx-auto">
+                    Train. Reflect. Compete. A performance platform for driven players.
+                </p>
             </header>
 
-            <p className="text-center text-indigo-700 font-medium mt-6 mb-10 max-w-md px-4 tracking-wide opacity-0 animate-fade-up">
-                A focused tool for players to reflect, improve, and track their journey on and off the court.
-            </p>
-
-            <div className="grid gap-6 w-full max-w-4xl px-4 sm:px-6 grid-cols-[repeat(auto-fit,_minmax(240px,_1fr))]">
-                <div onClick={() => navigate('/reflect')} className="group cursor-pointer bg-white dark:bg-gray-800 bg-opacity-90 backdrop-blur-md p-6 rounded-xl shadow-lg hover:shadow-indigo-300 hover:scale-105 transform transition duration-300">
-                    <h2 className="text-xl font-semibold text-center text-indigo-700 mb-1">
-            <span className="flex items-center justify-center gap-2">
-              <MdOutlineEditNote className="text-white bg-indigo-500 rounded-full p-1 text-3xl sm:text-4xl transition-transform duration-200 group-hover:scale-110" /> Reflection
-            </span>
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm text-center">Complete your daily reflection to stay focused on the process and track progress over time.</p>
+            <main className="px-4 sm:px-6 py-8 max-w-6xl mx-auto">
+                <h2 className="text-lg font-semibold text-indigo-700 dark:text-indigo-300 mb-4 text-center sm:text-left">
+                    Explore Tools
+                </h2>
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {sections.map((section, idx) => (
+                        <button
+                            key={idx}
+                            onClick={() => navigate(section.route)}
+                            className={`group cursor-pointer bg-white dark:bg-gray-800 bg-opacity-90 backdrop-blur-md p-6 rounded-xl shadow-lg ${section.shadow} hover:scale-105 transform transition duration-300 text-left`}
+                        >
+                            <div className="flex items-center gap-3 mb-2">
+                                {section.icon}
+                                <h3 className={`text-xl font-semibold ${section.color}`}>{section.label}</h3>
+                            </div>
+                            <p className="text-gray-600 dark:text-gray-300 text-sm">
+                                {section.description}
+                            </p>
+                        </button>
+                    ))}
                 </div>
-
-                <div onClick={() => navigate('/readiness')} className="cursor-pointer bg-white dark:bg-gray-800 bg-opacity-90 backdrop-blur-md p-6 rounded-xl shadow-lg hover:shadow-purple-300 hover:scale-105 transform transition duration-300">
-                    <h2 className="flex items-center justify-center gap-2 text-xl font-semibold text-purple-700 mb-1">
-                        <FaBrain className="text-white bg-purple-500 rounded-full p-1 text-3xl sm:text-4xl transition-transform duration-200 group-hover:scale-110" /> Readiness
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm text-center">Check in on your mental and physical readiness before each session — build focus, recover smarter, and show up prepared.
-                    </p>
-                </div>
-                <div onClick={() => navigate('/injury')} className="cursor-pointer bg-white dark:bg-gray-800 bg-opacity-90 backdrop-blur-md p-6 rounded-xl shadow-lg hover:shadow-rose-300 hover:scale-105 transform transition duration-300">
-                    <h2 className="text-xl font-semibold text-center text-rose-600 mb-1">
-                <span className="flex items-center justify-center gap-2">
-                    <MdHealthAndSafety className="text-white bg-rose-500 rounded-full p-1 text-3xl sm:text-4xl transition-transform duration-200 group-hover:scale-110" /> Injury Prevention
-                </span>
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm">Learn how to prevent injuries with real-life strategies from a Certified Athletic Trainer — warm-ups, recovery tips, and more.</p>
-                </div>
-
-                <div onClick={() => navigate('/stats')} className="cursor-pointer bg-white dark:bg-gray-800 bg-opacity-90 backdrop-blur-md p-6 rounded-xl shadow-lg hover:shadow-green-300 hover:scale-105 transform transition duration-300">
-                    <h2 className="text-xl font-semibold text-center text-green-700 mb-1">
-            <span className="flex items-center justify-center gap-2">
-              <FaChartBar className="text-white bg-green-500 rounded-full p-1 text-3xl sm:text-4xl transition-transform duration-200 group-hover:scale-110" /> Player Stats
-            </span>
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm">Track your game-by-game performance, see averages, and download your progress.</p>
-                </div>
-
-                <div onClick={() => navigate('/workouts')} className="cursor-pointer bg-white dark:bg-gray-800 bg-opacity-90 backdrop-blur-md p-6 rounded-xl shadow-lg hover:shadow-yellow-300 hover:scale-105 transform transition duration-300">
-                    <h2 className="text-xl font-semibold text-center text-yellow-600 mb-1">
-            <span className="flex items-center justify-center gap-2">
-              <GiMuscleUp className="text-white bg-yellow-500 rounded-full p-1 text-3xl sm:text-4xl transition-transform duration-200 group-hover:scale-110" /> Workouts
-            </span>
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm">Browse workouts or training plans that align with your goals.</p>
-                </div>
-
-                <div onClick={() => navigate('/videos')} className="cursor-pointer bg-white dark:bg-gray-800 bg-opacity-90 backdrop-blur-md p-6 rounded-xl shadow-lg hover:shadow-teal-300 hover:scale-105 transform transition duration-300">
-                    <h2 className="text-xl font-semibold text-center text-teal-600 mb-1">
-                <span className="flex items-center justify-center gap-2">
-                <FaVideo className="text-white bg-teal-500 rounded-full p-1 text-3xl sm:text-4xl transition-transform duration-200 group-hover:scale-110" /> Videos
-            </span>
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-300 text-sm">Watch practice footage, breakdowns, or motivational clips.</p>
-                </div>
-            </div>
+            </main>
 
             <footer className="mt-12 text-center text-xs text-gray-500 dark:text-gray-400 px-4 pb-6">
-                © {new Date().getFullYear()} Process Reflection™ by Alex Ng. All rights reserved.
+                © {new Date().getFullYear()} Process Reflection™ by Alex Ng. All rights reserved.<br />
                 This platform, concept, design, and workflow are the original intellectual property of the creator.
-                Unauthorized reproduction, distribution, reverse engineering, or imitation without written permission is strictly prohibited.
-                Process Reflection™ is a trademark under development. All content is protected under U.S. copyright law.
             </footer>
         </div>
     );
