@@ -4,11 +4,10 @@ import SectionBlock from '../components/SectionBlock';
 import SportSelectionModal from '../components/ReflectionModal/SportSelectionModal';
 import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
-import handleSubmit from '../helpers/handleSubmit';
+
 import { MdOutlineSend } from 'react-icons/md';
 import { AiOutlineHome } from 'react-icons/ai';
 
-// 🎯 Mapping of sports to emojis
 const sportEmojis = {
     basketball: '🏀',
     soccer: '⚽',
@@ -19,6 +18,9 @@ const sportEmojis = {
     lacrosse: '🥍',
     golf: '🏌️',
 };
+
+const teamSports = ['basketball', 'soccer', 'football', 'lacrosse', 'iceHockey'];
+const individualSports = ['golf', 'trackCrossCountry'];
 
 function ReflectionPage() {
     const [showModal, setShowModal] = useState(true);
@@ -52,77 +54,120 @@ function ReflectionPage() {
         setSelectedSport(null);
     };
 
+    const handleReflectionSubmit = () => {
+        const total = calculateTotalScore();
+        setScoreSummary({ total });
+        setShowModal(false);
+    };
+
+    const calculateTotalScore = () => {
+        const values = Object.values(answers);
+        if (!values.length) return 0;
+        const positive = values.filter((v) => v === 'yes').length;
+        return Math.round((positive / values.length) * 100);
+    };
+
+    const renderTeamSections = () => (
+        <>
+            <SectionBlock
+                title="Offense (5 required)"
+                questions={QUESTIONS[selectedSport]?.offense || []}
+                sectionKey="offense"
+                answers={answers}
+                handleAnswer={handleAnswer}
+                bgClass="from-teal-50 to-teal-100 dark:from-teal-900 dark:to-teal-800"
+            />
+            <SectionBlock
+                title="Defense (5 required)"
+                questions={QUESTIONS[selectedSport]?.defense || []}
+                sectionKey="defense"
+                answers={answers}
+                handleAnswer={handleAnswer}
+                bgClass="from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800"
+            />
+            <SectionBlock
+                title="Team Identity & Culture (5 required)"
+                questions={QUESTIONS[selectedSport]?.teamIdentity || []}
+                sectionKey="teamIdentity"
+                answers={answers}
+                handleAnswer={handleAnswer}
+                bgClass="from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-800"
+            />
+        </>
+    );
+
+    const renderIndividualSections = () => (
+        <>
+            <SectionBlock
+                title="Focus & Mental Preparation"
+                questions={QUESTIONS[selectedSport]?.focus || []}
+                sectionKey="focus"
+                answers={answers}
+                handleAnswer={handleAnswer}
+                bgClass="from-cyan-50 to-cyan-100 dark:from-cyan-900 dark:to-cyan-800"
+            />
+            <SectionBlock
+                title="Preparation & Strategy"
+                questions={
+                    QUESTIONS[selectedSport]?.preparation ||
+                    QUESTIONS[selectedSport]?.courseManagement ||
+                    []
+                }
+                sectionKey="preparation"
+                answers={answers}
+                handleAnswer={handleAnswer}
+                bgClass="from-lime-50 to-lime-100 dark:from-lime-900 dark:to-lime-800"
+            />
+            <SectionBlock
+                title="Execution & Effort"
+                questions={QUESTIONS[selectedSport]?.execution || []}
+                sectionKey="execution"
+                answers={answers}
+                handleAnswer={handleAnswer}
+                bgClass="from-amber-50 to-amber-100 dark:from-amber-900 dark:to-amber-800"
+            />
+        </>
+    );
+
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-slate-100 dark:from-gray-900 dark:to-gray-800 relative">
             <div className="max-w-xl mx-auto p-4">
 
                 {/* 🛠 Sport selection modal */}
-                {showModal && (
-                    <SportSelectionModal onSelect={handleSelectSport} />
-                )}
+                {showModal && <SportSelectionModal onSelect={handleSelectSport} />}
 
                 {/* 🛠 Main content */}
                 {!showModal && (
                     <>
-                        {/* Title with Dynamic FAB */}
-                        <div className="flex items-center justify-center mb-6 relative">
-                            <h1 className="text-lg sm:text-xl md:text-2xl font-extrabold text-gray-800 dark:text-white tracking-wide uppercase flex items-center gap-2 text-center">
-                                <span className="text-2xl">{sportEmojis[selectedSport]}</span>
+                        <div className="flex items-center justify-center mb-6">
+                            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-gray-800 dark:text-white tracking-wide uppercase flex items-center gap-2 text-center">
+                                <span className="text-3xl">{sportEmojis[selectedSport]}</span>
                                 Focus. Reflect. Dominate.
-                                {/* Inline dynamic FAB */}
-                                {selectedSport && (
-                                    <button
-                                        onClick={handleResetSport}
-                                        className="ml-2 p-2 rounded-full bg-indigo-500 hover:bg-indigo-400 text-white text-lg shadow-md transition-all"
-                                        title="Change Sport"
-                                    >
-                                        {sportEmojis[selectedSport]}
-                                    </button>
-                                )}
+                                <button
+                                    onClick={handleResetSport}
+                                    className="ml-2 p-2 rounded-full bg-indigo-500 hover:bg-indigo-400 text-white text-lg shadow-md"
+                                    title="Change Sport"
+                                >
+                                    {sportEmojis[selectedSport]}
+                                </button>
                             </h1>
                         </div>
 
-                        {/* Sections */}
-                        <SectionBlock
-                            title={<>Offense <span className="text-sm text-gray-500">(5 required)</span></>}
-                            questions={QUESTIONS[selectedSport]?.offense || []}
-                            sectionKey="offense"
-                            answers={answers}
-                            handleAnswer={handleAnswer}
-                            bgClass="from-teal-50 to-teal-100 dark:from-teal-900 dark:to-teal-800 bg-opacity-90 backdrop-blur-md shadow-lg rounded-xl p-4"
-                        />
-                        <SectionBlock
-                            title={<>Defense <span className="text-sm text-gray-500">(5 required)</span></>}
-                            questions={QUESTIONS[selectedSport]?.defense || []}
-                            sectionKey="defense"
-                            answers={answers}
-                            handleAnswer={handleAnswer}
-                            bgClass="from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 bg-opacity-90 backdrop-blur-md shadow-lg rounded-xl p-4"
-                        />
-                        <SectionBlock
-                            title={<>Team Identity & Culture <span className="text-sm text-gray-500">(5 required)</span></>}
-                            questions={QUESTIONS[selectedSport]?.teamIdentity || []}
-                            sectionKey="teamIdentity"
-                            answers={answers}
-                            handleAnswer={handleAnswer}
-                            bgClass="from-purple-50 to-purple-100 dark:from-purple-900 dark:to-purple-800 bg-opacity-90 backdrop-blur-md shadow-lg rounded-xl p-4"
-                        />
+                        {teamSports.includes(selectedSport) && renderTeamSections()}
+                        {individualSports.includes(selectedSport) && renderIndividualSections()}
                     </>
                 )}
 
                 {/* 🛠 Floating Action Buttons */}
                 {!showModal && (
                     <div className="fixed bottom-6 right-6 flex flex-col items-center gap-4">
-                        {/* Submit Reflection FAB */}
                         <button
-                            onClick={() => handleSubmit(answers, setScoreSummary, setShowModal)}
+                            onClick={handleReflectionSubmit}
                             className="bg-indigo-600 hover:bg-indigo-500 text-white p-4 rounded-full shadow-lg"
                             title="Submit Reflection"
                         >
                             <MdOutlineSend size={24} />
                         </button>
-
-                        {/* Home FAB */}
                         <button
                             onClick={() => window.location.href = '/'}
                             className="bg-green-600 hover:bg-green-500 text-white p-4 rounded-full shadow-lg"
@@ -137,9 +182,9 @@ function ReflectionPage() {
                 {scoreSummary && (
                     <ReflectionModal
                         total={scoreSummary.total}
-                        offense={scoreSummary.offense}
-                        defense={scoreSummary.defense}
-                        culture={scoreSummary.culture}
+                        offense={scoreSummary.total} // simplified
+                        defense={scoreSummary.total} // simplified
+                        culture={scoreSummary.total} // simplified
                         onClose={() => window.location.href = '/'}
                     />
                 )}
