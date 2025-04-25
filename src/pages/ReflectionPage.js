@@ -10,7 +10,6 @@ function ReflectionPage() {
     const [showModal, setShowModal] = useState(false);
     const [scoreSummary, setScoreSummary] = useState(null);
     const [hideHeader, setHideHeader] = useState(false);
-    const [lastScrollY, setLastScrollY] = useState(0);
 
     const [answers, dispatch] = useReducer(
         answersReducer,
@@ -24,14 +23,14 @@ function ReflectionPage() {
 
     useEffect(() => {
         const handleScroll = () => {
-            const currentY = window.scrollY;
-            setHideHeader(currentY > lastScrollY && currentY > 100);
-            setLastScrollY(currentY);
+            if (window.scrollY > 50) {
+                setHideHeader(true);
+            }
         };
 
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [lastScrollY]);
+    }, []);
 
     const handleAnswer = (section, idx, value) => {
         const key = `${section}-${idx}`;
@@ -48,11 +47,7 @@ function ReflectionPage() {
 
             <main className="max-w-3xl mx-auto p-4 sm:p-6 space-y-12">
                 <SectionBlock
-                    title={
-                        <>
-                            Offense <span className="text-sm text-gray-100">(5 required)</span>
-                        </>
-                    }
+                    title={<>Offense <span className="text-sm text-gray-100">(5 required)</span></>}
                     questions={QUESTIONS.offense}
                     sectionKey="offense"
                     answers={answers}
@@ -60,11 +55,7 @@ function ReflectionPage() {
                 />
 
                 <SectionBlock
-                    title={
-                        <>
-                            Defense <span className="text-sm text-gray-100">(5 required)</span>
-                        </>
-                    }
+                    title={<>Defense <span className="text-sm text-gray-100">(5 required)</span></>}
                     questions={QUESTIONS.defense}
                     sectionKey="defense"
                     answers={answers}
@@ -72,11 +63,7 @@ function ReflectionPage() {
                 />
 
                 <SectionBlock
-                    title={
-                        <>
-                            Team Identity & Culture <span className="text-sm text-gray-100">(5 required)</span>
-                        </>
-                    }
+                    title={<>Team Identity & Culture <span className="text-sm text-gray-100">(5 required)</span></>}
                     questions={QUESTIONS.teamIdentity}
                     sectionKey="teamIdentity"
                     answers={answers}
