@@ -145,10 +145,10 @@ function ReflectionPage() {
                                 Focus. Reflect. Dominate.
                                 <button
                                     onClick={handleResetSport}
-                                    className="ml-2 p-2 rounded-full bg-indigo-500 hover:bg-indigo-400 text-white text-lg shadow-md"
+                                    className="ml-2 px-3 py-1 bg-red-500 hover:bg-red-400 text-white text-xs font-semibold rounded-full shadow transition"
                                     title="Change Sport"
                                 >
-                                    {sportEmojis[selectedSport]}
+                                    Change Sport
                                 </button>
                             </h1>
                         </div>
