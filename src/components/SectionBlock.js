@@ -37,7 +37,7 @@ function SectionBlock({ title, questions, sectionKey, answers, handleAnswer }) {
   const getSectionColor = (section) => {
     switch (section) {
       case 'offense':
-        return 'bg-orange-500';
+        return 'bg-teal-500'; // 🟢 switched from orange to teal!
       case 'defense':
         return 'bg-blue-500';
       case 'teamIdentity':
@@ -57,7 +57,11 @@ function SectionBlock({ title, questions, sectionKey, answers, handleAnswer }) {
             {answeredCount}/{totalQuestions}
           </span>
           </div>
-          <div className="w-full h-1.5 bg-white bg-opacity-30 rounded-full mt-2">
+          <div className="relative w-full h-1.5 bg-gray-300 dark:bg-gray-700 rounded-full mt-2 overflow-hidden">
+            {/* Glow pulse when section completed (5/5) */}
+            {answeredCount >= 5 && (
+                <div className="absolute inset-0 animate-pulse bg-green-400 opacity-20 rounded-full"></div>
+            )}
             <div
                 className="h-full bg-white rounded-full transition-all"
                 style={{ width: `${progress}%` }}
