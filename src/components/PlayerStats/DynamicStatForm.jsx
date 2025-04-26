@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 function DynamicStatForm({ sport, position, onSaveStat }) {
     const [formData, setFormData] = useState({});
 
-    // Normalize sport id (lowercase, no special chars)
     const normalizeSport = (sportId) => sportId?.toLowerCase().replace(/[^a-z]/g, '');
 
     const sportFields = {
@@ -81,20 +80,31 @@ function DynamicStatForm({ sport, position, onSaveStat }) {
                             name={field}
                             value={formData[field] || ""}
                             onChange={handleChange}
-                            className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
-                              bg-white dark:bg-gray-700 dark:text-white"
+                            className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400 bg-white dark:bg-gray-700 dark:text-white"
                         />
                     </div>
                 ))
             ) : (
                 <div className="text-center text-gray-500">No input fields configured for this sport yet.</div>
             )}
-            <button
-                type="submit"
-                className="w-full py-3 mt-6 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg"
-            >
-                Save Stats
-            </button>
+
+            {/* Save and Clear Buttons */}
+            <div className="flex gap-4 mt-6">
+                <button
+                    type="submit"
+                    className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg"
+                >
+                    Save Stats
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => setFormData({})}
+                    className="flex-1 py-3 bg-gray-400 hover:bg-gray-500 text-white font-semibold rounded-lg"
+                >
+                    Clear
+                </button>
+            </div>
         </form>
     );
 }
