@@ -1,4 +1,4 @@
-// src/pages/ReflectionPage.jsx (Final Version - Random Lock Until Submit)
+// src/pages/ReflectionPage.jsx (Final Version)
 
 import React, { useState, useEffect, useReducer } from 'react';
 import QUESTIONS, { BONUS_QUESTIONS } from '../data/QUESTIONS';
@@ -87,9 +87,10 @@ function ReflectionPage() {
     };
 
     const handleReflectionSubmit = () => {
-        handleSubmit(answers, setScoreSummary, setShowModal, bonusAnswer);
-        sessionStorage.removeItem('processQuestions');
-        sessionStorage.removeItem('processBonus');
+        handleSubmit(answers, (summary) => {
+            setScoreSummary(summary);
+            setShowModal(true);
+        }, bonusAnswer);
     };
 
     if (!ready || !lockedQuestions) {
@@ -158,7 +159,11 @@ function ReflectionPage() {
                     defense={scoreSummary.defense}
                     culture={scoreSummary.culture}
                     bonus={scoreSummary.bonus}
-                    onClose={() => window.location.href = '/'}
+                    onClose={() => {
+                        sessionStorage.removeItem('processQuestions');
+                        sessionStorage.removeItem('processBonus');
+                        window.location.href = '/';
+                    }}
                 />
             )}
         </div>
