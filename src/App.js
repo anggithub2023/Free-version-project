@@ -4,7 +4,7 @@ import HomePage from './pages/HomePage';
 import ReflectionPage from './pages/ReflectionPage';
 import ReadinessPage from './pages/ReadinessPage';
 import InjuryPage from './pages/InjuryPage';
-import StatsPage from './pages/StatsPage';
+import PlayerStatsPage from './pages/PlayerStatsPage';
 import VideosPage from './pages/VideosPage';
 import WorkoutsPage from './pages/WorkoutsPage';
 
@@ -15,7 +15,7 @@ function App() {
             <Route path="/reflect" element={<ReflectionPage />} />
             <Route path="/readiness" element={<ReadinessPage />} />
             <Route path="/injury" element={<InjuryPage />} />
-            <Route path="/stats" element={<StatsPage />} />
+            <Route path="/playerstats" element={<PlayerStatsPage />} />
             <Route path="/videos" element={<VideosPage />} />
             <Route path="/workouts" element={<WorkoutsPage />} />
         </Routes>
