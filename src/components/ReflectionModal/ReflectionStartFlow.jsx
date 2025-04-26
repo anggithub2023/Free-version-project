@@ -1,49 +1,49 @@
 // src/components/ReflectionModal/ReflectionStartFlow.jsx
-
 import React, { useState } from 'react';
 import SportSelectionModal from './SportSelectionModal';
 import PositionSelectionModal from './PositionSelectionModal';
 
-// List of sports that need an extra position selection
-const sportsNeedingPosition = ['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'];
-
 function ReflectionStartFlow({ onComplete }) {
-    const [selectedSport, setSelectedSport] = useState('');
-    const [selectedPosition, setSelectedPosition] = useState('');
+    const [sport, setSport] = useState(() => localStorage.getItem('selectedSport') || '');
+    const [position, setPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
+    const [step, setStep] = useState(() => {
+        if (!sport) return 'sport';
+        if (sport && !position && requiresPosition(sport)) return 'position';
+        return 'done';
+    });
 
-    const handleSportSelect = (sport) => {
-        setSelectedSport(sport);
-        if (!sportsNeedingPosition.includes(sport)) {
-            // If no position needed, immediately save and complete
-            saveAndComplete(sport, '');
+    function requiresPosition(sport) {
+        return ['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'].includes(sport);
+    }
+
+    const handleSportSelect = (selectedSport) => {
+        setSport(selectedSport);
+        localStorage.setItem('selectedSport', selectedSport);
+
+        if (requiresPosition(selectedSport)) {
+            setStep('position');
+        } else {
+            setStep('done');
+            onComplete(selectedSport, ''); // No position needed
         }
-        // else: wait for position selection
     };
 
-    const handlePositionSelect = (position) => {
-        setSelectedPosition(position);
-        saveAndComplete(selectedSport, position);
+    const handlePositionSelect = (selectedPosition) => {
+        setPosition(selectedPosition);
+        localStorage.setItem('selectedPosition', selectedPosition);
+        setStep('done');
+        onComplete(sport, selectedPosition);
     };
 
-    const saveAndComplete = (sport, position) => {
-        localStorage.setItem('selectedSport', sport);
-        localStorage.setItem('selectedPosition', position || '');
-        onComplete({ sport, position });
-    };
+    if (step === 'sport') {
+        return <SportSelectionModal onSelect={handleSportSelect} />;
+    }
 
-    return (
-        <>
-            {/* Step 1: Sport selection */}
-            {!selectedSport && (
-                <SportSelectionModal onSelect={handleSportSelect} buttonLabel="Continue" />
-            )}
+    if (step === 'position') {
+        return <PositionSelectionModal onSelect={handlePositionSelect} sport={sport} />;
+    }
 
-            {/* Step 2: If sport requires a position, show position picker */}
-            {selectedSport && sportsNeedingPosition.includes(selectedSport) && !selectedPosition && (
-                <PositionSelectionModal sport={selectedSport} onSelect={handlePositionSelect} />
-            )}
-        </>
-    );
+    return null; // Already completed selection
 }
 
 export default ReflectionStartFlow;
