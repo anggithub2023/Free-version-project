@@ -1,5 +1,8 @@
+// Master Final QUESTIONS.js - fully ready to paste ✅
+
 const QUESTIONS = {
-    // 🏀 TEAM SPORTS: Offense / Defense / Team Identity
+
+    // 🏀 Basketball
     basketball: {
         offense: [
             "Did I get into the paint before taking a shot?",
@@ -33,6 +36,7 @@ const QUESTIONS = {
         ]
     },
 
+    // ⚽ Soccer Player
     soccer: {
         offense: [
             "Did I create scoring chances through smart movement?",
@@ -66,6 +70,26 @@ const QUESTIONS = {
         ]
     },
 
+    // ⚽ Soccer Goalie
+    "soccer-goalie": {
+        offense: [
+            "Did I distribute the ball accurately under pressure?",
+            "Did I start counterattacks quickly and smartly?",
+            "Did I offer clear outlet options for defenders?"
+        ],
+        defense: [
+            "Did I communicate early and loudly with defenders?",
+            "Did I challenge crosses effectively?",
+            "Did I stay focused throughout long stretches without action?"
+        ],
+        teamIdentity: [
+            "Did I boost team morale vocally and by example?",
+            "Did I quickly reset the team after conceding a goal?",
+            "Did I stay positive and composed under pressure?"
+        ]
+    },
+
+    // 🏈 Football Player
     football: {
         offense: [
             "Did I execute my assignment with precision?",
@@ -99,71 +123,26 @@ const QUESTIONS = {
         ]
     },
 
-    lacrosse: {
+    // 🏈 Football QB
+    "football-qb": {
         offense: [
-            "Did I create space or opportunities for teammates?",
-            "Did I take high-percentage shots?",
-            "Did I protect the ball under pressure?",
-            "Did I find passing lanes and move the ball quickly?",
-            "Did I keep my head up during dodges or cuts?",
-            "Did I communicate on the offensive sets?",
-            "Did I maintain composure and timing during possessions?",
-            "Did I finish plays with intensity?"
+            "Did I quickly read the defense pre-snap?",
+            "Did I make smart, accurate throws under pressure?",
+            "Did I manage the game tempo effectively?"
         ],
         defense: [
-            "Did I stay in proper stance and body position?",
-            "Did I communicate effectively with my unit?",
-            "Did I avoid unnecessary fouls or over-commits?",
-            "Did I help when slides were needed?",
-            "Did I recover quickly on broken plays?",
-            "Did I hustle in transition?",
-            "Did I win ground ball battles?",
-            "Did I make it tough for my opponent to execute?"
+            "Did I protect the ball from risky throws?",
+            "Did I recognize defensive shifts and blitzes fast?",
+            "Did I stay composed after turnovers or mistakes?"
         ],
         teamIdentity: [
-            "Did I support teammates vocally and physically?",
-            "Did I stay locked in through the entire session?",
-            "Did I handle adversity without frustration?",
-            "Did I bring effort every rep regardless of playing time?",
-            "Did I make sacrifices for the team’s success?",
-            "Did I play within our system and strategy?",
-            "Did I show enthusiasm for team progress?",
-            "Did I respect coaches and teammates consistently?"
+            "Did I inspire teammates with calm leadership?",
+            "Did I take ownership of team execution?",
+            "Did I maintain emotional composure regardless of score?"
         ]
     },
 
-    iceHockey: {
-        offense: [
-            "Did I keep the puck moving with smart passes?",
-            "Did I crash the net after shots?",
-            "Did I support the puck carrier with good positioning?",
-            "Did I shoot with purpose and accuracy?",
-            "Did I create space through movement or picks?",
-            "Did I win puck battles in the offensive zone?",
-            "Did I avoid turnovers in key moments?",
-            "Did I communicate with linemates effectively?"
-        ],
-        defense: [
-            "Did I stay between my man and the net?",
-            "Did I maintain stick discipline and avoid penalties?",
-            "Did I block shots and disrupt passing lanes?",
-            "Did I communicate on defensive shifts?",
-            "Did I clear the crease and protect the goalie?",
-            "Did I win battles along the boards?",
-            "Did I backcheck with full effort?",
-            "Did I stay calm under pressure in the D-zone?"
-        ],
-        teamIdentity: [
-            "Did I stay positive and composed?",
-            "Did I contribute to team energy and communication?",
-            "Did I play with heart and hustle every shift?",
-            "Did I focus on team goals over stats?",
-            "Did I respond to coaching feedback?",
-            "Did I stay locked in on the bench?",
-            "Did I lead by example with effort and discipline?",
-            "Did I encourage teammates in tough moments?"
-        ]
-    },
+    // ⚾ Baseball Player
     baseball: {
         offense: [
             "Did I make solid contact at the plate?",
@@ -197,7 +176,79 @@ const QUESTIONS = {
         ]
     },
 
-    // 🏃 INDIVIDUAL SPORTS: Focus / Preparation / Execution
+    // ⚾ Baseball Pitcher
+    "baseball-pitcher": {
+        offense: [
+            "Did I stay aggressive while pitching smart?",
+            "Did I control pitch location and selection under pressure?",
+            "Did I attack hitters early in counts?"
+        ],
+        defense: [
+            "Did I field my position cleanly (bunts, grounders)?",
+            "Did I back up bases properly on throws?",
+            "Did I hold runners effectively to prevent steals?"
+        ],
+        teamIdentity: [
+            "Did I stay composed after giving up hits/runs?",
+            "Did I communicate clearly with catchers and infielders?",
+            "Did I project positive energy to the team from the mound?"
+        ]
+    },
+
+    // 🏒 Ice Hockey Player
+    iceHockey: {
+        offense: [
+            "Did I keep the puck moving with smart passes?",
+            "Did I crash the net after shots?",
+            "Did I support the puck carrier with good positioning?",
+            "Did I shoot with purpose and accuracy?",
+            "Did I create space through movement or picks?",
+            "Did I win puck battles in the offensive zone?",
+            "Did I avoid turnovers in key moments?",
+            "Did I communicate with linemates effectively?"
+        ],
+        defense: [
+            "Did I stay between my man and the net?",
+            "Did I maintain stick discipline and avoid penalties?",
+            "Did I block shots and disrupt passing lanes?",
+            "Did I communicate on defensive shifts?",
+            "Did I clear the crease and protect the goalie?",
+            "Did I win battles along the boards?",
+            "Did I backcheck with full effort?",
+            "Did I stay calm under pressure in the D-zone?"
+        ],
+        teamIdentity: [
+            "Did I stay positive and composed?",
+            "Did I contribute to team energy and communication?",
+            "Did I play with heart and hustle every shift?",
+            "Did I focus on team goals over stats?",
+            "Did I respond to coaching feedback?",
+            "Did I stay locked in on the bench?",
+            "Did I lead by example with effort and discipline?",
+            "Did I encourage teammates in tough moments?"
+        ]
+    },
+
+    // 🏒 Ice Hockey Goalie
+    "iceHockey-goalie": {
+        offense: [
+            "Did I make smart outlet passes to start transition?",
+            "Did I help maintain puck control by safe handling behind the net?",
+            "Did I support quick counterattacks with decisions?"
+        ],
+        defense: [
+            "Did I maintain rebound control after saves?",
+            "Did I stay square and calm under high pressure?",
+            "Did I communicate to defense clearly during scrambles?"
+        ],
+        teamIdentity: [
+            "Did I encourage defenders after breakdowns?",
+            "Did I show calmness and leadership after goals allowed?",
+            "Did I stay fully engaged for the full 60 minutes?"
+        ]
+    },
+
+// 🏌️ Golf (Individual)
     golf: {
         focus: [
             "Was I mentally present before each shot?",
@@ -231,6 +282,7 @@ const QUESTIONS = {
         ]
     },
 
+    // 🏃 Track/Cross Country (Individual)
     trackCrossCountry: {
         focus: [
             "Did I approach the race with a positive mindset?",
@@ -263,6 +315,20 @@ const QUESTIONS = {
             "Did I reflect and write down insights after the race?"
         ]
     }
+
 };
+
+// Bonus positivity questions pool (slider input)
+export const BONUS_QUESTIONS = [
+    "How proud am I of my effort today?",
+    "How focused did I stay after mistakes?",
+    "How connected did I feel to my teammates today?",
+    "How much leadership did I show today?",
+    "How positive was my attitude throughout the session?",
+    "How supportive was I of others today?",
+    "How resilient was I when challenged today?",
+    "How much joy did I feel playing today?",
+    "How determined was I to finish strong today?"
+];
 
 export default QUESTIONS;
