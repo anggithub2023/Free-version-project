@@ -1,23 +1,28 @@
 // src/pages/ReflectionPage.jsx
 
-import React, { useEffect, useState, useReducer } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
+import QUESTIONS from '../data/QUESTIONS';
+import answersReducer from '../reducers/answersReducer';
+import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
 import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
 import SectionBlock from '../components/ReflectionModal/SectionBlock';
 import BonusQuestion from '../components/ReflectionModal/BonusQuestion';
-import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
-import QUESTIONS from '../data/QUESTIONS';
-import answersReducer from '../reducers/answersReducer';
 import handleSubmit from '../helpers/handleSubmit';
 
 function ReflectionPage() {
+    const [selectedSport, setSelectedSport] = useState('');
+    const [selectedPosition, setSelectedPosition] = useState('');
     const [loadingSelections, setLoadingSelections] = useState(true);
-    const [sport, setSport] = useState('');
-    const [position, setPosition] = useState('');
-    const [answers, dispatch] = useReducer(answersReducer, {}, () => JSON.parse(localStorage.getItem('processAnswers')) || {});
     const [showModal, setShowModal] = useState(false);
     const [scoreSummary, setScoreSummary] = useState(null);
     const [hideHeader, setHideHeader] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
+
+    const [answers, dispatch] = useReducer(
+        answersReducer,
+        {},
+        () => JSON.parse(localStorage.getItem('processAnswers')) || {}
+    );
 
     useEffect(() => {
         localStorage.setItem('processAnswers', JSON.stringify(answers));
@@ -33,22 +38,24 @@ function ReflectionPage() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [lastScrollY]);
 
-    const handleStartComplete = (selectedSport, selectedPosition) => {
-        setSport(selectedSport);
-        setPosition(selectedPosition);
-        setLoadingSelections(false);
-    };
-
     const handleAnswer = (section, idx, value) => {
         const key = `${section}-${idx}`;
         dispatch({ type: 'SET_ANSWER', key, value });
     };
 
+    const handleBonusChange = (value) => {
+        dispatch({ type: 'SET_ANSWER', key: 'bonus', value });
+    };
+
     if (loadingSelections) {
-        return <ReflectionStartFlow onComplete={handleStartComplete} />;
+        return <ReflectionStartFlow onComplete={(sport, position) => {
+            setSelectedSport(sport);
+            setSelectedPosition(position);
+            setLoadingSelections(false);
+        }} />;
     }
 
-    const selectedQuestions = QUESTIONS[sport?.toLowerCase()] || {};
+    const currentQuestions = QUESTIONS[selectedSport]?.[selectedPosition] || QUESTIONS[selectedSport] || {};
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-slate-100 dark:from-gray-900 dark:to-gray-800">
@@ -59,23 +66,20 @@ function ReflectionPage() {
             </header>
 
             <main className="max-w-3xl mx-auto p-4 sm:p-6 space-y-12">
-                {['offense', 'defense', 'teamIdentity'].map((category) => (
-                    selectedQuestions[category] && (
-                        <SectionBlock
-                            key={category}
-                            title={<>{category === 'teamIdentity' ? 'Team Identity & Culture' : category.charAt(0).toUpperCase() + category.slice(1)}</>}
-                            questions={selectedQuestions[category]}
-                            sectionKey={category}
-                            answers={answers}
-                            handleAnswer={handleAnswer}
-                        />
-                    )
+                {Object.entries(currentQuestions).map(([sectionKey, questionsArray]) => (
+                    <SectionBlock
+                        key={sectionKey}
+                        title={sectionKey.replace(/([A-Z])/g, ' $1').toUpperCase()}
+                        questions={questionsArray.slice(0, 3)}
+                        sectionKey={sectionKey}
+                        answers={answers}
+                        handleAnswer={handleAnswer}
+                    />
                 ))}
 
-                {/* Bonus Section */}
                 <BonusQuestion
-                    answers={answers}
-                    handleAnswer={handleAnswer}
+                    value={answers['bonus'] || 50}
+                    onChange={handleBonusChange}
                 />
 
                 <div className="flex flex-col sm:flex-row gap-4 pt-6">
@@ -85,7 +89,6 @@ function ReflectionPage() {
                     >
                         Submit Reflection
                     </button>
-
                     <button
                         onClick={() => window.location.href = '/'}
                         className="flex-1 bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-500 transition-all"
