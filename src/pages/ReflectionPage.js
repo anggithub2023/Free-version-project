@@ -10,9 +10,9 @@ import BonusQuestion from '../components/ReflectionModal/BonusQuestion';
 import handleSubmit from '../helpers/handleSubmit';
 
 function ReflectionPage() {
-    const [selectedSport, setSelectedSport] = useState('');
-    const [selectedPosition, setSelectedPosition] = useState('');
-    const [loadingSelections, setLoadingSelections] = useState(true);
+    const [selectedSport, setSelectedSport] = useState(() => localStorage.getItem('selectedSport') || '');
+    const [selectedPosition, setSelectedPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
+    const [loadingSelections, setLoadingSelections] = useState(!localStorage.getItem('selectedSport'));
     const [showModal, setShowModal] = useState(false);
     const [scoreSummary, setScoreSummary] = useState(null);
     const [hideHeader, setHideHeader] = useState(false);
@@ -53,6 +53,10 @@ function ReflectionPage() {
             setSelectedPosition(position);
             setLoadingSelections(false);
         }} />;
+    }
+
+    if (!selectedSport) {
+        return null;
     }
 
     const currentQuestions = QUESTIONS[selectedSport]?.[selectedPosition] || QUESTIONS[selectedSport] || {};
