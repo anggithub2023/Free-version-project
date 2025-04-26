@@ -22,7 +22,7 @@ function ReflectionPage() {
     const [answers, dispatch] = useReducer(
         answersReducer,
         {},
-        () => JSON.parse(localStorage.getItem('processAnswers')) || {}
+        () => ({}) // Start fresh, do NOT load old answers from localStorage
     );
 
     useEffect(() => {
@@ -31,8 +31,10 @@ function ReflectionPage() {
     }, [lastScrollY]);
 
     useEffect(() => {
-        localStorage.setItem('processAnswers', JSON.stringify(answers));
-    }, [answers]);
+        if (!showSportSelection && !showPositionSelection) {
+            localStorage.setItem('processAnswers', JSON.stringify(answers));
+        }
+    }, [answers, showSportSelection, showPositionSelection]);
 
     const handleScroll = () => {
         const currentY = window.scrollY;
@@ -45,8 +47,15 @@ function ReflectionPage() {
         dispatch({ type: 'SET_ANSWER', key, value });
     };
 
+    const isTeamSport = (sport) => {
+        const teamSports = ['basketball', 'soccer', 'football', 'lacrosse', 'iceHockey', 'baseball'];
+        return teamSports.includes(sport);
+    };
+
     const handleSportSelect = (sport) => {
         setSelectedSport(sport);
+        dispatch({ type: 'RESET' });
+        localStorage.removeItem('processAnswers');
         if (['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'].includes(sport)) {
             setShowPositionSelection(true);
         } else {
@@ -56,6 +65,8 @@ function ReflectionPage() {
 
     const handlePositionSelect = (position) => {
         setSelectedPosition(position);
+        dispatch({ type: 'RESET' });
+        localStorage.removeItem('processAnswers');
         setShowPositionSelection(false);
         setShowSportSelection(false);
     };
@@ -67,12 +78,10 @@ function ReflectionPage() {
 
     const getQuestions = (category) => {
         if (!selectedSport) return [];
-
         const sportData = QUESTIONS[selectedSport];
         if (selectedPosition && sportData?.[selectedPosition]?.[category]) {
             return sportData[selectedPosition][category];
         }
-
         return sportData?.[category] || [];
     };
 
@@ -85,34 +94,60 @@ function ReflectionPage() {
             </header>
 
             <main className="max-w-3xl mx-auto p-4 sm:p-6 space-y-12">
-                {/* Sport / Position Modal Logic */}
                 {showSportSelection && <SportSelectionModal onSelect={handleSportSelect} />}
                 {showPositionSelection && <PositionSelectionModal sport={selectedSport} onSelect={handlePositionSelect} />}
 
-                {/* Only show questions if sport and position are ready */}
-                {!showSportSelection && !showPositionSelection && (
+                {!showSportSelection && !showPositionSelection && selectedSport && (
                     <>
-                        <SectionBlock
-                            title={<><span>Offense</span> <span className="text-sm text-gray-100">(5 required)</span></>}
-                            questions={getQuestions('offense')}
-                            sectionKey="offense"
-                            answers={answers}
-                            handleAnswer={handleAnswer}
-                        />
-                        <SectionBlock
-                            title={<><span>Defense</span> <span className="text-sm text-gray-100">(5 required)</span></>}
-                            questions={getQuestions('defense')}
-                            sectionKey="defense"
-                            answers={answers}
-                            handleAnswer={handleAnswer}
-                        />
-                        <SectionBlock
-                            title={<><span>Team Identity</span> <span className="text-sm text-gray-100">(5 required)</span></>}
-                            questions={getQuestions('teamIdentity')}
-                            sectionKey="teamIdentity"
-                            answers={answers}
-                            handleAnswer={handleAnswer}
-                        />
+                        {isTeamSport(selectedSport) ? (
+                            <>
+                                <SectionBlock
+                                    title={<><span>Offense</span> <span className="text-sm text-gray-100">(5 required)</span></>}
+                                    questions={getQuestions('offense')}
+                                    sectionKey="offense"
+                                    answers={answers}
+                                    handleAnswer={handleAnswer}
+                                />
+                                <SectionBlock
+                                    title={<><span>Defense</span> <span className="text-sm text-gray-100">(5 required)</span></>}
+                                    questions={getQuestions('defense')}
+                                    sectionKey="defense"
+                                    answers={answers}
+                                    handleAnswer={handleAnswer}
+                                />
+                                <SectionBlock
+                                    title={<><span>Team Identity & Culture</span> <span className="text-sm text-gray-100">(5 required)</span></>}
+                                    questions={getQuestions('teamIdentity')}
+                                    sectionKey="teamIdentity"
+                                    answers={answers}
+                                    handleAnswer={handleAnswer}
+                                />
+                            </>
+                        ) : (
+                            <>
+                                <SectionBlock
+                                    title={<><span>Focus</span> <span className="text-sm text-gray-100">(5 required)</span></>}
+                                    questions={getQuestions('focus')}
+                                    sectionKey="focus"
+                                    answers={answers}
+                                    handleAnswer={handleAnswer}
+                                />
+                                <SectionBlock
+                                    title={<><span>Preparation</span> <span className="text-sm text-gray-100">(5 required)</span></>}
+                                    questions={getQuestions('preparation')}
+                                    sectionKey="preparation"
+                                    answers={answers}
+                                    handleAnswer={handleAnswer}
+                                />
+                                <SectionBlock
+                                    title={<><span>Execution</span> <span className="text-sm text-gray-100">(5 required)</span></>}
+                                    questions={getQuestions('execution')}
+                                    sectionKey="execution"
+                                    answers={answers}
+                                    handleAnswer={handleAnswer}
+                                />
+                            </>
+                        )}
 
                         <div className="flex flex-col sm:flex-row gap-4 pt-6">
                             <button
