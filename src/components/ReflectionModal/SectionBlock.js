@@ -1,8 +1,9 @@
+// src/components/ReflectionModal/SectionBlock.jsx
 import React, { useEffect, useState } from 'react';
-import { FaMedal } from 'react-icons/fa'; // Import the medal icon
+import { FaMedal } from 'react-icons/fa';
 
 function SectionBlock({ title, questions, sectionKey, answers, handleAnswer, onSectionComplete }) {
-  const [sectionCompleted, setSectionCompleted] = useState(false); // ✅ Track if this section completed once
+  const [sectionCompleted, setSectionCompleted] = useState(false);
 
   const getFeedbackText = (value) => {
     switch (value) {
@@ -11,11 +12,7 @@ function SectionBlock({ title, questions, sectionKey, answers, handleAnswer, onS
       case 'no':
         return <span className="text-red-600 font-semibold ml-2">MORE WORK</span>;
       case 'unsure':
-        return (
-            <span className="text-orange-500 font-semibold ml-2">
-            NEXT PRACTICE - MAKE IT COUNT
-          </span>
-        );
+        return <span className="text-orange-500 font-semibold ml-2">NEXT PRACTICE - MAKE IT COUNT</span>;
       default:
         return null;
     }
@@ -50,13 +47,13 @@ function SectionBlock({ title, questions, sectionKey, answers, handleAnswer, onS
     }
   };
 
-  // ✅ When user finishes 5 answers, call onSectionComplete ONCE
+  // ✅ Smart section complete detection
   useEffect(() => {
-    if (!sectionCompleted && answeredCount >= 5) {
-      onSectionComplete?.(); // Optional chaining in case not passed
+    if (!sectionCompleted && answeredCount >= questions.length) {
+      onSectionComplete?.();
       setSectionCompleted(true);
     }
-  }, [answeredCount, sectionCompleted, onSectionComplete]);
+  }, [answeredCount, sectionCompleted, onSectionComplete, questions.length]);
 
   return (
       <div className="mb-16 relative">
@@ -64,19 +61,14 @@ function SectionBlock({ title, questions, sectionKey, answers, handleAnswer, onS
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <h2 className="text-lg sm:text-xl font-bold tracking-wide uppercase">{title}</h2>
-              {answeredCount >= 5 && (
+              {answeredCount >= questions.length && (
                   <FaMedal className="text-yellow-300 text-xl animate-bounce" />
               )}
             </div>
-            <span className="text-sm font-semibold">
-            {answeredCount}/{totalQuestions}
-          </span>
+            <span className="text-sm font-semibold">{answeredCount}/{totalQuestions}</span>
           </div>
 
           <div className="relative w-full h-1.5 bg-gray-400 dark:bg-gray-600 rounded-full mt-2 overflow-hidden">
-            {answeredCount >= 5 && (
-                <div className="absolute inset-0 animate-pulse bg-green-400 opacity-20 rounded-full"></div>
-            )}
             <div
                 className="h-full bg-white rounded-full transition-all"
                 style={{ width: `${progress}%` }}
