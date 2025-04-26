@@ -11,30 +11,24 @@ import answersReducer from '../reducers/answersReducer';
 
 function ReflectionPage() {
     const [selectedSport, setSelectedSport] = useState('');
-    const [selectedPosition, setSelectedPosition] = useState('');
     const [showSportSelection, setShowSportSelection] = useState(true);
     const [showPositionSelection, setShowPositionSelection] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [scoreSummary, setScoreSummary] = useState(null);
     const [hideHeader, setHideHeader] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
+    const [randomizedQuestions, setRandomizedQuestions] = useState({});
 
     const [answers, dispatch] = useReducer(
         answersReducer,
         {},
-        () => ({}) // Start fresh, no old answers
+        () => ({})
     );
 
     useEffect(() => {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, [lastScrollY]);
-
-    useEffect(() => {
-        if (!showSportSelection && !showPositionSelection) {
-            localStorage.setItem('processAnswers', JSON.stringify(answers));
-        }
-    }, [answers, showSportSelection, showPositionSelection]);
 
     const handleScroll = () => {
         const currentY = window.scrollY;
@@ -52,14 +46,37 @@ function ReflectionPage() {
         return teamSports.includes(sport);
     };
 
+    const prepareRandomQuestions = (sport, position) => {
+        const sportData = QUESTIONS[sport];
+        if (!sportData) return {};
+
+        const randomized = {};
+
+        const getRandomSubset = (arr) => [...arr].sort(() => Math.random() - 0.5).slice(0, 3);
+
+        if (position && sportData?.[position]) {
+            for (const category of Object.keys(sportData[position])) {
+                randomized[category] = getRandomSubset(sportData[position][category]);
+            }
+        } else {
+            for (const category of Object.keys(sportData)) {
+                randomized[category] = getRandomSubset(sportData[category]);
+            }
+        }
+
+        return randomized;
+    };
+
     const handleSportSelect = (sport) => {
         setSelectedSport(sport);
         dispatch({ type: 'RESET' });
         localStorage.removeItem('processAnswers');
+
         if (['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'].includes(sport)) {
             setShowPositionSelection(true);
         } else {
             setShowSportSelection(false);
+            setRandomizedQuestions(prepareRandomQuestions(sport, ''));
         }
     };
 
@@ -69,6 +86,7 @@ function ReflectionPage() {
         localStorage.removeItem('processAnswers');
         setShowPositionSelection(false);
         setShowSportSelection(false);
+        setRandomizedQuestions(prepareRandomQuestions(selectedSport, position));
     };
 
     const handleModalClose = () => {
@@ -77,22 +95,7 @@ function ReflectionPage() {
     };
 
     const getQuestions = (category) => {
-        if (!selectedSport) return [];
-
-        const sportData = QUESTIONS[selectedSport];
-        let questions = [];
-
-        if (selectedPosition && sportData?.[selectedPosition]?.[category]) {
-            questions = sportData[selectedPosition][category];
-        } else if (sportData?.[category]) {
-            questions = sportData[category];
-        }
-
-        if (!questions.length) return [];
-
-        // Randomize + select only 3
-        const shuffled = [...questions].sort(() => Math.random() - 0.5);
-        return shuffled.slice(0, 3);
+        return randomizedQuestions[category] || [];
     };
 
     return (
@@ -161,7 +164,10 @@ function ReflectionPage() {
 
                         <div className="flex flex-col sm:flex-row gap-4 pt-6">
                             <button
-                                onClick={() => handleSubmit(answers, setScoreSummary, setShowModal)}
+                                onClick={() => {
+                                    handleSubmit(answers, setScoreSummary, setShowModal);
+                                    setRandomizedQuestions({});
+                                }}
                                 className="flex-1 bg-indigo-700 text-white px-6 py-3 rounded-xl hover:bg-indigo-600 transition-all"
                             >
                                 Submit Reflection
