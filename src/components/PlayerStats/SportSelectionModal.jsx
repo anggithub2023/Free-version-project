@@ -23,8 +23,8 @@ function SportSelectionModal({ onSelect, buttonLabel = "Start" }) {
     return (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
             <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-2xl shadow-2xl p-8 w-full max-w-md space-y-6 text-center">
-                <h2 className="text-2xl sm:text-3xl font-bold">Select Your Sport</h2>
-                <p className="text-gray-500 dark:text-gray-400">Pick your sport to continue</p>
+                <h2 className="text-2xl sm:text-3xl font-bold">What's Your Game?</h2>
+                <p className="text-gray-500 dark:text-gray-400">Pick your sport and start your journey.</p>
 
                 <div className="grid grid-cols-4 gap-4">
                     {sports.map((sport) => (
