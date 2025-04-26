@@ -1,67 +1,50 @@
-import questions from '../data/basketball/questions';
-import { scoreValue } from './scoring';
+// src/helpers/handleSubmit.js
 
-const handleSubmit = (answers, setScoreSummary, setShowModal) => {
-    const allSections = Object.keys(questions);
+function handleSubmit(answers, setScoreSummary, setShowModal, bonusAnswer) {
+    if (!answers) return;
 
-    // ✅ Ensure at least 5 answers per section
-    const allAnswered = allSections.every((section) => {
-        const answeredCount = questions[section].filter((_, idx) => answers[`${section}-${idx}`]).length;
-        return answeredCount >= 5;
-    });
+    const categories = ['offense', 'defense', 'teamIdentity', 'focus', 'preparation', 'execution'];
 
-    if (!allAnswered) {
-        const allKeys = Object.keys(questions).flatMap((section) =>
-            questions[section].map((_, idx) => `${section}-${idx}`)
-        );
+    const scoreByCategory = {};
+    let totalYes = 0;
+    let totalQuestions = 0;
 
-        const firstUnansweredKey = allKeys.find((key) => !answers[key]);
-        const scrollTarget = document.getElementById(`card-${firstUnansweredKey}`);
-        if (scrollTarget) {
-            scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    categories.forEach((category) => {
+        const categoryKeys = Object.keys(answers).filter((key) => key.startsWith(category));
+        const yesCount = categoryKeys.filter((key) => answers[key] === 'yes').length;
+        const categoryTotal = categoryKeys.length;
+
+        if (categoryTotal > 0) {
+            scoreByCategory[category] = Math.round((yesCount / categoryTotal) * 100);
         }
 
-        setTimeout(() => {
-            alert('Please answer at least 5 questions in each section.');
-        }, 200);
-        return;
-    }
+        totalYes += yesCount;
+        totalQuestions += categoryTotal;
+    });
 
-    // ✅ Score calculation per section
-    const calcSectionScore = (sectionKey) => {
-        const rawScores = questions[sectionKey]
-            .map((_, idx) => scoreValue(answers[`${sectionKey}-${idx}`]))
-            .filter((val) => val !== null);
+    const totalScore = totalQuestions > 0 ? Math.round((totalYes / totalQuestions) * 100) : 0;
 
-        const totalScore = rawScores.reduce((sum, val) => sum + val, 0);
-        const pct = rawScores.length > 0 ? (totalScore / (rawScores.length * 2)) * 100 : 0;
-        return Math.round(pct);
-    };
-
-    const offensePct = calcSectionScore('offense');
-    const defensePct = calcSectionScore('defense');
-    const teamIdentityPct = calcSectionScore('teamIdentity');
-
-    const total = Math.round((offensePct + defensePct + teamIdentityPct) / 3);
-
-    // ✅ Add empty gameStats to avoid downstream crashes
     const summary = {
-        timestamp: new Date().toISOString(),
-        total,
-        offense: offensePct,
-        defense: defensePct,
-        teamIdentity: teamIdentityPct,
-        answers: { ...answers },
-        gameStats: [] // ✅ critical addition
+        total: totalScore,
+        offense: scoreByCategory.offense || 0,
+        defense: scoreByCategory.defense || 0,
+        culture: scoreByCategory.teamIdentity || 0,
+        focus: scoreByCategory.focus || 0,
+        preparation: scoreByCategory.preparation || 0,
+        execution: scoreByCategory.execution || 0,
+        bonus: bonusAnswer || 0
     };
 
-    const history = JSON.parse(localStorage.getItem('processHistory')) || [];
-    history.push(summary);
-    localStorage.setItem('processHistory', JSON.stringify(history));
-    localStorage.removeItem('processAnswers');
+    const processHistory = JSON.parse(localStorage.getItem('processHistory')) || [];
+    const newEntry = {
+        timestamp: Date.now(),
+        ...summary
+    };
+
+    localStorage.setItem('processHistory', JSON.stringify([...processHistory, newEntry]));
 
     setScoreSummary(summary);
     setShowModal(true);
-};
+}
 
 export default handleSubmit;
