@@ -1,5 +1,10 @@
 // src/pages/ReflectionPage.jsx
 import React, { useEffect, useReducer, useState } from 'react';
+// ⬇️ ADD THIS
+useEffect(() => {
+    localStorage.removeItem('selectedSport');
+    localStorage.removeItem('selectedPosition');
+}, []);
 import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
 import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
