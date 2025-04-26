@@ -1,5 +1,3 @@
-// src/pages/ReflectionPage.jsx
-
 import React, { useState, useEffect, useReducer } from 'react';
 import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
@@ -10,9 +8,8 @@ import BonusQuestion from '../components/ReflectionModal/BonusQuestion';
 import handleSubmit from '../helpers/handleSubmit';
 
 function ReflectionPage() {
-    const [selectedSport, setSelectedSport] = useState(() => localStorage.getItem('selectedSport') || '');
-    const [selectedPosition, setSelectedPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
-    const [loadingSelections, setLoadingSelections] = useState(!localStorage.getItem('selectedSport'));
+    const [selectedSport] = useState(() => localStorage.getItem('selectedSport') || '');
+    const [selectedPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
     const [showModal, setShowModal] = useState(false);
     const [scoreSummary, setScoreSummary] = useState(null);
     const [hideHeader, setHideHeader] = useState(false);
@@ -47,16 +44,8 @@ function ReflectionPage() {
         dispatch({ type: 'SET_ANSWER', key: 'bonus', value });
     };
 
-    if (loadingSelections) {
-        return <ReflectionStartFlow onComplete={(sport, position) => {
-            setSelectedSport(sport);
-            setSelectedPosition(position);
-            setLoadingSelections(false);
-        }} />;
-    }
-
     if (!selectedSport) {
-        return null;
+        return <ReflectionStartFlow onComplete={() => {}} />;
     }
 
     const currentQuestions = QUESTIONS[selectedSport]?.[selectedPosition] || QUESTIONS[selectedSport] || {};
