@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import AveragesPanel from '../components/Analytics/AveragesPanel';
+import ProgressBarsPanel from '../components/Analytics/ProgressBarsPanel';
+import StatsGraphs from '../components/Analytics/StatsGraphs';
+import StatsHistoryTable from '../components/Analytics/StatsHistoryTable';
 
 function PlayerAnalyticsPage() {
     const [gameStats, setGameStats] = useState([]);
@@ -25,6 +29,7 @@ function PlayerAnalyticsPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 p-6">
             <div className="max-w-6xl mx-auto">
+
                 {/* Title */}
                 <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8 text-green-700 dark:text-green-300">
                     🎯 Player Control Center
@@ -48,29 +53,31 @@ function PlayerAnalyticsPage() {
                 {selectedSport ? (
                     filteredStats.length > 0 ? (
                         <div className="space-y-10">
-                            {/* --- Averages Panel Placeholder --- */}
+
+                            {/* Averages Panel */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                                 <h2 className="text-2xl font-semibold mb-4">📊 Averages</h2>
-                                {/* AveragesPanel goes here */}
+                                <AveragesPanel filteredStats={filteredStats} />
                             </div>
 
-                            {/* --- Progress Bars Placeholder --- */}
+                            {/* Progress Bars Panel */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                                 <h2 className="text-2xl font-semibold mb-4">📈 Progress Bars</h2>
-                                {/* ProgressBarsPanel goes here */}
+                                <ProgressBarsPanel filteredStats={filteredStats} />
                             </div>
 
-                            {/* --- Graphs Section Placeholder --- */}
+                            {/* Stats Graphs Section */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                                 <h2 className="text-2xl font-semibold mb-4">📈 Stat Trends</h2>
-                                {/* StatsGraphs goes here */}
+                                <StatsGraphs filteredStats={filteredStats} />
                             </div>
 
-                            {/* --- Stats History Placeholder --- */}
+                            {/* Stats History Table */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                                 <h2 className="text-2xl font-semibold mb-4">📜 Stat History</h2>
-                                {/* StatsHistoryTable goes here */}
+                                <StatsHistoryTable filteredStats={filteredStats} />
                             </div>
+
                         </div>
                     ) : (
                         <div className="text-center mt-12 text-gray-500 dark:text-gray-400">
