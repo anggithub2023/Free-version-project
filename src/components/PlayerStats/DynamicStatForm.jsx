@@ -3,6 +3,9 @@ import React, { useState } from 'react';
 function DynamicStatForm({ sport, position, onSaveStat }) {
     const [formData, setFormData] = useState({});
 
+    // Normalize sport id (lowercase, no special chars)
+    const normalizeSport = (sportId) => sportId?.toLowerCase().replace(/[^a-z]/g, '');
+
     const sportFields = {
         basketball: ["Points", "Assists", "Rebounds", "Steals", "Blocks", "Turnovers", "Minutes Played"],
 
@@ -29,7 +32,7 @@ function DynamicStatForm({ sport, position, onSaveStat }) {
             ? ["Strikeouts", "ERA", "Walks Allowed", "Innings Pitched"]
             : ["Hits", "Runs", "RBIs", "Home Runs", "Errors"],
 
-        iceHockey: position === "Goalie"
+        icehockey: position === "Goalie"
             ? ["Saves", "Goals Against", "Save Percentage"]
             : ["Goals", "Assists", "Shots on Goal", "Plus/Minus Rating"],
 
@@ -37,12 +40,12 @@ function DynamicStatForm({ sport, position, onSaveStat }) {
             ? ["Saves", "Goals Against"]
             : ["Goals", "Assists", "Ground Balls", "Faceoffs Won"],
 
-        trackCrossCountry: ["Event Name", "Time", "Placement"],
+        trackcrosscountry: ["Event Name", "Time", "Placement"],
 
         golf: ["Round Score", "Pars", "Birdies", "Bogeys", "Fairways Hit", "Greens in Regulation"]
     };
 
-    const fields = sportFields[sport?.toLowerCase()] || [];
+    const fields = sportFields[normalizeSport(sport)] || [];
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -58,32 +61,37 @@ function DynamicStatForm({ sport, position, onSaveStat }) {
                 position: position || "General Player",
                 stats: formData
             });
-            setFormData({}); // reset after save
+            setFormData({}); // Reset form after save
         }
     };
 
-    if (!sport) return <div className="text-center">No sport selected yet.</div>;
+    if (!sport) return <div className="text-center mt-10 text-gray-500">No sport selected yet.</div>;
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto">
             <h2 className="text-2xl font-bold text-center mb-4">
-                Log Stats for {sport} {position && `- ${position}`}
+                Log Stats for {sport.charAt(0).toUpperCase() + sport.slice(1)} {position && `- ${position}`}
             </h2>
-            {fields.map((field) => (
-                <div key={field} className="flex flex-col">
-                    <label className="text-gray-700 font-medium mb-1">{field}</label>
-                    <input
-                        type="number"
-                        name={field}
-                        value={formData[field] || ""}
-                        onChange={handleChange}
-                        className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400"
-                    />
-                </div>
-            ))}
+            {fields.length > 0 ? (
+                fields.map((field) => (
+                    <div key={field} className="flex flex-col">
+                        <label className="text-gray-700 dark:text-gray-300 font-medium mb-1">{field}</label>
+                        <input
+                            type="number"
+                            name={field}
+                            value={formData[field] || ""}
+                            onChange={handleChange}
+                            className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
+                              bg-white dark:bg-gray-700 dark:text-white"
+                        />
+                    </div>
+                ))
+            ) : (
+                <div className="text-center text-gray-500">No input fields configured for this sport yet.</div>
+            )}
             <button
                 type="submit"
-                className="w-full py-3 mt-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg"
+                className="w-full py-3 mt-6 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg"
             >
                 Save Stats
             </button>
