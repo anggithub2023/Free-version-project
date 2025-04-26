@@ -66,11 +66,14 @@ function ReflectionPage() {
     };
 
     const getQuestions = (category) => {
-        return (
-            QUESTIONS[selectedSport]?.[selectedPosition]?.[category] ||
-            QUESTIONS[selectedSport]?.[category] ||
-            []
-        );
+        if (!selectedSport) return [];
+
+        const sportData = QUESTIONS[selectedSport];
+        if (selectedPosition && sportData?.[selectedPosition]?.[category]) {
+            return sportData[selectedPosition][category];
+        }
+
+        return sportData?.[category] || [];
     };
 
     return (
