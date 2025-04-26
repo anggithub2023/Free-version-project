@@ -1,6 +1,6 @@
-// src/helpers/handleSubmit.js
+// src/helpers/handleSubmit.js (Final Version)
 
-function handleSubmit(answers, setScoreSummary, setShowModal, bonusAnswer) {
+function handleSubmit(answers, callback, bonusAnswer) {
     if (!answers) return;
 
     const categories = ['offense', 'defense', 'teamIdentity', 'focus', 'preparation', 'execution'];
@@ -43,8 +43,7 @@ function handleSubmit(answers, setScoreSummary, setShowModal, bonusAnswer) {
 
     localStorage.setItem('processHistory', JSON.stringify([...processHistory, newEntry]));
 
-    setScoreSummary(summary);
-    setShowModal(true);
+    callback(summary); // ✅ Now pass the data BACK to the caller
 }
 
 export default handleSubmit;
