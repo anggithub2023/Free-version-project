@@ -60,7 +60,7 @@ function DynamicStatForm({ sport, position, onSaveStat }) {
                 position: position || "General Player",
                 stats: formData
             });
-            setFormData({}); // Reset form after save
+            setFormData({});
         }
     };
 
@@ -81,7 +81,9 @@ function DynamicStatForm({ sport, position, onSaveStat }) {
                             value={formData[field] || ""}
                             onChange={handleChange}
                             className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
-                                bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-white"
+                              bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white
+                              placeholder-gray-400 dark:placeholder-gray-500"
+                            placeholder={field}
                         />
                     </div>
                 ))
