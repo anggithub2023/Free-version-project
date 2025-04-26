@@ -1,4 +1,4 @@
-// src/pages/ReflectionPage.jsx (FINAL VERSION)
+// src/pages/ReflectionPage.jsx (RADIO ANSWER VERSION)
 
 import React, { useState, useEffect, useReducer } from 'react';
 import QUESTIONS, { BONUS_QUESTIONS } from '../data/QUESTIONS';
@@ -37,8 +37,8 @@ function ReflectionPage() {
             selectedQuestions[category].map((q, index) => `${category}_${index}`)
         );
 
-        const answered = allKeys.filter((key) => state[key]);
-        return Math.round((answered.length / allKeys.length) * 100);
+        const answeredYes = allKeys.filter((key) => state[key] === 'yes');
+        return Math.round((answeredYes.length / allKeys.length) * 100);
     };
 
     const handleSubmit = () => {
@@ -92,19 +92,27 @@ function ReflectionPage() {
                                 <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
                                     {capitalize(category)} <span className="text-sm font-normal text-gray-500">(Answer 3)</span>
                                 </h2>
-                                <div className="space-y-2">
+                                <div className="space-y-4">
                                     {randomizedQuestions[category].map((question, idx) => {
                                         const key = `${category}_${idx}`;
                                         return (
-                                            <div key={key} className="flex items-center">
-                                                <input
-                                                    id={key}
-                                                    type="checkbox"
-                                                    checked={state[key] || false}
-                                                    onChange={(e) => handleAnswerChange(key, e.target.checked)}
-                                                    className="mr-2"
-                                                />
-                                                <label htmlFor={key} className="text-gray-700 dark:text-white">{question}</label>
+                                            <div key={key} className="space-y-2">
+                                                <label className="block text-gray-700 dark:text-white">{question}</label>
+                                                <div className="flex gap-4">
+                                                    {['yes', 'no', 'unsure'].map((option) => (
+                                                        <label key={option} className="inline-flex items-center">
+                                                            <input
+                                                                type="radio"
+                                                                name={key}
+                                                                value={option}
+                                                                checked={state[key] === option}
+                                                                onChange={(e) => handleAnswerChange(key, e.target.value)}
+                                                                className="form-radio text-indigo-600"
+                                                            />
+                                                            <span className="ml-2 capitalize">{option}</span>
+                                                        </label>
+                                                    ))}
+                                                </div>
                                             </div>
                                         );
                                     })}
