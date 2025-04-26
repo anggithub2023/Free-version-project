@@ -1,19 +1,29 @@
 // src/components/ReflectionModal/ReflectionStartFlow.jsx
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import SportSelectionModal from './SportSelectionModal';
 import PositionSelectionModal from './PositionSelectionModal';
 
 function ReflectionStartFlow({ onComplete }) {
-    const [sport, setSport] = useState(() => localStorage.getItem('selectedSport') || '');
-    const [position, setPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
-    const [step, setStep] = useState(() => {
-        if (!sport) return 'sport';
-        if (sport && !position && requiresPosition(sport)) return 'position';
-        return 'done';
-    });
+    const [sport, setSport] = useState('');
+    const [step, setStep] = useState('sport');
 
-    function requiresPosition(sport) {
-        return ['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'].includes(sport);
+    useEffect(() => {
+        const savedSport = localStorage.getItem('selectedSport') || '';
+        const savedPosition = localStorage.getItem('selectedPosition') || '';
+
+        if (!savedSport) {
+            setStep('sport');
+        } else if (requiresPosition(savedSport) && !savedPosition) {
+            setSport(savedSport);
+            setStep('position');
+        } else {
+            onComplete(savedSport, savedPosition);
+        }
+    }, [onComplete]);
+
+    function requiresPosition(selectedSport) {
+        return ['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'].includes(selectedSport);
     }
 
     const handleSportSelect = (selectedSport) => {
@@ -23,15 +33,13 @@ function ReflectionStartFlow({ onComplete }) {
         if (requiresPosition(selectedSport)) {
             setStep('position');
         } else {
-            setStep('done');
-            onComplete(selectedSport, ''); // No position needed
+            onComplete(selectedSport, '');
         }
     };
 
     const handlePositionSelect = (selectedPosition) => {
         setPosition(selectedPosition);
         localStorage.setItem('selectedPosition', selectedPosition);
-        setStep('done');
         onComplete(sport, selectedPosition);
     };
 
@@ -43,7 +51,7 @@ function ReflectionStartFlow({ onComplete }) {
         return <PositionSelectionModal onSelect={handlePositionSelect} sport={sport} />;
     }
 
-    return null; // Already completed selection
+    return null; // If loading / fallback safeguard
 }
 
 export default ReflectionStartFlow;
