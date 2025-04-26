@@ -80,7 +80,8 @@ function DynamicStatForm({ sport, position, onSaveStat }) {
                             name={field}
                             value={formData[field] || ""}
                             onChange={handleChange}
-                            className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400 bg-white dark:bg-gray-700 dark:text-white"
+                            className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
+                                bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-white"
                         />
                     </div>
                 ))
