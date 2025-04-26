@@ -1,4 +1,4 @@
-// src/pages/ReflectionPage.jsx (FINAL ELITE VERSION)
+// src/pages/ReflectionPage.jsx (FINALIZED + Bonus Styling Fixed)
 
 import React, { useState, useEffect, useReducer } from 'react';
 import QUESTIONS, { BONUS_QUESTIONS } from '../data/QUESTIONS';
@@ -22,6 +22,8 @@ function ReflectionPage() {
     const [scoreSummary, setScoreSummary] = useState(null);
     const [hideHeader, setHideHeader] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
+    const [lockedQuestions, setLockedQuestions] = useState(null);
+    const [bonusQuestion, setBonusQuestion] = useState('');
 
     useEffect(() => {
         localStorage.setItem('processAnswers', JSON.stringify(answers));
@@ -45,6 +47,17 @@ function ReflectionPage() {
         if (sport) setReady(true);
     }, []);
 
+    useEffect(() => {
+        if (ready) {
+            const selected = getSelectedQuestions();
+            if (selected) {
+                const randomized = randomizeQuestions(selected);
+                setLockedQuestions(randomized);
+            }
+            setBonusQuestion(BONUS_QUESTIONS[Math.floor(Math.random() * BONUS_QUESTIONS.length)]);
+        }
+    }, [ready]);
+
     const handleAnswer = (section, idx, value) => {
         const key = `${section}-${idx}`;
         dispatch({ type: 'SET_ANSWER', key, value });
@@ -65,11 +78,7 @@ function ReflectionPage() {
         return randomQuestions;
     };
 
-    const selectedQuestions = getSelectedQuestions();
-    const randomizedQuestions = selectedQuestions ? randomizeQuestions(selectedQuestions) : {};
-    const randomBonusQuestion = BONUS_QUESTIONS[Math.floor(Math.random() * BONUS_QUESTIONS.length)];
-
-    if (!ready) {
+    if (!ready || !lockedQuestions) {
         return <ReflectionStartFlow onComplete={() => window.location.reload()} />;
     }
 
@@ -84,11 +93,11 @@ function ReflectionPage() {
             </header>
 
             <main className="max-w-3xl mx-auto p-4 sm:p-6 space-y-12">
-                {selectedQuestions && Object.keys(randomizedQuestions).map((category) => (
+                {Object.keys(lockedQuestions).map((category) => (
                     <SectionBlock
                         key={category}
                         title={<>{category.replace(/([A-Z])/g, ' $1').trim()} <span className="text-sm text-gray-100">(3 required)</span></>}
-                        questions={randomizedQuestions[category]}
+                        questions={lockedQuestions[category]}
                         sectionKey={category}
                         answers={answers}
                         handleAnswer={handleAnswer}
@@ -96,17 +105,19 @@ function ReflectionPage() {
                 ))}
 
                 <div className="mb-12">
-                    <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Bonus Reflection</h2>
-                    <p className="text-gray-700 dark:text-gray-300 mb-4">{randomBonusQuestion}</p>
-                    <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={bonusAnswer}
-                        onChange={(e) => setBonusAnswer(Number(e.target.value))}
-                        className="w-full"
-                    />
-                    <div className="text-center text-sm mt-2">{bonusAnswer}%</div>
+                    <h2 className="text-center text-2xl font-bold text-indigo-700 dark:text-indigo-300 mb-6">Bonus Reflection</h2>
+                    <div className="border p-6 rounded-xl bg-white dark:bg-gray-800 shadow-md">
+                        <p className="text-gray-800 dark:text-white mb-4 font-medium">{bonusQuestion}</p>
+                        <input
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={bonusAnswer}
+                            onChange={(e) => setBonusAnswer(Number(e.target.value))}
+                            className="w-full"
+                        />
+                        <div className="text-center text-sm mt-2">{bonusAnswer}%</div>
+                    </div>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 pt-6">
