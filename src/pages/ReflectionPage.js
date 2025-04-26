@@ -22,7 +22,7 @@ function ReflectionPage() {
     const [answers, dispatch] = useReducer(
         answersReducer,
         {},
-        () => ({}) // Start fresh, do NOT load old answers from localStorage
+        () => ({}) // Start fresh, no old answers
     );
 
     useEffect(() => {
@@ -78,11 +78,21 @@ function ReflectionPage() {
 
     const getQuestions = (category) => {
         if (!selectedSport) return [];
+
         const sportData = QUESTIONS[selectedSport];
+        let questions = [];
+
         if (selectedPosition && sportData?.[selectedPosition]?.[category]) {
-            return sportData[selectedPosition][category];
+            questions = sportData[selectedPosition][category];
+        } else if (sportData?.[category]) {
+            questions = sportData[category];
         }
-        return sportData?.[category] || [];
+
+        if (!questions.length) return [];
+
+        // Randomize + select only 3
+        const shuffled = [...questions].sort(() => Math.random() - 0.5);
+        return shuffled.slice(0, 3);
     };
 
     return (
