@@ -22,12 +22,28 @@ function ReflectionPage() {
     const [hideHeader, setHideHeader] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
 
+    const [randomizedQuestions, setRandomizedQuestions] = useState({});
+
     const handleStartComplete = (sport, position) => {
         setSelectedSport(sport);
         setSelectedPosition(position);
         setLoadingSelections(false);
-        dispatch({ type: 'RESET' }); // Clear old answers
+        dispatch({ type: 'RESET' });
     };
+
+    useEffect(() => {
+        if (selectedSport) {
+            const rawQuestions = QUESTIONS[selectedSport]?.[selectedPosition?.toLowerCase()] || QUESTIONS[selectedSport];
+            if (rawQuestions) {
+                const randomized = {};
+                Object.keys(rawQuestions).forEach((category) => {
+                    const shuffled = [...rawQuestions[category]].sort(() => Math.random() - 0.5);
+                    randomized[category] = shuffled.slice(0, 3); // Only 3 questions
+                });
+                setRandomizedQuestions(randomized);
+            }
+        }
+    }, [selectedSport, selectedPosition]);
 
     useEffect(() => {
         localStorage.setItem('processAnswers', JSON.stringify(answers));
@@ -52,8 +68,6 @@ function ReflectionPage() {
         return <ReflectionStartFlow onComplete={handleStartComplete} />;
     }
 
-    const currentQuestions = QUESTIONS[selectedSport]?.[selectedPosition?.toLowerCase()] || QUESTIONS[selectedSport];
-
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-slate-100 dark:from-gray-900 dark:to-gray-800">
             <header className={`sticky top-0 z-40 w-full bg-gradient-to-r from-indigo-500 to-indigo-700 dark:from-indigo-700 dark:to-indigo-900 bg-opacity-90 backdrop-blur-md shadow-md py-6 px-4 sm:px-6 transition-transform duration-300 ${hideHeader ? '-translate-y-full' : 'translate-y-0'}`}>
@@ -64,17 +78,15 @@ function ReflectionPage() {
 
             <main className="max-w-3xl mx-auto p-4 sm:p-6 space-y-12">
 
-                {['offense', 'defense', 'teamIdentity', 'focus', 'preparation', 'execution'].map((category) => (
-                    currentQuestions?.[category] && (
-                        <SectionBlock
-                            key={category}
-                            title={formatSectionTitle(category)}
-                            questions={currentQuestions[category]}
-                            sectionKey={category}
-                            answers={answers}
-                            handleAnswer={handleAnswer}
-                        />
-                    )
+                {Object.keys(randomizedQuestions).map((category) => (
+                    <SectionBlock
+                        key={category}
+                        title={formatSectionTitle(category)}
+                        questions={randomizedQuestions[category]}
+                        sectionKey={category}
+                        answers={answers}
+                        handleAnswer={handleAnswer}
+                    />
                 ))}
 
                 <BonusQuestion
