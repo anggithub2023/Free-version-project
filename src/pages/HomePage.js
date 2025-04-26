@@ -53,7 +53,7 @@ function HomePage() {
             icon: <FaChartBar className="text-white bg-green-500 rounded-full p-1 text-4xl" />,
             color: 'text-green-700',
             shadow: 'hover:shadow-green-300',
-            route: '/PlayerStats',
+            route: '/playerstats',
             description:
                 'Track your game-by-game performance, see averages, and download your progress.'
         },
