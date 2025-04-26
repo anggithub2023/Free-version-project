@@ -1,10 +1,11 @@
-// src/pages/ReflectionPage.jsx (RADIO ANSWER VERSION)
+// src/pages/ReflectionPage.jsx (FINAL VERSION with SectionBlock)
 
 import React, { useState, useEffect, useReducer } from 'react';
 import QUESTIONS, { BONUS_QUESTIONS } from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
 import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
 import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
+import SectionBlock from '../components/ReflectionModal/SectionBlock'; // Path depends where you place it
 
 function ReflectionPage() {
     const [ready, setReady] = useState(false);
@@ -13,7 +14,7 @@ function ReflectionPage() {
     const [state, dispatch] = useReducer(answersReducer, {});
     const [showModal, setShowModal] = useState(false);
     const [score, setScore] = useState(null);
-    const [bonusAnswer, setBonusAnswer] = useState(50);
+    const [bonusAnswer, setBonusAnswer] = useState(50); // Separate bonus state!
 
     useEffect(() => {
         const sport = localStorage.getItem('selectedSport') || '';
@@ -25,7 +26,8 @@ function ReflectionPage() {
 
     const capitalize = (word) => word.charAt(0).toUpperCase() + word.slice(1);
 
-    const handleAnswerChange = (key, value) => {
+    const handleAnswerChange = (section, idx, value) => {
+        const key = `${section}-${idx}`;
         dispatch({ type: 'SET_ANSWER', key, value });
     };
 
@@ -34,7 +36,7 @@ function ReflectionPage() {
         if (!selectedQuestions) return 0;
 
         const allKeys = Object.keys(selectedQuestions).flatMap((category) =>
-            selectedQuestions[category].map((q, index) => `${category}_${index}`)
+            selectedQuestions[category].map((_, index) => `${category}-${index}`)
         );
 
         const answeredYes = allKeys.filter((key) => state[key] === 'yes');
@@ -88,39 +90,17 @@ function ReflectionPage() {
                 {selectedQuestions ? (
                     <>
                         {Object.keys(randomizedQuestions).map((category) => (
-                            <div key={category} className="mb-8">
-                                <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
-                                    {capitalize(category)} <span className="text-sm font-normal text-gray-500">(Answer 3)</span>
-                                </h2>
-                                <div className="space-y-4">
-                                    {randomizedQuestions[category].map((question, idx) => {
-                                        const key = `${category}_${idx}`;
-                                        return (
-                                            <div key={key} className="space-y-2">
-                                                <label className="block text-gray-700 dark:text-white">{question}</label>
-                                                <div className="flex gap-4">
-                                                    {['yes', 'no', 'unsure'].map((option) => (
-                                                        <label key={option} className="inline-flex items-center">
-                                                            <input
-                                                                type="radio"
-                                                                name={key}
-                                                                value={option}
-                                                                checked={state[key] === option}
-                                                                onChange={(e) => handleAnswerChange(key, e.target.value)}
-                                                                className="form-radio text-indigo-600"
-                                                            />
-                                                            <span className="ml-2 capitalize">{option}</span>
-                                                        </label>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
+                            <SectionBlock
+                                key={category}
+                                title={capitalize(category)}
+                                questions={randomizedQuestions[category]}
+                                sectionKey={category}
+                                answers={state}
+                                handleAnswer={handleAnswerChange}
+                            />
                         ))}
 
-                        <div className="mb-8">
+                        <div className="mb-12">
                             <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-2">Bonus Reflection</h2>
                             <p className="text-gray-700 dark:text-gray-300 mb-4">{randomBonusQuestion}</p>
                             <input
