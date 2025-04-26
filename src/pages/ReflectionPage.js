@@ -1,4 +1,4 @@
-// src/pages/ReflectionPage.jsx (FINALIZED + Bonus Styling Fixed)
+// src/pages/ReflectionPage.jsx (Final Version - Random Lock Until Submit)
 
 import React, { useState, useEffect, useReducer } from 'react';
 import QUESTIONS, { BONUS_QUESTIONS } from '../data/QUESTIONS';
@@ -20,8 +20,7 @@ function ReflectionPage() {
     const [bonusAnswer, setBonusAnswer] = useState(50);
     const [showModal, setShowModal] = useState(false);
     const [scoreSummary, setScoreSummary] = useState(null);
-    const [hideHeader, setHideHeader] = useState(false);
-    const [lastScrollY, setLastScrollY] = useState(0);
+    const [titleHidden, setTitleHidden] = useState(false);
     const [lockedQuestions, setLockedQuestions] = useState(null);
     const [bonusQuestion, setBonusQuestion] = useState('');
 
@@ -31,13 +30,13 @@ function ReflectionPage() {
 
     useEffect(() => {
         const handleScroll = () => {
-            const currentY = window.scrollY;
-            setHideHeader(currentY > lastScrollY && currentY > 100);
-            setLastScrollY(currentY);
+            if (!titleHidden) {
+                setTitleHidden(true);
+            }
         };
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [lastScrollY]);
+    }, [titleHidden]);
 
     useEffect(() => {
         const sport = localStorage.getItem('selectedSport') || '';
@@ -49,12 +48,21 @@ function ReflectionPage() {
 
     useEffect(() => {
         if (ready) {
-            const selected = getSelectedQuestions();
-            if (selected) {
-                const randomized = randomizeQuestions(selected);
-                setLockedQuestions(randomized);
+            const savedQuestions = sessionStorage.getItem('processQuestions');
+            if (savedQuestions) {
+                setLockedQuestions(JSON.parse(savedQuestions));
+                setBonusQuestion(sessionStorage.getItem('processBonus') || '');
+            } else {
+                const selected = getSelectedQuestions();
+                if (selected) {
+                    const randomized = randomizeQuestions(selected);
+                    setLockedQuestions(randomized);
+                    sessionStorage.setItem('processQuestions', JSON.stringify(randomized));
+                    const randomBonus = BONUS_QUESTIONS[Math.floor(Math.random() * BONUS_QUESTIONS.length)];
+                    setBonusQuestion(randomBonus);
+                    sessionStorage.setItem('processBonus', randomBonus);
+                }
             }
-            setBonusQuestion(BONUS_QUESTIONS[Math.floor(Math.random() * BONUS_QUESTIONS.length)]);
         }
     }, [ready]);
 
@@ -78,19 +86,25 @@ function ReflectionPage() {
         return randomQuestions;
     };
 
+    const handleReflectionSubmit = () => {
+        handleSubmit(answers, setScoreSummary, setShowModal, bonusAnswer);
+        sessionStorage.removeItem('processQuestions');
+        sessionStorage.removeItem('processBonus');
+    };
+
     if (!ready || !lockedQuestions) {
         return <ReflectionStartFlow onComplete={() => window.location.reload()} />;
     }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-slate-100 dark:from-gray-900 dark:to-gray-800">
-            <header
-                className={`sticky top-0 z-40 w-full bg-gradient-to-r from-indigo-500 to-indigo-700 dark:from-indigo-700 dark:to-indigo-900 bg-opacity-90 backdrop-blur-md shadow-md py-6 px-4 sm:px-6 transition-transform duration-300 ${hideHeader ? '-translate-y-full' : 'translate-y-0'}`}
-            >
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-white tracking-wide uppercase">
-                    Focus. Reflect. Dominate.
-                </h1>
-            </header>
+            {!titleHidden && (
+                <header className="sticky top-0 z-40 w-full bg-gradient-to-r from-indigo-500 to-indigo-700 dark:from-indigo-700 dark:to-indigo-900 bg-opacity-90 backdrop-blur-md shadow-md py-6 px-4 sm:px-6">
+                    <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-white tracking-wide uppercase">
+                        Focus. Reflect. Dominate.
+                    </h1>
+                </header>
+            )}
 
             <main className="max-w-3xl mx-auto p-4 sm:p-6 space-y-12">
                 {Object.keys(lockedQuestions).map((category) => (
@@ -122,7 +136,7 @@ function ReflectionPage() {
 
                 <div className="flex flex-col sm:flex-row gap-4 pt-6">
                     <button
-                        onClick={() => handleSubmit(answers, setScoreSummary, setShowModal, bonusAnswer)}
+                        onClick={handleReflectionSubmit}
                         className="flex-1 bg-indigo-700 text-white px-6 py-3 rounded-xl hover:bg-indigo-600 transition-all"
                     >
                         Submit Reflection
@@ -143,7 +157,7 @@ function ReflectionPage() {
                     offense={scoreSummary.offense}
                     defense={scoreSummary.defense}
                     culture={scoreSummary.culture}
-                    bonus={bonusAnswer}
+                    bonus={scoreSummary.bonus}
                     onClose={() => window.location.href = '/'}
                 />
             )}
