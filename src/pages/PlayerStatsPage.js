@@ -1,18 +1,18 @@
-// src/pages/PlayerStatsPage.jsx (✅ Full Clean Version)
+// src/pages/PlayerStatsPage.jsx (PATCHED - FINAL CLEAN VERSION)
 
 import React, { useState, useEffect } from 'react';
 import ReflectionStartFlow from '../components/PlayerStats/ReflectionStartFlow';
 import PositionSelectionModal from '../components/PlayerStats/PositionSelectionModal';
 import DynamicStatForm from '../components/PlayerStats/DynamicStatForm';
-import ConfirmModal from '../components/ConfirmModal'; // For clear all stats confirmation
-
-const sportsWithPositions = ['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'];
+import ConfirmModal from '../components/ConfirmModal';
 
 function PlayerStatsPage() {
     const [selectedSport, setSelectedSport] = useState(() => localStorage.getItem('selectedSport') || '');
     const [selectedPosition, setSelectedPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
     const [gameStats, setGameStats] = useState([]);
     const [showClearModal, setShowClearModal] = useState(false);
+
+    const sportsWithPositions = ['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'];
 
     useEffect(() => {
         const savedStats = JSON.parse(localStorage.getItem('gameStats')) || [];
@@ -88,7 +88,7 @@ function PlayerStatsPage() {
                         onClick={handleDownloadStats}
                         className="p-4 rounded-full bg-green-600 hover:bg-green-500 text-white shadow-lg"
                     >
-                        📅 Download
+                        📅
                     </button>
                 )}
 
@@ -97,7 +97,7 @@ function PlayerStatsPage() {
                         onClick={() => setShowClearModal(true)}
                         className="p-4 rounded-full bg-red-600 hover:bg-red-500 text-white shadow-lg"
                     >
-                        🗑️ Clear
+                        🗑️
                     </button>
                 )}
             </div>
