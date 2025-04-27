@@ -1,16 +1,18 @@
+// src/pages/PlayerStatsPage.jsx (✅ Full Clean Version)
+
 import React, { useState, useEffect } from 'react';
-import SportSelectionModal from '../components/PlayerStats/SportSelectionModal';
+import ReflectionStartFlow from '../components/PlayerStats/ReflectionStartFlow';
 import PositionSelectionModal from '../components/PlayerStats/PositionSelectionModal';
 import DynamicStatForm from '../components/PlayerStats/DynamicStatForm';
 import ConfirmModal from '../components/ConfirmModal'; // For clear all stats confirmation
 
+const sportsWithPositions = ['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'];
+
 function PlayerStatsPage() {
-    const [selectedSport, setSelectedSport] = useState('');
-    const [selectedPosition, setSelectedPosition] = useState('');
+    const [selectedSport, setSelectedSport] = useState(() => localStorage.getItem('selectedSport') || '');
+    const [selectedPosition, setSelectedPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
     const [gameStats, setGameStats] = useState([]);
     const [showClearModal, setShowClearModal] = useState(false);
-
-    const sportsWithPositions = ['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'];
 
     useEffect(() => {
         const savedStats = JSON.parse(localStorage.getItem('gameStats')) || [];
@@ -54,11 +56,17 @@ function PlayerStatsPage() {
     };
 
     if (!selectedSport) {
-        return <SportSelectionModal onSelect={(sport) => setSelectedSport(sport)} buttonLabel="Start Stats" />;
+        return <ReflectionStartFlow onSelect={(sport) => {
+            setSelectedSport(sport);
+            localStorage.setItem('selectedSport', sport);
+        }} buttonLabel="Start Stats" />;
     }
 
     if (sportsWithPositions.includes(selectedSport) && !selectedPosition) {
-        return <PositionSelectionModal onSelect={(position) => setSelectedPosition(position)} sport={selectedSport} />;
+        return <PositionSelectionModal onSelect={(position) => {
+            setSelectedPosition(position);
+            localStorage.setItem('selectedPosition', position);
+        }} sport={selectedSport} />;
     }
 
     return (
@@ -80,7 +88,7 @@ function PlayerStatsPage() {
                         onClick={handleDownloadStats}
                         className="p-4 rounded-full bg-green-600 hover:bg-green-500 text-white shadow-lg"
                     >
-                        📥
+                        📅 Download
                     </button>
                 )}
 
@@ -89,7 +97,7 @@ function PlayerStatsPage() {
                         onClick={() => setShowClearModal(true)}
                         className="p-4 rounded-full bg-red-600 hover:bg-red-500 text-white shadow-lg"
                     >
-                        🗑️
+                        🗑️ Clear
                     </button>
                 )}
             </div>
