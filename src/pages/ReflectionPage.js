@@ -1,6 +1,4 @@
-// New chat detected... initializing Reflection Clean Flow Fix mode 🛠
-
-// Step 1: FULL updated src/pages/ReflectionPage.jsx
+// src/pages/ReflectionPage.jsx
 
 import React, { useState, useEffect, useReducer } from 'react';
 import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
@@ -111,7 +109,6 @@ function ReflectionPage() {
 
         setShowModal(true);
         dispatch({ type: 'RESET' });
-        clearSessionData();
     };
 
     return (
@@ -151,7 +148,10 @@ function ReflectionPage() {
                         defense={scoreSummary.defense}
                         culture={scoreSummary.culture}
                         bonus={scoreSummary.bonus}
-                        onClose={() => window.location.href = '/'}
+                        onClose={() => {
+                            clearSessionData();
+                            window.location.href = '/';
+                        }}
                     />
                 )}
             </div>
