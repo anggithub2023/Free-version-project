@@ -109,6 +109,7 @@ function ReflectionPage() {
 
         setShowModal(true);
         dispatch({ type: 'RESET' });
+        // ❌ Don't clearSessionData() here anymore
     };
 
     return (
@@ -148,10 +149,7 @@ function ReflectionPage() {
                         defense={scoreSummary.defense}
                         culture={scoreSummary.culture}
                         bonus={scoreSummary.bonus}
-                        onClose={() => {
-                            clearSessionData();
-                            window.location.href = '/';
-                        }}
+                        // 🚫 DO NOT clearSessionData here either
                     />
                 )}
             </div>
