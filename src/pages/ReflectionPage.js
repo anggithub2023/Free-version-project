@@ -1,94 +1,59 @@
 // src/pages/ReflectionPage.jsx
 
-import React, { useState, useEffect, useReducer } from 'react';
-import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
+import React, { useEffect, useState, useReducer } from 'react';
 import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
+import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
 import SectionBlock from '../components/ReflectionModal/SectionBlock';
-import BonusQuestion from '../components/ReflectionModal/BonusQuestion';
-import QUESTIONS, { BONUS_QUESTIONS } from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
+import BonusQuestion from '../components/ReflectionModal/BonusQuestion';
+import handleSubmit from '../helpers/handleSubmit';
 
 function ReflectionPage() {
-    const [sport, setSport] = useState('');
-    const [position, setPosition] = useState('');
-    const [answers, dispatch] = useReducer(answersReducer, {});
+    const [selectedSport, setSelectedSport] = useState(() => localStorage.getItem('selectedSport') || '');
+    const [selectedPosition, setSelectedPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
+    const [waitingForSelection, setWaitingForSelection] = useState(!selectedSport);
     const [showModal, setShowModal] = useState(false);
     const [scoreSummary, setScoreSummary] = useState(null);
+    const [answers, dispatch] = useReducer(answersReducer, {}, () => JSON.parse(localStorage.getItem('processAnswers')) || {});
+
+    const [bonusAnswer, setBonusAnswer] = useState(50);
 
     useEffect(() => {
-        const storedSport = localStorage.getItem('selectedSport') || '';
-        const storedPosition = localStorage.getItem('selectedPosition') || '';
-        setSport(storedSport);
-        setPosition(storedPosition);
-    }, []);
+        if (!selectedSport) {
+            setWaitingForSelection(true);
+        } else {
+            setWaitingForSelection(false);
+        }
+    }, [selectedSport]);
 
-    if (!sport) {
-        return <ReflectionStartFlow onComplete={(sport, position) => {
-            setSport(sport);
-            setPosition(position);
-        }} />;
-    }
-
-    const getReflectionQuestions = () => {
-        const specialKey = position ? `${sport}-${position.toLowerCase()}` : '';
-        if (QUESTIONS[specialKey]) return QUESTIONS[specialKey];
-        return QUESTIONS[sport];
-    };
-
-    const questions = getReflectionQuestions();
+    useEffect(() => {
+        localStorage.setItem('processAnswers', JSON.stringify(answers));
+    }, [answers]);
 
     const handleAnswer = (section, idx, value) => {
         const key = `${section}-${idx}`;
         dispatch({ type: 'SET_ANSWER', key, value });
     };
 
-    const handleBonusAnswer = (value) => {
-        dispatch({ type: 'SET_BONUS', value });
-    };
+    if (waitingForSelection) {
+        return (
+            <ReflectionStartFlow onComplete={(sport, position) => {
+                setSelectedSport(sport);
+                setSelectedPosition(position);
+            }} />
+        );
+    }
 
-    const handleSubmit = () => {
-        const totalCategories = ['offense', 'defense', 'teamIdentity', 'focus', 'preparation', 'execution'];
-        let totalAnswered = 0;
-        let totalPossible = 0;
+    const sportKey = selectedPosition ? `${selectedSport}-${selectedPosition.toLowerCase().replace(' ', '')}` : selectedSport;
+    const selectedQuestions = QUESTIONS[sportKey] || QUESTIONS[selectedSport];
 
-        totalCategories.forEach((cat) => {
-            if (questions[cat]) {
-                totalPossible += questions[cat].length;
-                questions[cat].forEach((_, idx) => {
-                    if (answers[`${cat}-${idx}`]) totalAnswered++;
-                });
-            }
-        });
-
-        const bonus = answers['bonus'] || 0;
-
-        const total = Math.round((totalAnswered / (totalPossible || 1)) * 100);
-
-        setScoreSummary({
-            total,
-            offense: calcCategory('offense'),
-            defense: calcCategory('defense'),
-            culture: calcCategory('teamIdentity'),
-            bonus
-        });
-
-        setShowModal(true);
-        dispatch({ type: 'RESET' });
-    };
-
-    const calcCategory = (category) => {
-        if (!questions[category]) return 0;
-        const totalCat = questions[category].length;
-        const answeredCat = questions[category].filter((_, idx) => answers[`${category}-${idx}`]).length;
-        return Math.round((answeredCat / (totalCat || 1)) * 100);
-    };
-
-    const randomQuestions = (list) => {
-        const shuffled = [...list].sort(() => 0.5 - Math.random());
-        return shuffled.slice(0, 3);
-    };
-
-    const bonusPrompt = BONUS_QUESTIONS[Math.floor(Math.random() * BONUS_QUESTIONS.length)];
+    if (!selectedQuestions) {
+        return (
+            <div className="min-h-screen flex items-center justify-center text-gray-700 dark:text-white">
+                No reflection questions available for {selectedSport}.
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-slate-100 dark:from-gray-900 dark:to-gray-800">
@@ -99,28 +64,24 @@ function ReflectionPage() {
             </header>
 
             <main className="max-w-3xl mx-auto p-4 sm:p-6 space-y-12">
-                {['offense', 'defense', 'teamIdentity', 'focus', 'preparation', 'execution'].map((section) => (
-                    questions[section] && (
+                {['offense', 'defense', 'teamIdentity'].map((category) => (
+                    selectedQuestions[category] && (
                         <SectionBlock
-                            key={section}
-                            title={section.replace(/([A-Z])/g, ' $1').toUpperCase()}
-                            questions={randomQuestions(questions[section])}
-                            sectionKey={section}
+                            key={category}
+                            title={category === 'teamIdentity' ? 'Team Identity & Culture' : capitalize(category)}
+                            questions={selectedQuestions[category].slice(0, 3)}
+                            sectionKey={category}
                             answers={answers}
                             handleAnswer={handleAnswer}
                         />
                     )
                 ))}
 
-                <BonusQuestion
-                    question={bonusPrompt}
-                    value={answers['bonus'] || 0}
-                    onChange={handleBonusAnswer}
-                />
+                <BonusQuestion value={bonusAnswer} setValue={setBonusAnswer} />
 
                 <div className="flex flex-col sm:flex-row gap-4 pt-6">
                     <button
-                        onClick={handleSubmit}
+                        onClick={() => handleSubmit(answers, setScoreSummary, setShowModal, bonusAnswer)}
                         className="flex-1 bg-indigo-700 text-white px-6 py-3 rounded-xl hover:bg-indigo-600 transition-all"
                     >
                         Submit Reflection
@@ -146,6 +107,10 @@ function ReflectionPage() {
             )}
         </div>
     );
+}
+
+function capitalize(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
 export default ReflectionPage;
