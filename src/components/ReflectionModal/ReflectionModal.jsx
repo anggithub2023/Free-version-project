@@ -1,9 +1,11 @@
+// src/components/ReflectionModal/ReflectionModal.jsx
 import React from 'react';
 
 function ReflectionModal({ total, offense, defense, culture, bonus }) {
     const handleHome = () => {
         localStorage.removeItem('selectedSport');
         localStorage.removeItem('selectedPosition');
+        localStorage.removeItem('randomQuestionsReflection');
         localStorage.removeItem('processAnswers');
         window.location.href = '/';
     };
