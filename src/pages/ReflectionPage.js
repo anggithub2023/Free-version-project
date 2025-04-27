@@ -149,6 +149,8 @@ function ReflectionPage() {
                         defense={scoreSummary.defense}
                         culture={scoreSummary.culture}
                         bonus={scoreSummary.bonus}
+                        sport={localStorage.getItem('selectedSport')}  // ⬅️ Add this
+                        position={localStorage.getItem('selectedPosition')} // ⬅️ Add this
                         // 🚫 DO NOT clearSessionData here either
                     />
                 )}
