@@ -1,5 +1,3 @@
-// PATCH 1: ReflectionPage.jsx
-
 import React, { useState, useEffect, useReducer } from 'react';
 import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
 import SectionBlock from '../components/ReflectionModal/SectionBlock';
@@ -9,23 +7,16 @@ import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
 import getRandomQuestionsReflection from '../helpers/getRandomQuestionsReflection';
 
-const SESSION_TIMEOUT_MINUTES = 5;
-
-function clearSessionData() {
-    localStorage.removeItem('selectedSport');
-    localStorage.removeItem('selectedPosition');
-    localStorage.removeItem('randomQuestionsReflection');
-    localStorage.removeItem('processAnswers');
-}
-
 function ReflectionPage() {
     const [showStartFlow, setShowStartFlow] = useState(() => {
         const sport = localStorage.getItem('selectedSport');
-        const questions = localStorage.getItem('randomQuestionsReflection');
-        return !(sport && questions);
+        const randomQs = localStorage.getItem('randomQuestionsReflection');
+        return !(sport && randomQs);
     });
+
     const [showModal, setShowModal] = useState(false);
     const [scoreSummary, setScoreSummary] = useState(null);
+
     const [answers, dispatch] = useReducer(
         answersReducer,
         {},
@@ -36,52 +27,23 @@ function ReflectionPage() {
         localStorage.setItem('processAnswers', JSON.stringify(answers));
     }, [answers]);
 
-    useEffect(() => {
-        const sessionTimer = setTimeout(() => {
-            clearSessionData();
-            window.location.reload();
-        }, SESSION_TIMEOUT_MINUTES * 60 * 1000);
-
-        window.addEventListener('beforeunload', clearSessionData);
-
-        return () => {
-            clearTimeout(sessionTimer);
-            window.removeEventListener('beforeunload', clearSessionData);
-        };
-    }, []);
-
-    const handleStartFlowComplete = (selectedSport, selectedPosition) => {
-        const selectedKey = selectedPosition
-            ? `${selectedSport}-${selectedPosition.toLowerCase()}`
-            : selectedSport;
-
-        const fullQuestions = QUESTIONS[selectedKey];
+    const handleStartFlowComplete = (sport, position) => {
+        const key = position ? `${sport}-${position.toLowerCase()}` : sport;
+        const fullQuestions = QUESTIONS[key];
         if (!fullQuestions) {
-            console.error('No questions found for:', selectedKey);
+            console.error('No questions found for:', key);
             return;
         }
-
-        localStorage.setItem('selectedSport', selectedSport);
-        localStorage.setItem('selectedPosition', selectedPosition || '');
-
         const randomized = getRandomQuestionsReflection(fullQuestions);
         localStorage.setItem('randomQuestionsReflection', JSON.stringify(randomized));
+        localStorage.setItem('selectedSport', sport);
+        if (position) {
+            localStorage.setItem('selectedPosition', position);
+        }
         setShowStartFlow(false);
     };
 
-    if (showStartFlow) {
-        return <ReflectionStartFlow onComplete={handleStartFlowComplete} />;
-    }
-
     const randomizedQuestions = JSON.parse(localStorage.getItem('randomQuestionsReflection'));
-
-    if (!randomizedQuestions) {
-        return (
-            <div className="flex items-center justify-center min-h-screen text-gray-700 dark:text-white">
-                <p>Loading questions... please refresh.</p>
-            </div>
-        );
-    }
 
     const handleAnswer = (section, idx, value) => {
         const key = `${section}-${idx}`;
@@ -90,23 +52,19 @@ function ReflectionPage() {
 
     const handleSubmit = () => {
         const totalQuestions = Object.keys(answers).length;
-        const totalYes = Object.values(answers).filter((v) => v === 'yes').length;
+        const totalYes = Object.values(answers).filter(v => v === 'yes').length;
         const total = Math.round((totalYes / totalQuestions) * 100);
 
-        const offenseKeys = Object.keys(answers).filter((k) => k.startsWith('offense'));
-        const defenseKeys = Object.keys(answers).filter((k) => k.startsWith('defense'));
-        const cultureKeys = Object.keys(answers).filter((k) => k.startsWith('teamIdentity'));
-
         const calcSection = (keys) => {
-            const yes = keys.filter((k) => answers[k] === 'yes').length;
+            const yes = keys.filter(k => answers[k] === 'yes').length;
             return keys.length ? Math.round((yes / keys.length) * 100) : 0;
         };
 
         setScoreSummary({
             total,
-            offense: calcSection(offenseKeys),
-            defense: calcSection(defenseKeys),
-            culture: calcSection(cultureKeys),
+            offense: calcSection(Object.keys(answers).filter(k => k.startsWith('offense'))),
+            defense: calcSection(Object.keys(answers).filter(k => k.startsWith('defense'))),
+            culture: calcSection(Object.keys(answers).filter(k => k.startsWith('teamIdentity'))),
             bonus: answers['bonusReflection'] || 50,
         });
 
@@ -114,13 +72,20 @@ function ReflectionPage() {
         dispatch({ type: 'RESET' });
     };
 
+    if (showStartFlow) {
+        return <ReflectionStartFlow onComplete={handleStartFlowComplete} />;
+    }
+
+    if (!randomizedQuestions) {
+        return <div className="text-center p-10">Loading questions... Please refresh.</div>;
+    }
+
     return (
-        <div className="min-h-screen p-6 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white p-6">
             <div className="max-w-4xl mx-auto">
                 <h1 className="text-3xl font-extrabold mb-8 text-center">Reflection</h1>
 
-                {['offense', 'defense', 'teamIdentity'].map(
-                    (section) =>
+                {['offense', 'defense', 'teamIdentity'].map(section =>
                         randomizedQuestions[section] && (
                             <SectionBlock
                                 key={section}
@@ -146,11 +111,9 @@ function ReflectionPage() {
 
                 {showModal && scoreSummary && (
                     <ReflectionModal
-                        total={scoreSummary.total}
-                        offense={scoreSummary.offense}
-                        defense={scoreSummary.defense}
-                        culture={scoreSummary.culture}
-                        bonus={scoreSummary.bonus}
+                        {...scoreSummary}
+                        sport={localStorage.getItem('selectedSport')}
+                        position={localStorage.getItem('selectedPosition')}
                     />
                 )}
             </div>
