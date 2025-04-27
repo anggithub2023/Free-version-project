@@ -1,4 +1,4 @@
-// src/pages/PlayerStatsPage.jsx (PATCHED - FINAL CLEAN VERSION)
+// src/pages/PlayerStatsPage.jsx
 
 import React, { useState, useEffect } from 'react';
 import ReflectionStartFlow from '../components/PlayerStats/ReflectionStartFlow';
@@ -55,19 +55,15 @@ function PlayerStatsPage() {
         document.body.removeChild(link);
     };
 
+    // --- PATCH ---
     if (!selectedSport) {
-        return <ReflectionStartFlow onSelect={(sport) => {
-            setSelectedSport(sport);
-            localStorage.setItem('selectedSport', sport);
-        }} buttonLabel="Start Stats" />;
+        return <ReflectionStartFlow onSelect={(sport) => setSelectedSport(sport)} buttonLabel="Start Stats" />;
     }
 
     if (sportsWithPositions.includes(selectedSport) && !selectedPosition) {
-        return <PositionSelectionModal onSelect={(position) => {
-            setSelectedPosition(position);
-            localStorage.setItem('selectedPosition', position);
-        }} sport={selectedSport} />;
+        return <PositionSelectionModal onSelect={(position) => setSelectedPosition(position)} sport={selectedSport} />;
     }
+    // --------------
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 p-4 pb-24">
@@ -84,21 +80,21 @@ function PlayerStatsPage() {
             {/* FAB Buttons */}
             <div className="fixed bottom-6 right-6 flex flex-col items-end space-y-4">
                 {gameStats.length > 0 && (
-                    <button
-                        onClick={handleDownloadStats}
-                        className="p-4 rounded-full bg-green-600 hover:bg-green-500 text-white shadow-lg"
-                    >
-                        📅
-                    </button>
-                )}
+                    <>
+                        <button
+                            onClick={handleDownloadStats}
+                            className="p-4 rounded-full bg-green-600 hover:bg-green-500 text-white shadow-lg"
+                        >
+                            📅
+                        </button>
 
-                {gameStats.length > 0 && (
-                    <button
-                        onClick={() => setShowClearModal(true)}
-                        className="p-4 rounded-full bg-red-600 hover:bg-red-500 text-white shadow-lg"
-                    >
-                        🗑️
-                    </button>
+                        <button
+                            onClick={() => setShowClearModal(true)}
+                            className="p-4 rounded-full bg-red-600 hover:bg-red-500 text-white shadow-lg"
+                        >
+                            🗑️
+                        </button>
+                    </>
                 )}
             </div>
 
