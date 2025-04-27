@@ -3,6 +3,7 @@ import React from 'react';
 
 function ReflectionModal({ total, offense, defense, culture, bonus, sport, position }) {
     const handleHome = () => {
+        // 🚨 Fully clear reflection-specific data
         localStorage.removeItem('selectedSport');
         localStorage.removeItem('selectedPosition');
         localStorage.removeItem('randomQuestionsReflection');
@@ -11,7 +12,7 @@ function ReflectionModal({ total, offense, defense, culture, bonus, sport, posit
     };
 
     const handlePlayerStats = () => {
-        // ✅ Re-save sport and position to avoid missing data
+        // ✅ RE-SAVE sport/position safely
         if (sport) {
             localStorage.setItem('selectedSport', sport);
         }
@@ -27,7 +28,9 @@ function ReflectionModal({ total, offense, defense, culture, bonus, sport, posit
                 <h2 className="text-3xl font-bold text-indigo-600 dark:text-indigo-300">🔥 Great Work Reflecting! 🔥</h2>
 
                 <div className="space-y-2">
-                    <p className="text-lg font-semibold">Total Reflection Score: <span className="text-indigo-500">{total}%</span></p>
+                    <p className="text-lg font-semibold">
+                        Total Reflection Score: <span className="text-indigo-500">{total}%</span>
+                    </p>
                     <p>Offense: {offense}%</p>
                     <p>Defense: {defense}%</p>
                     <p>Team Culture: {culture}%</p>
