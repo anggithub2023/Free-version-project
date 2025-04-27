@@ -1,36 +1,38 @@
 // src/pages/ReflectionPage.jsx
 
-import React, { useState, useEffect, useReducer } from 'react';
-import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
-import SectionBlock from '../components/ReflectionModal/SectionBlock';
-import BonusQuestion from '../components/ReflectionModal/BonusQuestion';
-import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
+import React, { useEffect, useReducer, useState } from 'react';
 import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
+import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
+import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
+import SectionBlock from '../components/ReflectionModal/SectionBlock';
+import BonusQuestion from '../components/ReflectionModal/BonusQuestion';
 import handleSubmit from '../helpers/handleSubmit';
 
 function ReflectionPage() {
-    const [sport, setSport] = useState('');
-    const [position, setPosition] = useState('');
-    const [answers, dispatch] = useReducer(answersReducer, {});
+    const [showStartFlow, setShowStartFlow] = useState(() => !localStorage.getItem('selectedSport'));
+    const [sport, setSport] = useState(() => localStorage.getItem('selectedSport') || '');
+    const [position, setPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
     const [showModal, setShowModal] = useState(false);
     const [scoreSummary, setScoreSummary] = useState(null);
     const [hideHeader, setHideHeader] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
 
-    useEffect(() => {
-        // Always clear old session if coming fresh
-        const prevRoute = document.referrer;
-        if (!prevRoute.includes('/reflect')) {
-            localStorage.removeItem('selectedSport');
-            localStorage.removeItem('selectedPosition');
-        }
-    }, []);
+    const [answers, dispatch] = useReducer(answersReducer, {}, () => ({}));
 
-    const handleStart = (selectedSport, selectedPosition) => {
-        setSport(selectedSport);
-        setPosition(selectedPosition);
-    };
+    const [randomQuestions, setRandomQuestions] = useState({ offense: [], defense: [], teamIdentity: [] });
+
+    useEffect(() => {
+        if (sport) {
+            const currentQuestions = QUESTIONS[sport]?.questions;
+            if (currentQuestions) {
+                const offense = shuffleArray(currentQuestions.offense || []).slice(0, 3);
+                const defense = shuffleArray(currentQuestions.defense || []).slice(0, 3);
+                const teamIdentity = shuffleArray(currentQuestions.teamIdentity || []).slice(0, 3);
+                setRandomQuestions({ offense, defense, teamIdentity });
+            }
+        }
+    }, [sport]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -38,62 +40,81 @@ function ReflectionPage() {
             setHideHeader(currentY > lastScrollY && currentY > 100);
             setLastScrollY(currentY);
         };
+
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, [lastScrollY]);
+
+    const shuffleArray = (array) => {
+        return array
+            .map((value) => ({ value, sort: Math.random() }))
+            .sort((a, b) => a.sort - b.sort)
+            .map(({ value }) => value);
+    };
 
     const handleAnswer = (section, idx, value) => {
         const key = `${section}-${idx}`;
         dispatch({ type: 'SET_ANSWER', key, value });
     };
 
-    if (!sport) {
-        return <ReflectionStartFlow onComplete={handleStart} />;
-    }
-
-    // Select random 3 questions per category
-    const getRandomQuestions = (questions, count = 3) => {
-        const shuffled = [...questions].sort(() => 0.5 - Math.random());
-        return shuffled.slice(0, count);
+    const handleBonus = (value) => {
+        dispatch({ type: 'SET_ANSWER', key: 'bonus', value });
     };
 
-    const selectedQuestions = QUESTIONS[sport]?.[position] || QUESTIONS[sport];
+    const handleStartComplete = (selectedSport, selectedPosition) => {
+        setSport(selectedSport);
+        setPosition(selectedPosition);
+        setShowStartFlow(false);
+    };
 
-    const offenseQs = selectedQuestions?.offense ? getRandomQuestions(selectedQuestions.offense) : [];
-    const defenseQs = selectedQuestions?.defense ? getRandomQuestions(selectedQuestions.defense) : [];
-    const teamIdentityQs = selectedQuestions?.teamIdentity ? getRandomQuestions(selectedQuestions.teamIdentity) : [];
-    const focusQs = selectedQuestions?.focus ? getRandomQuestions(selectedQuestions.focus) : [];
-    const preparationQs = selectedQuestions?.preparation ? getRandomQuestions(selectedQuestions.preparation) : [];
-    const executionQs = selectedQuestions?.execution ? getRandomQuestions(selectedQuestions.execution) : [];
-
-    const bonusQuestion = selectedQuestions?.bonus || 'What was the best thing you did today?';
-
-    const isTeamSport = ['basketball', 'soccer', 'football', 'lacrosse', 'iceHockey', 'baseball'].includes(sport);
+    if (showStartFlow) {
+        return <ReflectionStartFlow onComplete={handleStartComplete} />;
+    }
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-white to-slate-100 dark:from-gray-900 dark:to-gray-800">
-            <header className={`sticky top-0 z-40 w-full bg-gradient-to-r from-indigo-500 to-indigo-700 dark:from-indigo-700 dark:to-indigo-900 bg-opacity-90 backdrop-blur-md shadow-md py-6 px-4 sm:px-6 transition-transform duration-300 ${hideHeader ? '-translate-y-full' : 'translate-y-0'}`}>
+            <header
+                className={`sticky top-0 z-40 w-full bg-gradient-to-r from-indigo-500 to-indigo-700 dark:from-indigo-700 dark:to-indigo-900 bg-opacity-90 backdrop-blur-md shadow-md py-6 px-4 sm:px-6 transition-transform duration-300 ${
+                    hideHeader ? '-translate-y-full' : 'translate-y-0'
+                }`}
+            >
                 <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-white tracking-wide uppercase">
                     Focus. Reflect. Dominate.
                 </h1>
             </header>
 
             <main className="max-w-3xl mx-auto p-4 sm:p-6 space-y-12">
-                {isTeamSport ? (
-                    <>
-                        <SectionBlock title="Offense" questions={offenseQs} sectionKey="offense" answers={answers} handleAnswer={handleAnswer} />
-                        <SectionBlock title="Defense" questions={defenseQs} sectionKey="defense" answers={answers} handleAnswer={handleAnswer} />
-                        <SectionBlock title="Team Identity & Culture" questions={teamIdentityQs} sectionKey="teamIdentity" answers={answers} handleAnswer={handleAnswer} />
-                    </>
-                ) : (
-                    <>
-                        <SectionBlock title="Focus" questions={focusQs} sectionKey="focus" answers={answers} handleAnswer={handleAnswer} />
-                        <SectionBlock title="Preparation" questions={preparationQs} sectionKey="preparation" answers={answers} handleAnswer={handleAnswer} />
-                        <SectionBlock title="Execution" questions={executionQs} sectionKey="execution" answers={answers} handleAnswer={handleAnswer} />
-                    </>
-                )}
+                <SectionBlock
+                    title={<>
+                        Offense
+                    </>}
+                    questions={randomQuestions.offense}
+                    sectionKey="offense"
+                    answers={answers}
+                    handleAnswer={handleAnswer}
+                />
 
-                <BonusQuestion answers={answers} dispatch={dispatch} bonusPrompt={bonusQuestion} />
+                <SectionBlock
+                    title={<>
+                        Defense
+                    </>}
+                    questions={randomQuestions.defense}
+                    sectionKey="defense"
+                    answers={answers}
+                    handleAnswer={handleAnswer}
+                />
+
+                <SectionBlock
+                    title={<>
+                        Team Identity & Culture
+                    </>}
+                    questions={randomQuestions.teamIdentity}
+                    sectionKey="teamIdentity"
+                    answers={answers}
+                    handleAnswer={handleAnswer}
+                />
+
+                <BonusQuestion answers={answers} handleBonus={handleBonus} />
 
                 <div className="flex flex-col sm:flex-row gap-4 pt-6">
                     <button
@@ -118,6 +139,7 @@ function ReflectionPage() {
                     offense={scoreSummary.offense}
                     defense={scoreSummary.defense}
                     culture={scoreSummary.culture}
+                    bonus={scoreSummary.bonus}
                     onClose={() => window.location.href = '/'}
                 />
             )}
