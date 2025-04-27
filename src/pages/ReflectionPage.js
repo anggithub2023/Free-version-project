@@ -1,23 +1,31 @@
-// src/pages/ReflectionPage.jsx
+// New chat detected... initializing Reflection Clean Flow Fix mode 🛠
+
+// Step 1: FULL updated src/pages/ReflectionPage.jsx
 
 import React, { useState, useEffect, useReducer } from 'react';
 import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
 import SectionBlock from '../components/ReflectionModal/SectionBlock';
 import BonusQuestion from '../components/ReflectionModal/BonusQuestion';
 import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
+import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
+import getRandomQuestionsReflection from '../helpers/getRandomQuestionsReflection';
 
 const SESSION_TIMEOUT_MINUTES = 5;
 
 function clearSessionData() {
     localStorage.removeItem('selectedSport');
     localStorage.removeItem('selectedPosition');
+    localStorage.removeItem('randomQuestionsReflection');
     localStorage.removeItem('processAnswers');
-    localStorage.removeItem('selectedReflectionQuestions');
 }
 
 function ReflectionPage() {
-    const [showStartFlow, setShowStartFlow] = useState(() => !localStorage.getItem('selectedSport'));
+    const [showStartFlow, setShowStartFlow] = useState(() => {
+        const sport = localStorage.getItem('selectedSport');
+        const questions = localStorage.getItem('randomQuestionsReflection');
+        return !(sport && questions);
+    });
     const [showModal, setShowModal] = useState(false);
     const [scoreSummary, setScoreSummary] = useState(null);
     const [answers, dispatch] = useReducer(
@@ -44,7 +52,19 @@ function ReflectionPage() {
         };
     }, []);
 
-    const handleStartFlowComplete = () => {
+    const handleStartFlowComplete = (selectedSport, selectedPosition) => {
+        const selectedKey = selectedPosition
+            ? `${selectedSport}-${selectedPosition.toLowerCase()}`
+            : selectedSport;
+
+        const fullQuestions = QUESTIONS[selectedKey];
+        if (!fullQuestions) {
+            console.error('No questions found for:', selectedKey);
+            return;
+        }
+
+        const randomized = getRandomQuestionsReflection(fullQuestions);
+        localStorage.setItem('randomQuestionsReflection', JSON.stringify(randomized));
         setShowStartFlow(false);
     };
 
@@ -52,12 +72,12 @@ function ReflectionPage() {
         return <ReflectionStartFlow onComplete={handleStartFlowComplete} />;
     }
 
-    const selectedQuestions = JSON.parse(localStorage.getItem('selectedReflectionQuestions')) || null;
+    const randomizedQuestions = JSON.parse(localStorage.getItem('randomQuestionsReflection'));
 
-    if (!selectedQuestions) {
+    if (!randomizedQuestions) {
         return (
             <div className="flex items-center justify-center min-h-screen text-gray-700 dark:text-white">
-                <p>No questions available for your selection.</p>
+                <p>Loading questions... please refresh.</p>
             </div>
         );
     }
@@ -69,15 +89,15 @@ function ReflectionPage() {
 
     const handleSubmit = () => {
         const totalQuestions = Object.keys(answers).length;
-        const totalYes = Object.values(answers).filter(v => v === 'yes').length;
+        const totalYes = Object.values(answers).filter((v) => v === 'yes').length;
         const total = Math.round((totalYes / totalQuestions) * 100);
 
-        const offenseKeys = Object.keys(answers).filter(k => k.startsWith('offense'));
-        const defenseKeys = Object.keys(answers).filter(k => k.startsWith('defense'));
-        const cultureKeys = Object.keys(answers).filter(k => k.startsWith('teamIdentity'));
+        const offenseKeys = Object.keys(answers).filter((k) => k.startsWith('offense'));
+        const defenseKeys = Object.keys(answers).filter((k) => k.startsWith('defense'));
+        const cultureKeys = Object.keys(answers).filter((k) => k.startsWith('teamIdentity'));
 
         const calcSection = (keys) => {
-            const yes = keys.filter(k => answers[k] === 'yes').length;
+            const yes = keys.filter((k) => answers[k] === 'yes').length;
             return keys.length ? Math.round((yes / keys.length) * 100) : 0;
         };
 
@@ -86,7 +106,7 @@ function ReflectionPage() {
             offense: calcSection(offenseKeys),
             defense: calcSection(defenseKeys),
             culture: calcSection(cultureKeys),
-            bonus: answers['bonusReflection'] || 50
+            bonus: answers['bonusReflection'] || 50,
         });
 
         setShowModal(true);
@@ -99,18 +119,19 @@ function ReflectionPage() {
             <div className="max-w-4xl mx-auto">
                 <h1 className="text-3xl font-extrabold mb-8 text-center">Reflection</h1>
 
-                {['offense', 'defense', 'teamIdentity'].map((section) => (
-                    selectedQuestions[section] && (
-                        <SectionBlock
-                            key={section}
-                            title={section.charAt(0).toUpperCase() + section.slice(1)}
-                            questions={selectedQuestions[section]}
-                            sectionKey={section}
-                            answers={answers}
-                            handleAnswer={handleAnswer}
-                        />
-                    )
-                ))}
+                {['offense', 'defense', 'teamIdentity'].map(
+                    (section) =>
+                        randomizedQuestions[section] && (
+                            <SectionBlock
+                                key={section}
+                                title={section.charAt(0).toUpperCase() + section.slice(1)}
+                                questions={randomizedQuestions[section]}
+                                sectionKey={section}
+                                answers={answers}
+                                handleAnswer={handleAnswer}
+                            />
+                        )
+                )}
 
                 <BonusQuestion answers={answers} dispatch={dispatch} />
 
