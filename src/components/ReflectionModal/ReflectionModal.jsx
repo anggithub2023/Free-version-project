@@ -1,8 +1,17 @@
-// src/components/ReflectionModal/ReflectionModal.jsx
-
 import React from 'react';
 
-function ReflectionModal({ total, offense, defense, culture, bonus, onClose }) {
+function ReflectionModal({ total, offense, defense, culture, bonus }) {
+    const handleHome = () => {
+        localStorage.removeItem('selectedSport');
+        localStorage.removeItem('selectedPosition');
+        localStorage.removeItem('processAnswers');
+        window.location.href = '/';
+    };
+
+    const handlePlayerStats = () => {
+        window.location.href = '/playerstats';
+    };
+
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 p-4">
             <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white p-8 rounded-2xl shadow-2xl max-w-md w-full space-y-6 text-center">
@@ -16,10 +25,17 @@ function ReflectionModal({ total, offense, defense, culture, bonus, onClose }) {
                     <p>Bonus Positivity: {bonus}%</p>
                 </div>
 
-                <div className="pt-4">
+                <div className="flex flex-col gap-4 pt-4">
                     <button
-                        onClick={onClose}
-                        className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-full shadow-lg transition"
+                        onClick={handlePlayerStats}
+                        className="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-full shadow transition"
+                    >
+                        📊 Go to Player Stats
+                    </button>
+
+                    <button
+                        onClick={handleHome}
+                        className="w-full bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-full shadow transition"
                     >
                         🏠 Back to Home
                     </button>
