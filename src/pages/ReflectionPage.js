@@ -1,3 +1,5 @@
+// src/pages/ReflectionPage.jsx (FINAL QA-PASSED VERSION)
+
 import React, { useState, useEffect, useReducer } from 'react';
 import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
 import SectionBlock from '../components/ReflectionModal/SectionBlock';
@@ -85,7 +87,7 @@ function ReflectionPage() {
             <div className="max-w-4xl mx-auto">
                 <h1 className="text-3xl font-extrabold mb-8 text-center">Reflection</h1>
 
-                {['offense', 'defense', 'teamIdentity'].map(section =>
+                {Object.keys(randomizedQuestions).map(section =>
                         randomizedQuestions[section] && (
                             <SectionBlock
                                 key={section}
