@@ -6,7 +6,8 @@ function BonusQuestion({ answers, dispatch }) {
     const key = 'bonusReflection';
 
     const handleChange = (e) => {
-        dispatch({ type: 'SET_ANSWER', key, value: parseInt(e.target.value) });
+        const value = parseInt(e.target.value); // ✅ Define value correctly
+        dispatch({ type: 'SET_ANSWER', key, value });
     };
 
     const value = answers[key] || 50; // Default slider middle
