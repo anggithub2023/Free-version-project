@@ -1,9 +1,10 @@
+// src/pages/ReflectionPage.jsx
+
 import React, { useState, useEffect, useReducer } from 'react';
 import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
 import SectionBlock from '../components/ReflectionModal/SectionBlock';
 import BonusQuestion from '../components/ReflectionModal/BonusQuestion';
 import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
-import getRandomQuestionsReflection from '../helpers/getRandomQuestionsReflection';
 import answersReducer from '../reducers/answersReducer';
 
 const SESSION_TIMEOUT_MINUTES = 5;
@@ -12,16 +13,11 @@ function clearSessionData() {
     localStorage.removeItem('selectedSport');
     localStorage.removeItem('selectedPosition');
     localStorage.removeItem('processAnswers');
-    localStorage.removeItem('randomReflectionQuestions');
+    localStorage.removeItem('selectedReflectionQuestions');
 }
 
 function ReflectionPage() {
-    const [sport, setSport] = useState(() => localStorage.getItem('selectedSport') || '');
-    const [randomQuestions, setRandomQuestions] = useState(() => {
-        const saved = localStorage.getItem('randomReflectionQuestions');
-        return saved ? JSON.parse(saved) : null;
-    });
-    const [showStartFlow, setShowStartFlow] = useState(!sport);
+    const [showStartFlow, setShowStartFlow] = useState(() => !localStorage.getItem('selectedSport'));
     const [showModal, setShowModal] = useState(false);
     const [scoreSummary, setScoreSummary] = useState(null);
     const [answers, dispatch] = useReducer(
@@ -48,17 +44,22 @@ function ReflectionPage() {
         };
     }, []);
 
-    const handleStartFlowComplete = (selectedSport, selectedPosition) => {
-        setSport(selectedSport);
-        setPosition(selectedPosition);
-        const generated = getRandomQuestionsReflection(selectedSport, selectedPosition);
-        setRandomQuestions(generated);
-        localStorage.setItem('randomReflectionQuestions', JSON.stringify(generated));
+    const handleStartFlowComplete = () => {
         setShowStartFlow(false);
     };
 
-    if (showStartFlow || !randomQuestions) {
+    if (showStartFlow) {
         return <ReflectionStartFlow onComplete={handleStartFlowComplete} />;
+    }
+
+    const selectedQuestions = JSON.parse(localStorage.getItem('selectedReflectionQuestions')) || null;
+
+    if (!selectedQuestions) {
+        return (
+            <div className="flex items-center justify-center min-h-screen text-gray-700 dark:text-white">
+                <p>No questions available for your selection.</p>
+            </div>
+        );
     }
 
     const handleAnswer = (section, idx, value) => {
@@ -99,11 +100,11 @@ function ReflectionPage() {
                 <h1 className="text-3xl font-extrabold mb-8 text-center">Reflection</h1>
 
                 {['offense', 'defense', 'teamIdentity'].map((section) => (
-                    randomQuestions[section] && (
+                    selectedQuestions[section] && (
                         <SectionBlock
                             key={section}
                             title={section.charAt(0).toUpperCase() + section.slice(1)}
-                            questions={randomQuestions[section]}
+                            questions={selectedQuestions[section]}
                             sectionKey={section}
                             answers={answers}
                             handleAnswer={handleAnswer}
