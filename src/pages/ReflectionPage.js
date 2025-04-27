@@ -8,6 +8,14 @@ import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
 import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
 
+const SESSION_TIMEOUT_MINUTES = 5;
+
+function clearSessionData() {
+    localStorage.removeItem('selectedSport');
+    localStorage.removeItem('selectedPosition');
+    localStorage.removeItem('processAnswers');
+}
+
 function ReflectionPage() {
     const [sport, setSport] = useState(() => localStorage.getItem('selectedSport') || '');
     const [position, setPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
@@ -23,6 +31,20 @@ function ReflectionPage() {
     useEffect(() => {
         localStorage.setItem('processAnswers', JSON.stringify(answers));
     }, [answers]);
+
+    useEffect(() => {
+        const sessionTimer = setTimeout(() => {
+            clearSessionData();
+            window.location.reload();
+        }, SESSION_TIMEOUT_MINUTES * 60 * 1000);
+
+        window.addEventListener('beforeunload', clearSessionData);
+
+        return () => {
+            clearTimeout(sessionTimer);
+            window.removeEventListener('beforeunload', clearSessionData);
+        };
+    }, []);
 
     const handleStartFlowComplete = (selectedSport, selectedPosition) => {
         setSport(selectedSport);
@@ -71,9 +93,10 @@ function ReflectionPage() {
             culture: calcSection(cultureKeys),
             bonus: answers['bonusReflection'] || 50
         });
+
         setShowModal(true);
         dispatch({ type: 'RESET' });
-        localStorage.removeItem('processAnswers');
+        clearSessionData(); // Clear after reflection
     };
 
     return (
