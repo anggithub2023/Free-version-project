@@ -1,3 +1,5 @@
+// src/components/PlayerStats/ReflectionStartFlow.jsx
+
 import React, { useState } from 'react';
 
 const sports = [
@@ -11,11 +13,12 @@ const sports = [
     { id: 'golf', emoji: '🏌️', name: 'Golf' },
 ];
 
-function SportSelectionModal({ onSelect, buttonLabel = "Start" }) {
+function ReflectionStartFlow({ onSelect, buttonLabel = "Start" }) {
     const [selectedSport, setSelectedSport] = useState('');
 
     const handleStart = () => {
         if (selectedSport) {
+            localStorage.setItem('selectedSport', selectedSport); // ✅ Save to localStorage immediately
             onSelect(selectedSport);
         }
     };
@@ -57,4 +60,4 @@ function SportSelectionModal({ onSelect, buttonLabel = "Start" }) {
     );
 }
 
-export default SportSelectionModal;
+export default ReflectionStartFlow;
