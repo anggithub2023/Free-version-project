@@ -1,3 +1,5 @@
+// src/components/ReflectionModal/ReflectionStartFlow.jsx
+
 import React, { useState } from 'react';
 import SportSelectionModal from './SportSelectionModal';
 import PositionSelectionModal from './PositionSelectionModal';
@@ -19,7 +21,7 @@ function ReflectionStartFlow({ onComplete }) {
         } else {
             setStep('done');
             onComplete(selectedSport, '');
-            window.location.reload(); // 🔥 Force reload clean
+            window.location.reload();
         }
     };
 
@@ -27,7 +29,7 @@ function ReflectionStartFlow({ onComplete }) {
         localStorage.setItem('selectedPosition', selectedPosition);
         setStep('done');
         onComplete(sport, selectedPosition);
-        window.location.reload(); // 🔥 Force reload clean
+        window.location.reload();
     };
 
     if (step === 'sport') {
