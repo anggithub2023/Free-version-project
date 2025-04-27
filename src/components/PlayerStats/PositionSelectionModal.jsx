@@ -1,3 +1,5 @@
+// src/components/PlayerStats/PositionSelectionModal.jsx
+
 import React, { useState } from 'react';
 
 const positionOptions = {
@@ -13,6 +15,7 @@ function PositionSelectionModal({ onSelect, sport }) {
 
     const handleStart = () => {
         if (selectedPosition) {
+            localStorage.setItem('selectedPosition', selectedPosition); // ✅ Save immediately
             onSelect(selectedPosition);
         }
     };
