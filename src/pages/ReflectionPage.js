@@ -1,4 +1,4 @@
-// src/pages/ReflectionPage.jsx
+// PATCH 1: ReflectionPage.jsx
 
 import React, { useState, useEffect, useReducer } from 'react';
 import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
@@ -61,6 +61,9 @@ function ReflectionPage() {
             return;
         }
 
+        localStorage.setItem('selectedSport', selectedSport);
+        localStorage.setItem('selectedPosition', selectedPosition || '');
+
         const randomized = getRandomQuestionsReflection(fullQuestions);
         localStorage.setItem('randomQuestionsReflection', JSON.stringify(randomized));
         setShowStartFlow(false);
@@ -109,7 +112,6 @@ function ReflectionPage() {
 
         setShowModal(true);
         dispatch({ type: 'RESET' });
-        // ❌ Don't clearSessionData() here anymore
     };
 
     return (
@@ -149,9 +151,6 @@ function ReflectionPage() {
                         defense={scoreSummary.defense}
                         culture={scoreSummary.culture}
                         bonus={scoreSummary.bonus}
-                        sport={localStorage.getItem('selectedSport')}  // ⬅️ Add this
-                        position={localStorage.getItem('selectedPosition')} // ⬅️ Add this
-                        // 🚫 DO NOT clearSessionData here either
                     />
                 )}
             </div>
