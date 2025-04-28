@@ -57,11 +57,18 @@ function PlayerStatsPage() {
 
     // --- PATCH ---
     if (!selectedSport) {
-        return <ReflectionStartFlow onSelect={(sport) => setSelectedSport(sport)} buttonLabel="Start Stats" />;
+        return <ReflectionStartFlow onSelect={(sport) => {
+            setSelectedSport(sport);
+            localStorage.setItem('selectedSport', sport);
+        }} buttonLabel="Start Stats" />;
     }
 
     if (sportsWithPositions.includes(selectedSport) && !selectedPosition) {
-        return <PositionSelectionModal onSelect={(position) => setSelectedPosition(position)} sport={selectedSport} />;
+        return <PositionSelectionModal onSelect={(position) => {
+            const normalizedPosition = position.toLowerCase().replace(/\s+/g, '-');
+            setSelectedPosition(normalizedPosition);
+            localStorage.setItem('selectedPosition', normalizedPosition);
+        }} sport={selectedSport} />;
     }
     // --------------
 
