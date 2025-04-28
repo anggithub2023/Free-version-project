@@ -280,7 +280,7 @@ const QUESTIONS = {
         ]
     },
 
-    "lacrosse-field player": {
+    "lacrosse-field-player": {
         offense: [
             "Did I create space effectively for my teammates?",
             "Did I pass accurately under pressure?",
