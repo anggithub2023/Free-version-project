@@ -23,7 +23,19 @@ function ReflectionStartFlow({ onComplete }) {
     };
 
     const handlePositionSelect = (selectedPosition) => {
-        const normalizedPosition = selectedPosition.toLowerCase().replace(/\s+/g, '-');
+        let normalizedPosition = selectedPosition.toLowerCase().replace(/\s+/g, '-');
+
+        // Special case fixes:
+        if (sport === 'baseball' && normalizedPosition === 'field-player') {
+            normalizedPosition = ''; // Baseball field player uses just "baseball"
+        }
+        if (sport === 'lacrosse' && normalizedPosition === 'field-player') {
+            normalizedPosition = 'field-player'; // lacrosse-field-player exists
+        }
+        if (sport === 'iceHockey' && normalizedPosition === 'skater') {
+            normalizedPosition = 'skater'; // iceHockey-skater exists
+        }
+
         localStorage.setItem('selectedPosition', normalizedPosition);
         setStep('done');
         onComplete(sport, normalizedPosition);
