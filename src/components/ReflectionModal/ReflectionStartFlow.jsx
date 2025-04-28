@@ -23,9 +23,10 @@ function ReflectionStartFlow({ onComplete }) {
     };
 
     const handlePositionSelect = (selectedPosition) => {
-        localStorage.setItem('selectedPosition', selectedPosition);
+        const normalizedPosition = selectedPosition.toLowerCase().replace(/\s+/g, '-');
+        localStorage.setItem('selectedPosition', normalizedPosition);
         setStep('done');
-        onComplete(sport, selectedPosition);
+        onComplete(sport, normalizedPosition);
     };
 
     if (step === 'sport') {
