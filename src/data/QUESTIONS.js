@@ -247,7 +247,7 @@ const QUESTIONS = {
     },
 
     // 🥍 Lacrosse Player
-    lacrosse: {
+    "lacrosse-field player": {
         offense: [
             "Did I move without the ball to create passing options?",
             "Did I protect my stick and avoid turnovers?",
