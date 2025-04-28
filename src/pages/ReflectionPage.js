@@ -30,7 +30,7 @@ function ReflectionPage() {
     }, [answers]);
 
     const handleStartFlowComplete = (sport, position) => {
-        const key = position ? `${sport}-${position.toLowerCase()}` : sport;
+        const key = position ? `${sport}-${position}` : sport;
         const fullQuestions = QUESTIONS[key];
         if (!fullQuestions) {
             console.error('No questions found for:', key);
