@@ -1,4 +1,4 @@
-// src/pages/ReflectionPage.jsx (FINAL QA-PASSED VERSION)
+// src/pages/ReflectionPage.jsx (TRUE FINAL QA-PASSED VERSION)
 
 import React, { useState, useEffect, useReducer } from 'react';
 import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
@@ -30,7 +30,8 @@ function ReflectionPage() {
     }, [answers]);
 
     const handleStartFlowComplete = (sport, position) => {
-        const key = position ? `${sport}-${position}` : sport;
+        const normalizedPosition = position?.toLowerCase().replace(/\s+/g, '-');
+        const key = normalizedPosition ? `${sport}-${normalizedPosition}` : sport;
         const fullQuestions = QUESTIONS[key];
         if (!fullQuestions) {
             console.error('No questions found for:', key);
@@ -40,7 +41,7 @@ function ReflectionPage() {
         localStorage.setItem('randomQuestionsReflection', JSON.stringify(randomized));
         localStorage.setItem('selectedSport', sport);
         if (position) {
-            localStorage.setItem('selectedPosition', position);
+            localStorage.setItem('selectedPosition', normalizedPosition);
         }
         setShowStartFlow(false);
     };
