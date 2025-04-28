@@ -1,5 +1,4 @@
 const QUESTIONS = {
-
     // 🏀 Basketball
     basketball: {
         offense: [
@@ -121,8 +120,8 @@ const QUESTIONS = {
         ]
     },
 
-    // 🏈 Football QB
-    "football-qb": {
+    // 🏈 Football Quarterback
+    "football-quarterback": {
         offense: [
             "Did I quickly read the defense pre-snap?",
             "Did I make smart, accurate throws under pressure?",
@@ -193,7 +192,7 @@ const QUESTIONS = {
         ]
     },
 
-    // 🏒 Ice Hockey Player
+    // 🏒 Ice Hockey Skater
     "iceHockey-skater": {
         offense: [
             "Did I keep the puck moving with smart passes?",
@@ -246,40 +245,7 @@ const QUESTIONS = {
         ]
     },
 
-    // 🥍 Lacrosse Player
-    lacrosse: {
-        offense: [
-            "Did I create space effectively for my teammates?",
-            "Did I pass accurately under pressure?",
-            "Did I take high-percentage shots?",
-            "Did I move off the ball to support the offense?",
-            "Did I ride hard after turnovers?",
-            "Did I dodge smartly without forcing plays?",
-            "Did I maintain good field spacing?",
-            "Did I make the extra pass to create a better shot?"
-        ],
-        defense: [
-            "Did I maintain good defensive positioning?",
-            "Did I communicate with teammates about slides and picks?",
-            "Did I stay low and play strong 1v1 defense?",
-            "Did I hustle back in transition defense?",
-            "Did I check responsibly without overcommitting?",
-            "Did I stay between my man and the goal?",
-            "Did I support off-ball with smart help defense?",
-            "Did I clear the ball cleanly after turnovers?"
-        ],
-        teamIdentity: [
-            "Did I encourage and support teammates vocally?",
-            "Did I show resilience after mistakes?",
-            "Did I maintain high energy throughout the session?",
-            "Did I demonstrate leadership on and off the field?",
-            "Did I celebrate my teammates' successes?",
-            "Did I respect the referees, coaches, and opponents?",
-            "Did I stay mentally focused all game?",
-            "Did I contribute positively to our team culture?"
-        ]
-    },
-
+    // 🥍 Lacrosse Field Player
     "lacrosse-field-player": {
         offense: [
             "Did I create space effectively for my teammates?",
@@ -313,6 +279,7 @@ const QUESTIONS = {
         ]
     },
 
+    // 🥍 Lacrosse Goalie
     "lacrosse-goalie": {
         offense: [
             "Did I start clears quickly and accurately?",
@@ -331,13 +298,7 @@ const QUESTIONS = {
             "Did I encourage defenders during tough stretches?",
             "Did I bring positive energy regardless of game situation?"
         ]
-    },
-
-    // 🏌️ Golf (Individual)
-    golf: { ... },
-
-    // 🏃 Track / XC (Individual)
-    trackCrossCountry: { ... }
+    }
 };
 
 // Bonus positivity questions pool (slider input)
