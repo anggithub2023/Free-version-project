@@ -1,5 +1,3 @@
-// Master Final QUESTIONS.js - fully ready to paste ✅
-
 const QUESTIONS = {
 
     // 🏀 Basketball
@@ -248,74 +246,64 @@ const QUESTIONS = {
         ]
     },
 
-// 🏌️ Golf (Individual)
-    golf: {
-        focus: [
-            "Was I mentally present before each shot?",
-            "Did I stick to my pre-shot routine?",
-            "Did I stay composed after mistakes?",
-            "Did I commit to my decisions with confidence?",
-            "Did I manage my breathing and emotions?",
-            "Did I focus on the process rather than outcome?",
-            "Did I reset mentally between shots?",
-            "Did I finish my round with discipline?"
+    // 🥍 Lacrosse Player
+    lacrosse: {
+        offense: [
+            "Did I move without the ball to create passing options?",
+            "Did I protect my stick and avoid turnovers?",
+            "Did I take smart shots, not forcing low-percentage attempts?",
+            "Did I pass quickly and accurately to teammates?",
+            "Did I dodge or cut effectively to create offense?",
+            "Did I maintain field spacing and support ball movement?",
+            "Did I communicate plays and setups clearly?",
+            "Did I hustle to ground balls to retain possession?"
         ],
-        courseManagement: [
-            "Did I choose smart targets for my ability?",
-            "Did I avoid high-risk shots?",
-            "Did I recover intelligently when in trouble?",
-            "Did I plan shots around hazards?",
-            "Did I play to my strengths?",
-            "Did I read greens carefully?",
-            "Did I stick to a game plan?",
-            "Did I reflect on decision-making after the round?"
+        defense: [
+            "Did I stay goal-side and body up my opponent?",
+            "Did I apply pressure without committing penalties?",
+            "Did I communicate with teammates on switches and slides?",
+            "Did I recover quickly after being beaten?",
+            "Did I contest shots and disrupt passing lanes?",
+            "Did I clear the ball safely after turnovers?",
+            "Did I support teammates during fast breaks?",
+            "Did I play with intensity throughout defensive sets?"
         ],
-        execution: [
-            "Did I strike the ball cleanly?",
-            "Did I control distance on approaches?",
-            "Did I putt with focus and tempo?",
-            "Did I manage short game situations well?",
-            "Did I hit fairways off the tee?",
-            "Did I finish swings with balance?",
-            "Did I keep my tempo steady all round?",
-            "Did I adjust to course/weather conditions?"
+        teamIdentity: [
+            "Did I encourage teammates throughout the game?",
+            "Did I stay positive even after mistakes?",
+            "Did I hustle on and off the field?",
+            "Did I show leadership by example?",
+            "Did I help reset the team emotionally after tough plays?",
+            "Did I follow the game plan and stay disciplined?",
+            "Did I play selflessly for the good of the team?",
+            "Did I respect officials and opponents during competition?"
         ]
     },
 
-    // 🏃 Track/Cross Country (Individual)
-    trackCrossCountry: {
-        focus: [
-            "Did I approach the race with a positive mindset?",
-            "Did I visualize my race strategy before starting?",
-            "Did I stay mentally locked in despite distractions?",
-            "Did I stay confident and trust my training?",
-            "Did I set realistic but challenging goals for the race?",
-            "Did I control pre-race nerves effectively?",
-            "Did I stay focused through each lap or mile?",
-            "Did I maintain a strong mental attitude during the toughest parts?"
+    // 🥍 Lacrosse Goalie
+    "lacrosse-goalie": {
+        offense: [
+            "Did I communicate clear outlet passes after saves?",
+            "Did I start transition plays quickly and accurately?",
+            "Did I protect possession during clears?"
         ],
-        preparation: [
-            "Did I warm up properly?",
-            "Did I fuel and hydrate effectively?",
-            "Did I mentally prepare before the race?",
-            "Did I arrive focused and ready?",
-            "Did I visualize race strategy?",
-            "Did I shake off nerves or distractions?",
-            "Did I stretch and activate properly?",
-            "Did I start the race with the right mindset?"
+        defense: [
+            "Did I maintain proper stance and positioning?",
+            "Did I communicate defensive slides and help responsibilities?",
+            "Did I stay mentally engaged even during long possessions?"
         ],
-        execution: [
-            "Did I race with smart pacing?",
-            "Did I stay relaxed and composed?",
-            "Did I hit key checkpoints/goals?",
-            "Did I adjust if conditions changed?",
-            "Did I run with proper form?",
-            "Did I respond to competitors' moves?",
-            "Did I stick to the plan (or improve it)?",
-            "Did I reflect and write down insights after the race?"
+        teamIdentity: [
+            "Did I encourage defenders after breakdowns?",
+            "Did I stay calm and composed after goals allowed?",
+            "Did I lead the defense vocally and by example?"
         ]
-    }
+    },
 
+    // 🏌️ Golf (Individual)
+    golf: { ... },
+
+    // 🏃 Track / XC (Individual)
+    trackCrossCountry: { ... }
 };
 
 // Bonus positivity questions pool (slider input)
