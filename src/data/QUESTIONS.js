@@ -194,7 +194,7 @@ const QUESTIONS = {
     },
 
     // 🏒 Ice Hockey Player
-    iceHockey: {
+    "iceHockey-skater": {
         offense: [
             "Did I keep the puck moving with smart passes?",
             "Did I crash the net after shots?",
