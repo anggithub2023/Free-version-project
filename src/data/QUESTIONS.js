@@ -138,6 +138,73 @@ const QUESTIONS = {
             "Did I maintain emotional composure regardless of score?"
         ]
     },
+// 🏌️ Golf (Individual)
+    golf: {
+        focus: [
+            "Was I mentally present before each shot?",
+            "Did I stick to my pre-shot routine?",
+            "Did I stay composed after mistakes?",
+            "Did I commit to my decisions with confidence?",
+            "Did I manage my breathing and emotions?",
+            "Did I focus on the process rather than outcome?",
+            "Did I reset mentally between shots?",
+            "Did I finish my round with discipline?"
+        ],
+        courseManagement: [
+            "Did I choose smart targets for my ability?",
+            "Did I avoid high-risk shots?",
+            "Did I recover intelligently when in trouble?",
+            "Did I plan shots around hazards?",
+            "Did I play to my strengths?",
+            "Did I read greens carefully?",
+            "Did I stick to a game plan?",
+            "Did I reflect on decision-making after the round?"
+        ],
+        execution: [
+            "Did I strike the ball cleanly?",
+            "Did I control distance on approaches?",
+            "Did I putt with focus and tempo?",
+            "Did I manage short game situations well?",
+            "Did I hit fairways off the tee?",
+            "Did I finish swings with balance?",
+            "Did I keep my tempo steady all round?",
+            "Did I adjust to course/weather conditions?"
+        ]
+    },
+
+// 🏃 Track / Cross Country (Individual)
+    trackCrossCountry: {
+        focus: [
+            "Did I approach the race with a positive mindset?",
+            "Did I visualize my race strategy before starting?",
+            "Did I stay mentally locked in despite distractions?",
+            "Did I stay confident and trust my training?",
+            "Did I set realistic but challenging goals for the race?",
+            "Did I control pre-race nerves effectively?",
+            "Did I stay focused through each lap or mile?",
+            "Did I maintain a strong mental attitude during the toughest parts?"
+        ],
+        preparation: [
+            "Did I warm up properly?",
+            "Did I fuel and hydrate effectively?",
+            "Did I mentally prepare before the race?",
+            "Did I arrive focused and ready?",
+            "Did I visualize race strategy?",
+            "Did I shake off nerves or distractions?",
+            "Did I stretch and activate properly?",
+            "Did I start the race with the right mindset?"
+        ],
+        execution: [
+            "Did I race with smart pacing?",
+            "Did I stay relaxed and composed?",
+            "Did I hit key checkpoints/goals?",
+            "Did I adjust if conditions changed?",
+            "Did I run with proper form?",
+            "Did I respond to competitors' moves?",
+            "Did I stick to the plan (or improve it)?",
+            "Did I reflect and write down insights after the race?"
+        ]
+    },
 
     // ⚾ Baseball Player
     baseball: {
