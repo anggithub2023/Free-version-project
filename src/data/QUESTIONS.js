@@ -247,55 +247,89 @@ const QUESTIONS = {
     },
 
     // 🥍 Lacrosse Player
-    "lacrosse-field player": {
+    lacrosse: {
         offense: [
-            "Did I move without the ball to create passing options?",
-            "Did I protect my stick and avoid turnovers?",
-            "Did I take smart shots, not forcing low-percentage attempts?",
-            "Did I pass quickly and accurately to teammates?",
-            "Did I dodge or cut effectively to create offense?",
-            "Did I maintain field spacing and support ball movement?",
-            "Did I communicate plays and setups clearly?",
-            "Did I hustle to ground balls to retain possession?"
+            "Did I create space effectively for my teammates?",
+            "Did I pass accurately under pressure?",
+            "Did I take high-percentage shots?",
+            "Did I move off the ball to support the offense?",
+            "Did I ride hard after turnovers?",
+            "Did I dodge smartly without forcing plays?",
+            "Did I maintain good field spacing?",
+            "Did I make the extra pass to create a better shot?"
         ],
         defense: [
-            "Did I stay goal-side and body up my opponent?",
-            "Did I apply pressure without committing penalties?",
-            "Did I communicate with teammates on switches and slides?",
-            "Did I recover quickly after being beaten?",
-            "Did I contest shots and disrupt passing lanes?",
-            "Did I clear the ball safely after turnovers?",
-            "Did I support teammates during fast breaks?",
-            "Did I play with intensity throughout defensive sets?"
+            "Did I maintain good defensive positioning?",
+            "Did I communicate with teammates about slides and picks?",
+            "Did I stay low and play strong 1v1 defense?",
+            "Did I hustle back in transition defense?",
+            "Did I check responsibly without overcommitting?",
+            "Did I stay between my man and the goal?",
+            "Did I support off-ball with smart help defense?",
+            "Did I clear the ball cleanly after turnovers?"
         ],
         teamIdentity: [
-            "Did I encourage teammates throughout the game?",
-            "Did I stay positive even after mistakes?",
-            "Did I hustle on and off the field?",
-            "Did I show leadership by example?",
-            "Did I help reset the team emotionally after tough plays?",
-            "Did I follow the game plan and stay disciplined?",
-            "Did I play selflessly for the good of the team?",
-            "Did I respect officials and opponents during competition?"
+            "Did I encourage and support teammates vocally?",
+            "Did I show resilience after mistakes?",
+            "Did I maintain high energy throughout the session?",
+            "Did I demonstrate leadership on and off the field?",
+            "Did I celebrate my teammates' successes?",
+            "Did I respect the referees, coaches, and opponents?",
+            "Did I stay mentally focused all game?",
+            "Did I contribute positively to our team culture?"
         ]
     },
 
-    // 🥍 Lacrosse Goalie
+    "lacrosse-field player": {
+        offense: [
+            "Did I create space effectively for my teammates?",
+            "Did I pass accurately under pressure?",
+            "Did I take high-percentage shots?",
+            "Did I move off the ball to support the offense?",
+            "Did I ride hard after turnovers?",
+            "Did I dodge smartly without forcing plays?",
+            "Did I maintain good field spacing?",
+            "Did I make the extra pass to create a better shot?"
+        ],
+        defense: [
+            "Did I maintain good defensive positioning?",
+            "Did I communicate with teammates about slides and picks?",
+            "Did I stay low and play strong 1v1 defense?",
+            "Did I hustle back in transition defense?",
+            "Did I check responsibly without overcommitting?",
+            "Did I stay between my man and the goal?",
+            "Did I support off-ball with smart help defense?",
+            "Did I clear the ball cleanly after turnovers?"
+        ],
+        teamIdentity: [
+            "Did I encourage and support teammates vocally?",
+            "Did I show resilience after mistakes?",
+            "Did I maintain high energy throughout the session?",
+            "Did I demonstrate leadership on and off the field?",
+            "Did I celebrate my teammates' successes?",
+            "Did I respect the referees, coaches, and opponents?",
+            "Did I stay mentally focused all game?",
+            "Did I contribute positively to our team culture?"
+        ]
+    },
+
     "lacrosse-goalie": {
         offense: [
-            "Did I communicate clear outlet passes after saves?",
-            "Did I start transition plays quickly and accurately?",
-            "Did I protect possession during clears?"
+            "Did I start clears quickly and accurately?",
+            "Did I communicate outlet options clearly to teammates?",
+            "Did I assist the offense with smart ball distribution?"
         ],
         defense: [
             "Did I maintain proper stance and positioning?",
-            "Did I communicate defensive slides and help responsibilities?",
-            "Did I stay mentally engaged even during long possessions?"
+            "Did I make saves I was expected to make?",
+            "Did I communicate the defensive setup vocally?",
+            "Did I react quickly on rebounds and loose balls?"
         ],
         teamIdentity: [
-            "Did I encourage defenders after breakdowns?",
+            "Did I show leadership from the crease?",
             "Did I stay calm and composed after goals allowed?",
-            "Did I lead the defense vocally and by example?"
+            "Did I encourage defenders during tough stretches?",
+            "Did I bring positive energy regardless of game situation?"
         ]
     },
 
