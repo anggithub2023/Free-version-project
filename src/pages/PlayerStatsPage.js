@@ -55,7 +55,6 @@ function PlayerStatsPage() {
         document.body.removeChild(link);
     };
 
-    // --- PATCH ---
     if (!selectedSport) {
         return <ReflectionStartFlow onSelect={(sport) => {
             setSelectedSport(sport);
@@ -70,7 +69,6 @@ function PlayerStatsPage() {
             localStorage.setItem('selectedPosition', normalizedPosition);
         }} sport={selectedSport} />;
     }
-    // --------------
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 p-4 pb-24">
@@ -84,25 +82,32 @@ function PlayerStatsPage() {
                 onSaveStat={handleSaveStat}
             />
 
-            {/* FAB Buttons */}
-            <div className="fixed bottom-6 right-6 flex flex-col items-end space-y-4">
-                {gameStats.length > 0 && (
-                    <>
-                        <button
-                            onClick={handleDownloadStats}
-                            className="p-4 rounded-full bg-green-600 hover:bg-green-500 text-white shadow-lg"
-                        >
-                            📅
-                        </button>
+            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                    onClick={handleDownloadStats}
+                    className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-lg"
+                >
+                    📅 Download CSV
+                </button>
 
-                        <button
-                            onClick={() => setShowClearModal(true)}
-                            className="p-4 rounded-full bg-red-600 hover:bg-red-500 text-white shadow-lg"
-                        >
-                            🗑️
-                        </button>
-                    </>
-                )}
+                <button
+                    onClick={() => setShowClearModal(true)}
+                    className="bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-lg"
+                >
+                    🗑️ Clear Stats
+                </button>
+
+                <button
+                    onClick={() => {
+                        localStorage.removeItem('selectedSport');
+                        localStorage.removeItem('selectedPosition');
+                        localStorage.removeItem('gameStats');
+                        window.location.href = '/';
+                    }}
+                    className="bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-lg"
+                >
+                    🏠 Back to Home
+                </button>
             </div>
 
             {showClearModal && (
