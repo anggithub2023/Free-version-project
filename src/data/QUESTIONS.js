@@ -72,51 +72,105 @@ const QUESTIONS = {
         offense: [
             "Did I distribute the ball accurately under pressure?",
             "Did I start counterattacks quickly and smartly?",
-            "Did I offer clear outlet options for defenders?"
+            "Did I offer clear outlet options for defenders?",
+            "Did I help maintain team possession during distribution?"
         ],
         defense: [
             "Did I communicate early and loudly with defenders?",
             "Did I challenge crosses effectively?",
-            "Did I stay focused throughout long stretches without action?"
+            "Did I stay focused throughout long stretches without action?",
+            "Did I organize the defense during set pieces?"
         ],
         teamIdentity: [
             "Did I boost team morale vocally and by example?",
             "Did I quickly reset the team after conceding a goal?",
-            "Did I stay positive and composed under pressure?"
+            "Did I stay positive and composed under pressure?",
+            "Did I support and encourage the team from the back?"
+        ]
+    },
+
+    // ⚽ Soccer Field Player
+    "soccer-field-player": {
+        offense: [
+            "Did I create scoring chances through smart movement?",
+            "Did I make unselfish passes in the final third?",
+            "Did I keep my head up and find open teammates?",
+            "Did I avoid forced or low-percentage shots?",
+            "Did I time my runs correctly to stay onside?",
+            "Did I support the attack with intelligent spacing?",
+            "Did I control the ball under pressure?",
+            "Did I stay composed in front of goal?"
+        ],
+        defense: [
+            "Did I track back quickly after losing the ball?",
+            "Did I stay goal-side and mark my assignment?",
+            "Did I communicate with teammates on defense?",
+            "Did I apply pressure without fouling?",
+            "Did I anticipate passes and intercept?",
+            "Did I stay disciplined in our shape?",
+            "Did I clear the ball with purpose?",
+            "Did I recover quickly after a mistake?"
+        ],
+        teamIdentity: [
+            "Did I hustle consistently and set the tone?",
+            "Did I communicate positively on and off the ball?",
+            "Did I show respect to coaches and teammates?",
+            "Did I help others reset after mistakes?",
+            "Did I stay coachable throughout the session?",
+            "Did I show leadership through action?",
+            "Did I celebrate team success over individual glory?",
+            "Did I bring energy and intensity to practice or game?"
         ]
     },
 
     // 🏈 Football Player
-    football: {
+    "football-running-back": {
         offense: [
-            "Did I execute my assignment with precision?",
-            "Did I protect the ball and avoid turnovers?",
-            "Did I communicate with my teammates on the line or in the huddle?",
-            "Did I make smart decisions under pressure?",
-            "Did I finish plays with full effort?",
-            "Did I adjust to the defense effectively?",
-            "Did I block or support teammates when I wasn’t the ball carrier?",
-            "Did I run crisp, purposeful routes?"
-        ],
-        defense: [
-            "Did I maintain alignment and responsibility?",
-            "Did I stay physical without committing penalties?",
-            "Did I wrap up and finish tackles?",
-            "Did I communicate pre-snap and during the play?",
-            "Did I pursue the ball with relentless effort?",
-            "Did I respond well to mistakes and recover?",
-            "Did I play with intensity from snap to whistle?",
-            "Did I disrupt the offense’s rhythm effectively?"
+            "Did I hit running lanes quickly and decisively?",
+            "Did I protect the football through contact?",
+            "Did I contribute in pass protection effectively?",
+            "Did I finish every run with effort?",
+            "Did I communicate pre-snap assignments?"
         ],
         teamIdentity: [
-            "Did I hold myself and others accountable?",
-            "Did I stay mentally tough through adversity?",
-            "Did I support the team regardless of my role?",
-            "Did I maintain discipline and focus?",
-            "Did I show leadership by example?",
-            "Did I respect coaches, officials, and opponents?",
-            "Did I put the team’s success first?",
-            "Did I bring positive energy to the sidelines?"
+            "Did I support teammates vocally and on the field?",
+            "Did I show effort on and off the ball?",
+            "Did I stay mentally tough through the session?",
+            "Did I stay positive after tough plays?"
+        ]
+    },
+
+    // 🏈 Football Wide Receiver
+    "football-wide-receiver": {
+        offense: [
+            "Did I run sharp, deliberate routes?",
+            "Did I secure every catch within reach?",
+            "Did I block for teammates on running plays?",
+            "Did I make smart decisions after the catch?",
+            "Did I maintain spacing and timing with the QB?"
+        ],
+        teamIdentity: [
+            "Did I bring energy to the huddle and sideline?",
+            "Did I celebrate teammates' success?",
+            "Did I support my unit vocally and by example?",
+            "Did I demonstrate focus throughout the game?"
+        ]
+    },
+
+    // 🏈 Football Defensive Player
+    "football-defensive-player": {
+        defense: [
+            "Did I align properly on each play?",
+            "Did I pursue the ball with urgency?",
+            "Did I communicate on coverage and gaps?",
+            "Did I tackle safely and effectively?",
+            "Did I stay disciplined in my assignments?"
+        ],
+        teamIdentity: [
+            "Did I encourage teammates after mistakes?",
+            "Did I bring energy on every series?",
+            "Did I lead by example on effort and hustle?",
+            "Did I contribute to defensive unity?"
         ]
     },
 
