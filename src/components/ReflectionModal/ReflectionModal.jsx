@@ -1,6 +1,6 @@
 import React from 'react';
 
-function ReflectionModal({ total, offense, defense, culture, bonus, sport, position }) {
+function ReflectionModal({ sport, position, bonus, ...scores }) {
     const handleHome = () => {
         localStorage.removeItem('selectedSport');
         localStorage.removeItem('selectedPosition');
@@ -21,10 +21,16 @@ function ReflectionModal({ total, offense, defense, culture, bonus, sport, posit
                 <h2 className="text-3xl font-bold text-indigo-600 dark:text-indigo-300 mb-4">🔥 Great Work Reflecting! 🔥</h2>
 
                 <div className="space-y-2 text-lg">
-                    <p>Total: <span className="text-indigo-500">{total}%</span></p>
-                    <p>Offense: {offense}%</p>
-                    <p>Defense: {defense}%</p>
-                    <p>Culture: {culture}%</p>
+                    <p>Total: <span className="text-indigo-500">{scores.total}%</span></p>
+
+                    {Object.entries(scores)
+                        .filter(([key]) => key !== 'total')
+                        .map(([key, val]) => (
+                            <p key={key}>
+                                {key.charAt(0).toUpperCase() + key.slice(1)}: {val}%
+                            </p>
+                        ))}
+
                     <p>Bonus Positivity: {bonus}%</p>
                 </div>
 
