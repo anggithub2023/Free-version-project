@@ -10,7 +10,16 @@ function shuffleArray(array) {
 }
 
 function getRandomQuestionsReflection(fullQuestions) {
-    const sections = ['offense', 'defense', 'teamIdentity', 'focus', 'preparation', 'execution'];
+    const sections = [
+        'offense',
+        'defense',
+        'teamIdentity',
+        'focus',
+        'preparation',
+        'execution',
+        'courseManagement' // Added for Golf
+    ];
+
     const selectedQuestions = {};
 
     sections.forEach((section) => {
