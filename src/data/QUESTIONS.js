@@ -171,7 +171,7 @@ const QUESTIONS = {
             "Did I bring energy on every series?",
             "Did I lead by example on effort and hustle?",
             "Did I contribute to defensive unity?"
-        ]
+        ],
     },
 
     // 🏈 Football Quarterback
