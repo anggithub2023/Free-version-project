@@ -1,5 +1,3 @@
-// src/pages/ReflectionPage.jsx (TRUE FINAL QA-PASSED VERSION)
-
 import React, { useState, useEffect, useReducer } from 'react';
 import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
 import SectionBlock from '../components/ReflectionModal/SectionBlock';
@@ -54,20 +52,22 @@ function ReflectionPage() {
     };
 
     const handleSubmit = () => {
-        const totalQuestions = Object.keys(answers).length;
-        const totalYes = Object.values(answers).filter(v => v === 'yes').length;
-        const total = Math.round((totalYes / totalQuestions) * 100);
+        const allKeys = Object.keys(answers).filter(k => k !== 'bonusReflection');
+        const totalYes = allKeys.filter(k => answers[k] === 'yes').length;
+        const total = allKeys.length ? Math.round((totalYes / allKeys.length) * 100) : 0;
 
-        const calcSection = (keys) => {
-            const yes = keys.filter(k => answers[k] === 'yes').length;
-            return keys.length ? Math.round((yes / keys.length) * 100) : 0;
-        };
+        const sectionKeys = [...new Set(allKeys.map(k => k.split('-')[0]))];
+
+        const sectionScores = sectionKeys.reduce((acc, section) => {
+            const keys = allKeys.filter(k => k.startsWith(section));
+            const yesCount = keys.filter(k => answers[k] === 'yes').length;
+            acc[section] = keys.length ? Math.round((yesCount / keys.length) * 100) : 0;
+            return acc;
+        }, {});
 
         setScoreSummary({
             total,
-            offense: calcSection(Object.keys(answers).filter(k => k.startsWith('offense'))),
-            defense: calcSection(Object.keys(answers).filter(k => k.startsWith('defense'))),
-            culture: calcSection(Object.keys(answers).filter(k => k.startsWith('teamIdentity'))),
+            ...sectionScores,
             bonus: answers['bonusReflection'] || 50,
         });
 
