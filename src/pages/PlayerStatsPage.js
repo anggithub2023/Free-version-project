@@ -3,7 +3,7 @@ import ReflectionStartFlow from '../components/PlayerStats/ReflectionStartFlow';
 import PositionSelectionModal from '../components/PlayerStats/PositionSelectionModal';
 import DynamicStatForm from '../components/PlayerStats/DynamicStatForm';
 import ConfirmModal from '../components/ConfirmModal';
-import { MdDownload, MdDelete, MdHome, MdMenu } from 'react-icons/md';
+import { MdDownload, MdDelete, MdHome, MdMenu, MdInsights } from 'react-icons/md';
 
 function PlayerStatsPage() {
     const [selectedSport, setSelectedSport] = useState(() => localStorage.getItem('selectedSport') || '');
