@@ -94,20 +94,30 @@ function PlayerStatsPage() {
                 {showFAB && (
                     <>
                         <button
+                            onClick={() => window.location.href = '/analytics'}
+                            className="bg-purple-600 hover:bg-purple-500 text-white p-3 rounded-full shadow-lg"
+                            title="📊 View Analytics"
+                        >
+                            <MdInsights size={24} />
+                        </button>
+                        <button
                             onClick={handleDownloadStats}
-                            className="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-full shadow-lg flex items-center gap-2"
+                            className="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-full shadow-lg"
+                            title="📅 Download CSV"
                         >
                             <MdDownload size={24} />
                         </button>
                         <button
                             onClick={() => setShowClearModal(true)}
-                            className="bg-yellow-600 hover:bg-yellow-500 text-white p-3 rounded-full shadow-lg flex items-center gap-2"
+                            className="bg-yellow-600 hover:bg-yellow-500 text-white p-3 rounded-full shadow-lg"
+                            title="❌ Clear Stats"
                         >
                             <MdDelete size={24} />
                         </button>
                         <button
                             onClick={handleGoHome}
-                            className="bg-gray-600 hover:bg-gray-500 text-white p-3 rounded-full shadow-lg flex items-center gap-2"
+                            className="bg-gray-600 hover:bg-gray-500 text-white p-3 rounded-full shadow-lg"
+                            title="🏠 Back to Home"
                         >
                             <MdHome size={24} />
                         </button>
@@ -116,6 +126,7 @@ function PlayerStatsPage() {
                 <button
                     onClick={() => setShowFAB(!showFAB)}
                     className="bg-green-600 hover:bg-green-500 text-white p-4 rounded-full shadow-xl"
+                    title="☰ Menu"
                 >
                     <MdMenu size={28} />
                 </button>
