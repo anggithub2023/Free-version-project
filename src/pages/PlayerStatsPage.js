@@ -1,16 +1,12 @@
-// src/pages/PlayerStatsPage.jsx
-
 import React, { useState, useEffect } from 'react';
 import ReflectionStartFlow from '../components/PlayerStats/ReflectionStartFlow';
 import PositionSelectionModal from '../components/PlayerStats/PositionSelectionModal';
 import DynamicStatForm from '../components/PlayerStats/DynamicStatForm';
-import ConfirmModal from '../components/ConfirmModal';
 
 function PlayerStatsPage() {
     const [selectedSport, setSelectedSport] = useState(() => localStorage.getItem('selectedSport') || '');
     const [selectedPosition, setSelectedPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
     const [gameStats, setGameStats] = useState([]);
-    const [showClearModal, setShowClearModal] = useState(false);
 
     const sportsWithPositions = ['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'];
 
@@ -23,12 +19,6 @@ function PlayerStatsPage() {
         const updatedStats = [...gameStats, statEntry];
         setGameStats(updatedStats);
         localStorage.setItem('gameStats', JSON.stringify(updatedStats));
-    };
-
-    const handleClearStats = () => {
-        setGameStats([]);
-        localStorage.removeItem('gameStats');
-        setShowClearModal(false);
     };
 
     const handleDownloadStats = () => {
@@ -91,13 +81,6 @@ function PlayerStatsPage() {
                 </button>
 
                 <button
-                    onClick={() => setShowClearModal(true)}
-                    className="bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-lg"
-                >
-                    🗑️ Clear Stats
-                </button>
-
-                <button
                     onClick={() => {
                         localStorage.removeItem('selectedSport');
                         localStorage.removeItem('selectedPosition');
@@ -109,14 +92,6 @@ function PlayerStatsPage() {
                     🏠 Back to Home
                 </button>
             </div>
-
-            {showClearModal && (
-                <ConfirmModal
-                    message="Are you sure you want to clear all player stats?"
-                    onConfirm={handleClearStats}
-                    onCancel={() => setShowClearModal(false)}
-                />
-            )}
         </div>
     );
 }
