@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import ReflectionStartFlow from '../components/PlayerStats/ReflectionStartFlow';
 import PositionSelectionModal from '../components/PlayerStats/PositionSelectionModal';
 import DynamicStatForm from '../components/PlayerStats/DynamicStatForm';
+import ConfirmModal from '../components/ConfirmModal';
+import { MdDownload, MdDelete, MdHome, MdMenu } from 'react-icons/md';
 
 function PlayerStatsPage() {
     const [selectedSport, setSelectedSport] = useState(() => localStorage.getItem('selectedSport') || '');
     const [selectedPosition, setSelectedPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
     const [gameStats, setGameStats] = useState([]);
+    const [showClearModal, setShowClearModal] = useState(false);
+    const [showFAB, setShowFAB] = useState(false);
 
     const sportsWithPositions = ['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'];
 
@@ -19,6 +23,12 @@ function PlayerStatsPage() {
         const updatedStats = [...gameStats, statEntry];
         setGameStats(updatedStats);
         localStorage.setItem('gameStats', JSON.stringify(updatedStats));
+    };
+
+    const handleClearStats = () => {
+        setGameStats([]);
+        localStorage.removeItem('gameStats');
+        setShowClearModal(false);
     };
 
     const handleDownloadStats = () => {
@@ -43,6 +53,13 @@ function PlayerStatsPage() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+    };
+
+    const handleGoHome = () => {
+        localStorage.removeItem('selectedSport');
+        localStorage.removeItem('selectedPosition');
+        localStorage.removeItem('gameStats');
+        window.location.href = '/';
     };
 
     if (!selectedSport) {
@@ -72,26 +89,45 @@ function PlayerStatsPage() {
                 onSaveStat={handleSaveStat}
             />
 
-            <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+            {/* Floating FAB group */}
+            <div className="fixed bottom-6 right-6 flex flex-col items-end space-y-3 z-50">
+                {showFAB && (
+                    <>
+                        <button
+                            onClick={handleDownloadStats}
+                            className="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-full shadow-lg flex items-center gap-2"
+                        >
+                            <MdDownload size={24} />
+                        </button>
+                        <button
+                            onClick={() => setShowClearModal(true)}
+                            className="bg-yellow-600 hover:bg-yellow-500 text-white p-3 rounded-full shadow-lg flex items-center gap-2"
+                        >
+                            <MdDelete size={24} />
+                        </button>
+                        <button
+                            onClick={handleGoHome}
+                            className="bg-gray-600 hover:bg-gray-500 text-white p-3 rounded-full shadow-lg flex items-center gap-2"
+                        >
+                            <MdHome size={24} />
+                        </button>
+                    </>
+                )}
                 <button
-                    onClick={handleDownloadStats}
-                    className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-lg"
+                    onClick={() => setShowFAB(!showFAB)}
+                    className="bg-green-600 hover:bg-green-500 text-white p-4 rounded-full shadow-xl"
                 >
-                    📅 Download CSV
-                </button>
-
-                <button
-                    onClick={() => {
-                        localStorage.removeItem('selectedSport');
-                        localStorage.removeItem('selectedPosition');
-                        localStorage.removeItem('gameStats');
-                        window.location.href = '/';
-                    }}
-                    className="bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-6 rounded-lg"
-                >
-                    🏠 Back to Home
+                    <MdMenu size={28} />
                 </button>
             </div>
+
+            {showClearModal && (
+                <ConfirmModal
+                    message="Are you sure you want to clear all player stats?"
+                    onConfirm={handleClearStats}
+                    onCancel={() => setShowClearModal(false)}
+                />
+            )}
         </div>
     );
 }
