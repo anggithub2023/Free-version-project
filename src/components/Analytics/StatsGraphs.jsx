@@ -1,14 +1,17 @@
 import React from 'react';
+import { Line } from 'react-chartjs-2';
 import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    CartesianGrid,
+    Chart as ChartJS,
+    LineElement,
+    PointElement,
+    CategoryScale,
+    LinearScale,
+    Title,
     Tooltip,
-    ResponsiveContainer,
-    Legend
-} from 'recharts';
+    Legend,
+} from 'chart.js';
+
+ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 function StatsGraphs({ filteredStats }) {
     if (!filteredStats || filteredStats.length === 0) {
@@ -19,53 +22,30 @@ function StatsGraphs({ filteredStats }) {
         );
     }
 
-    // Build dataset and safely parse numbers
-    const data = filteredStats.map(entry => {
-        const parsedStats = {};
-        for (const [key, value] of Object.entries(entry.stats)) {
-            const num = Number(value);
-            parsedStats[key] = isNaN(num) ? null : num;
-        }
-        return {
-            date: new Date(entry.date).toLocaleDateString(),
-            ...parsedStats
-        };
-    });
+    const dates = filteredStats.map(entry => new Date(entry.date).toLocaleDateString());
+    const statKeys = Object.keys(filteredStats[0]?.stats || {});
 
-    // Get valid numeric stat keys (excluding "date")
-    const statKeys = data.length > 0
-        ? Object.keys(data[0]).filter(
-            key => key !== 'date' && data.some(d => d[key] !== null && typeof d[key] === 'number')
-        )
-        : [];
+    const datasets = statKeys.map((stat, idx) => ({
+        label: stat,
+        data: filteredStats.map(entry => Number(entry.stats[stat]) || 0),
+        borderColor: `hsl(${idx * 60}, 70%, 50%)`,
+        tension: 0.4,
+    }));
 
-    return (
-        <div className="w-full h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
-                    <XAxis dataKey="date" stroke="currentColor" />
-                    <YAxis stroke="currentColor" />
-                    <Tooltip
-                        contentStyle={{ backgroundColor: '#1f2937', border: 'none' }}
-                        labelStyle={{ color: '#d1d5db' }}
-                    />
-                    <Legend />
-                    {statKeys.map((key, idx) => (
-                        <Line
-                            key={idx}
-                            type="monotone"
-                            dataKey={key}
-                            stroke="#4ade80"
-                            strokeWidth={2}
-                            dot={false}
-                            isAnimationActive={false}
-                        />
-                    ))}
-                </LineChart>
-            </ResponsiveContainer>
-        </div>
-    );
+    const data = {
+        labels: dates,
+        datasets,
+    };
+
+    const options = {
+        responsive: true,
+        plugins: {
+            legend: { position: 'top' },
+            title: { display: true, text: 'Stat Trends Over Time' },
+        },
+    };
+
+    return <Line data={data} options={options} />;
 }
 
 export default StatsGraphs;
