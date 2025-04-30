@@ -22,7 +22,7 @@ function PlayerAnalyticsPage() {
         if (selectedSport) {
             const normalizedSport = selectedSport.toLowerCase();
             const filtered = gameStats.filter(
-                (stat) => stat.sport?.toLowerCase() === normalizedSport
+                stat => stat.sport?.toLowerCase() === normalizedSport
             );
             setFilteredStats(filtered);
         } else {
@@ -59,31 +59,25 @@ function PlayerAnalyticsPage() {
                 {selectedSport ? (
                     filteredStats.length > 0 ? (
                         <div className="space-y-10">
-
-                            {/* Averages */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                                 <h2 className="text-2xl font-semibold mb-4">📊 Averages</h2>
                                 <AveragesPanel filteredStats={filteredStats} />
                             </div>
 
-                            {/* Progress Bars */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                                 <h2 className="text-2xl font-semibold mb-4">📈 Progress Bars</h2>
                                 <ProgressBarsPanel filteredStats={filteredStats} />
                             </div>
 
-                            {/* Stat Graphs */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                                 <h2 className="text-2xl font-semibold mb-4">📈 Stat Trends</h2>
                                 <StatsGraphs filteredStats={filteredStats} />
                             </div>
 
-                            {/* History Table */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                                 <h2 className="text-2xl font-semibold mb-4">📜 Stat History</h2>
                                 <StatsHistoryTable filteredStats={filteredStats} />
                             </div>
-
                         </div>
                     ) : (
                         <div className="text-center mt-12 text-gray-500 dark:text-gray-400">
