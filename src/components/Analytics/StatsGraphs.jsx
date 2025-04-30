@@ -1,3 +1,4 @@
+console.log("✅ StatsGraphs component mounted");
 import React, { useEffect } from 'react';
 import {
     LineChart,
