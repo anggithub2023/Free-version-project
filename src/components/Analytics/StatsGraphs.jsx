@@ -10,11 +10,9 @@ import {
     Legend
 } from 'recharts';
 
-// ✅ Log component load
 console.log("✅ StatsGraphs component mounted");
 
 function StatsGraphs({ filteredStats }) {
-    // ✅ Log props received
     console.log("📊 StatsGraphs received filteredStats:", filteredStats);
 
     if (!filteredStats || filteredStats.length === 0) {
@@ -25,11 +23,11 @@ function StatsGraphs({ filteredStats }) {
         );
     }
 
-    // Build dataset and safely parse numbers
+    // Safely build the dataset
     const data = filteredStats.map(entry => {
         const parsedStats = {};
         for (const [key, value] of Object.entries(entry.stats)) {
-            const num = Number(value);
+            const num = parseFloat(value);
             parsedStats[key] = isNaN(num) ? null : num;
         }
         return {
@@ -38,9 +36,13 @@ function StatsGraphs({ filteredStats }) {
         };
     });
 
+    console.log("📈 Final data for chart:", data);
+
     const statKeys = Object.keys(data[0] || {}).filter(
         key => key !== 'date' && data.some(d => typeof d[key] === 'number')
     );
+
+    console.log("📌 Stat keys to be charted:", statKeys);
 
     return (
         <div className="w-full h-[400px]">
@@ -54,12 +56,24 @@ function StatsGraphs({ filteredStats }) {
                         labelStyle={{ color: '#d1d5db' }}
                     />
                     <Legend />
+
+                    {/* ✅ TEMP: Hardcoded line for testing */}
+                    <Line
+                        type="monotone"
+                        dataKey="Points"
+                        stroke="#4ade80"
+                        strokeWidth={2}
+                        dot={false}
+                        isAnimationActive={false}
+                    />
+
+                    {/* ✅ Real mapped lines */}
                     {statKeys.map((key, idx) => (
                         <Line
                             key={idx}
                             type="monotone"
                             dataKey={key}
-                            stroke="#4ade80"
+                            stroke="#60a5fa"
                             strokeWidth={2}
                             dot={false}
                             isAnimationActive={false}
