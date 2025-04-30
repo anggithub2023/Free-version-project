@@ -9,7 +9,7 @@ function PlayerAnalyticsPage() {
     const [selectedSport, setSelectedSport] = useState('');
     const [filteredStats, setFilteredStats] = useState([]);
 
-    // Load all stats from localStorage on mount
+    // Load all stats from localStorage on mount loads all stats
     useEffect(() => {
         const savedStats = JSON.parse(localStorage.getItem('gameStats')) || [];
         setGameStats(savedStats);
