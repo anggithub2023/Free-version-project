@@ -33,9 +33,11 @@ function StatsGraphs({ filteredStats }) {
     });
 
     // Get valid numeric stat keys (excluding "date")
-    const statKeys = Object.keys(data[0] || {}).filter(
-        key => key !== 'date' && data.some(d => typeof d[key] === 'number')
-    );
+    const statKeys = data.length > 0
+        ? Object.keys(data[0]).filter(
+            key => key !== 'date' && data.some(d => d[key] !== null && typeof d[key] === 'number')
+        )
+        : [];
 
     return (
         <div className="w-full h-[400px]">
