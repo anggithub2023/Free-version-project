@@ -1,46 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import AveragesPanel from '../components/Analytics/AveragesPanel';
-import ProgressBarsPanel from '../components/Analytics/ProgressBarsPanel';
-import StatsGraphs from '../components/Analytics/StatsGraphs';
-import StatsHistoryTable from '../components/Analytics/StatsHistoryTable';
 
 function PlayerAnalyticsPage() {
     const [gameStats, setGameStats] = useState([]);
     const [selectedSport, setSelectedSport] = useState('');
-    const [filteredStats, setFilteredStats] = useState([]);
 
-    // Load all stats from localStorage on mount loads all stats
     useEffect(() => {
-        const savedStats = JSON.parse(localStorage.getItem('gameStats')) || [];
-        setGameStats(savedStats);
+        try {
+            const savedStats = JSON.parse(localStorage.getItem('gameStats')) || [];
+            setGameStats(savedStats);
+        } catch (err) {
+            console.error("Error parsing localStorage gameStats:", err);
+        }
     }, []);
 
-    // Filter stats based on selected sport
-    useEffect(() => {
-        if (selectedSport) {
-            const normalizedSport = selectedSport.toLowerCase();
-            const filtered = gameStats.filter(
-                (stat) => stat.sport?.toLowerCase() === normalizedSport
-            );
-            setFilteredStats(filtered);
-        } else {
-            setFilteredStats([]);
-        }
-    }, [selectedSport, gameStats]);
-
-    // Extract list of unique sports
     const availableSports = Array.from(new Set(gameStats.map(stat => stat.sport)));
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 p-6">
             <div className="max-w-6xl mx-auto">
-
-                {/* Page Title */}
                 <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8 text-green-700 dark:text-green-300">
                     🎯 Player Control Center
                 </h1>
 
-                {/* Sport Selector */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
                     <select
                         value={selectedSport}
@@ -56,44 +37,10 @@ function PlayerAnalyticsPage() {
                     </select>
                 </div>
 
-                {/* Analytics Panels */}
-                {selectedSport ? (
-                    filteredStats.length > 0 ? (
-                        <div className="space-y-10">
-
-                            {/* Averages */}
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                                <h2 className="text-2xl font-semibold mb-4">📊 Averages</h2>
-                                <AveragesPanel filteredStats={filteredStats} />
-                            </div>
-
-                            {/* Totals & Progress Bars */}
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                                <h2 className="text-2xl font-semibold mb-4">📈 Progress Bars</h2>
-                                <ProgressBarsPanel filteredStats={filteredStats} />
-                            </div>
-
-                            {/* Line Chart */}
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                                <h2 className="text-2xl font-semibold mb-4">📈 Stat Trends</h2>
-                                <StatsGraphs filteredStats={filteredStats} />
-                            </div>
-
-                            {/* Table */}
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                                <h2 className="text-2xl font-semibold mb-4">📜 Stat History</h2>
-                                <StatsHistoryTable filteredStats={filteredStats} />
-                            </div>
-
-                        </div>
-                    ) : (
-                        <div className="text-center mt-12 text-gray-500 dark:text-gray-400">
-                            No stats found for <strong>{selectedSport}</strong>. Start logging games!
-                        </div>
-                    )
-                ) : (
-                    <div className="text-center mt-12 text-gray-500 dark:text-gray-400">
-                        Please select a sport to view analytics.
+                {/* TEMPORARILY REMOVED analytics components */}
+                {selectedSport && (
+                    <div className="text-center mt-12 text-yellow-600 dark:text-yellow-400">
+                        Panels temporarily disabled for QA. You selected: <strong>{selectedSport}</strong>
                     </div>
                 )}
             </div>
