@@ -5,93 +5,65 @@ function StatsGraphs({ filteredStats }) {
     if (!filteredStats || filteredStats.length === 0) {
         return (
             <div className="text-center text-gray-500 dark:text-gray-400">
-                No stats available to graph.
+                No stats to show yet – log a game to get started!
             </div>
         );
     }
 
-    // Group stats into series for Nivo
-    const statMap = {};
-
-    filteredStats.forEach(entry => {
-        const date = new Date(entry.date).toLocaleDateString();
-        for (const [key, value] of Object.entries(entry.stats)) {
-            if (!statMap[key]) statMap[key] = [];
-            const num = Number(value);
-            if (!isNaN(num)) {
-                statMap[key].push({ x: date, y: num });
-            }
-        }
-    });
-
-    const lineData = Object.entries(statMap).map(([statKey, values]) => ({
-        id: statKey,
-        data: values
+    // Convert stats to Nivo format
+    const statKeys = Object.keys(filteredStats[0].stats);
+    const dataByStat = statKeys.map(stat => ({
+        id: stat,
+        data: filteredStats.map((entry, index) => ({
+            x: `Game ${index + 1}`,
+            y: Number(entry.stats[stat]) || 0
+        }))
     }));
 
     return (
-        <div className="h-[400px]">
+        <div className="h-[400px] bg-white dark:bg-gray-800 rounded-lg p-4 shadow-md">
+            <h3 className="text-xl font-semibold mb-3 text-center text-green-600 dark:text-green-300">
+                📈 Stat Growth Over Time
+            </h3>
             <ResponsiveLine
-                data={lineData}
-                margin={{ top: 30, right: 80, bottom: 50, left: 60 }}
+                data={dataByStat}
+                margin={{ top: 40, right: 60, bottom: 50, left: 50 }}
                 xScale={{ type: 'point' }}
-                yScale={{
-                    type: 'linear',
-                    min: 'auto',
-                    max: 'auto',
-                    stacked: false,
-                    reverse: false
-                }}
-                axisTop={null}
-                axisRight={null}
+                yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false }}
                 axisBottom={{
-                    orient: 'bottom',
                     tickSize: 5,
                     tickPadding: 5,
-                    tickRotation: -35,
-                    legend: 'Date',
+                    tickRotation: 0,
+                    legend: 'Games',
                     legendOffset: 36,
                     legendPosition: 'middle'
                 }}
                 axisLeft={{
-                    orient: 'left',
                     tickSize: 5,
                     tickPadding: 5,
                     tickRotation: 0,
-                    legend: 'Value',
-                    legendOffset: -50,
+                    legend: 'Stat Value',
+                    legendOffset: -40,
                     legendPosition: 'middle'
                 }}
-                pointSize={6}
-                pointColor={{ theme: 'background' }}
+                colors={{ scheme: 'category10' }}
+                pointSize={8}
                 pointBorderWidth={2}
-                pointBorderColor={{ from: 'serieColor' }}
+                enableSlices="x"
                 useMesh={true}
                 legends={[
                     {
-                        anchor: 'bottom-right',
+                        anchor: 'top-right',
                         direction: 'column',
                         justify: false,
-                        translateX: 80,
-                        translateY: 0,
-                        itemsSpacing: 4,
-                        itemDirection: 'left-to-right',
-                        itemWidth: 100,
+                        translateX: 100,
+                        itemWidth: 80,
                         itemHeight: 20,
+                        itemTextColor: '#444',
                         symbolSize: 12,
-                        symbolShape: 'circle',
-                        toggleSerie: true
+                        symbolShape: 'circle'
                     }
                 ]}
-                theme={{
-                    textColor: '#e5e7eb',
-                    tooltip: {
-                        container: {
-                            background: '#1f2937',
-                            color: '#fff'
-                        }
-                    }
-                }}
             />
         </div>
     );
