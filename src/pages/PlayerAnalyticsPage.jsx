@@ -4,6 +4,7 @@ import ProgressBarsPanel from '../components/Analytics/ProgressBarsPanel';
 import StatsGraphs from '../components/Analytics/StatsGraphs';
 import StatsHistoryTable from '../components/Analytics/StatsHistoryTable';
 import { MdBarChart, MdTimeline, MdShowChart, MdHistory } from 'react-icons/md';
+import { GiAchievement } from 'react-icons/gi';
 
 function PlayerAnalyticsPage() {
     const [gameStats, setGameStats] = useState([]);
@@ -36,8 +37,9 @@ function PlayerAnalyticsPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-950 dark:to-gray-900 p-6 transition-colors duration-300">
             <div className="max-w-6xl mx-auto">
-                <h1 className="text-3xl sm:text-4xl font-bold text-center mb-10 text-gray-800 dark:text-gray-100">
-                    🎯 Player Control Center
+                <h1 className="text-3xl sm:text-4xl font-bold text-center mb-10 text-gray-800 dark:text-gray-100 flex items-center justify-center gap-3">
+                    <GiAchievement className="text-4xl text-green-500 dark:text-green-300" />
+                    Player Performance Center
                 </h1>
 
                 {/* Sport Selector */}
