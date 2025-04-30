@@ -1,70 +1,60 @@
 import React from 'react';
-import { ResponsiveLine } from '@nivo/line';
+import {
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    Legend
+} from 'recharts';
+import { MdBarChart } from 'react-icons/md';
 
 function StatsGraphs({ filteredStats }) {
     if (!filteredStats || filteredStats.length === 0) {
         return (
             <div className="text-center text-gray-500 dark:text-gray-400">
-                No stats to show yet – log a game to get started!
+                No stats available to graph.
             </div>
         );
     }
 
-    // Convert stats to Nivo format
-    const statKeys = Object.keys(filteredStats[0].stats);
-    const dataByStat = statKeys.map(stat => ({
-        id: stat,
-        data: filteredStats.map((entry, index) => ({
-            x: `Game ${index + 1}`,
-            y: Number(entry.stats[stat]) || 0
-        }))
-    }));
+    // Build chart data
+    const data = filteredStats.map((entry, index) => {
+        const base = { game: `Game ${index + 1}` };
+        for (const [key, value] of Object.entries(entry.stats)) {
+            base[key] = Number(value);
+        }
+        return base;
+    });
+
+    const statKeys = Object.keys(data[0]).filter(k => k !== "game");
 
     return (
         <div className="h-[400px] bg-white dark:bg-gray-800 rounded-lg p-4 shadow-md">
-            <h3 className="text-xl font-semibold mb-3 text-center text-green-600 dark:text-green-300">
-                📈 Stat Growth Over Time
-            </h3>
-            <ResponsiveLine
-                data={dataByStat}
-                margin={{ top: 40, right: 60, bottom: 50, left: 50 }}
-                xScale={{ type: 'point' }}
-                yScale={{ type: 'linear', min: 'auto', max: 'auto', stacked: false }}
-                axisBottom={{
-                    tickSize: 5,
-                    tickPadding: 5,
-                    tickRotation: 0,
-                    legend: 'Games',
-                    legendOffset: 36,
-                    legendPosition: 'middle'
-                }}
-                axisLeft={{
-                    tickSize: 5,
-                    tickPadding: 5,
-                    tickRotation: 0,
-                    legend: 'Stat Value',
-                    legendOffset: -40,
-                    legendPosition: 'middle'
-                }}
-                colors={{ scheme: 'category10' }}
-                pointSize={8}
-                pointBorderWidth={2}
-                enableSlices="x"
-                useMesh={true}
-                legends={[
-                    {
-                        anchor: 'top-right',
-                        direction: 'column',
-                        justify: false,
-                        translateX: 100,
-                        itemWidth: 80,
-                        itemHeight: 20,
-                        itemTextColor: '#444',
-                        symbolSize: 12,
-                        symbolShape: 'circle'
-                    }
-                ]}
-            />
+            <div className="flex items-center gap-2 mb-3 text-green-700 dark:text-green-300">
+                <MdBarChart size={24} />
+                <h3 className="text-xl font-semibold">Stat Comparison</h3>
+            </div>
+
+            <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={data} margin={{ top: 20, right: 30, bottom: 30, left: 20 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="game" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    {statKeys.map((key, idx) => (
+                        <Bar
+                            key={idx}
+                            dataKey={key}
+                            fill={`hsl(${(idx * 60) % 360}, 70%, 50%)`}
+                            radius={[4, 4, 0, 0]}
+                        />
+                    ))}
+                </BarChart>
+            </ResponsiveContainer>
         </div>
     );
 }
