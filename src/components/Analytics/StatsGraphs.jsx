@@ -1,5 +1,4 @@
-console.log("✅ StatsGraphs component mounted");
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
     LineChart,
     Line,
@@ -11,10 +10,12 @@ import {
     Legend
 } from 'recharts';
 
+// ✅ Log component load
+console.log("✅ StatsGraphs component mounted");
+
 function StatsGraphs({ filteredStats }) {
-    useEffect(() => {
-        console.log("🧪 StatsGraphs received filteredStats:", filteredStats);
-    }, [filteredStats]);
+    // ✅ Log props received
+    console.log("📊 StatsGraphs received filteredStats:", filteredStats);
 
     if (!filteredStats || filteredStats.length === 0) {
         return (
@@ -24,27 +25,22 @@ function StatsGraphs({ filteredStats }) {
         );
     }
 
-    // Safely parse stats to numeric values
-    const data = filteredStats.map((entry, idx) => {
+    // Build dataset and safely parse numbers
+    const data = filteredStats.map(entry => {
         const parsedStats = {};
-        for (const [key, value] of Object.entries(entry.stats || {})) {
+        for (const [key, value] of Object.entries(entry.stats)) {
             const num = Number(value);
             parsedStats[key] = isNaN(num) ? null : num;
         }
-        const item = {
+        return {
             date: new Date(entry.date).toLocaleDateString(),
             ...parsedStats
         };
-        console.log(`📈 Entry ${idx}:`, item);
-        return item;
     });
 
-    // Derive numeric stat keys
     const statKeys = Object.keys(data[0] || {}).filter(
         key => key !== 'date' && data.some(d => typeof d[key] === 'number')
     );
-
-    console.log("📊 Derived statKeys:", statKeys);
 
     return (
         <div className="w-full h-[400px]">
