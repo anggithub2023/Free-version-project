@@ -1,14 +1,9 @@
 import React from 'react';
-import {
-    LineChart,
-    Line,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-    Legend
-} from 'recharts';
+import { Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
+
+// Register required chart.js components
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 function StatsGraphs({ filteredStats }) {
     if (!filteredStats || filteredStats.length === 0) {
@@ -19,48 +14,31 @@ function StatsGraphs({ filteredStats }) {
         );
     }
 
-    // Build and safely parse chart data
-    const data = filteredStats.map(entry => {
-        const parsedStats = {};
-        for (const [key, value] of Object.entries(entry.stats)) {
-            const num = parseFloat(value);
-            parsedStats[key] = isNaN(num) ? null : num;
-        }
-        return {
-            date: new Date(entry.date).toLocaleDateString(),
-            ...parsedStats
-        };
-    });
+    // Use the most recent game's stats
+    const latestStats = filteredStats[filteredStats.length - 1].stats;
+    const labels = Object.keys(latestStats);
+    const values = Object.values(latestStats).map(val => Number(val));
 
-    const statKeys = Object.keys(data[0] || {}).filter(
-        key => key !== 'date' && data.some(d => typeof d[key] === 'number')
-    );
+    const data = {
+        labels,
+        datasets: [
+            {
+                label: 'Stat Distribution',
+                data: values,
+                backgroundColor: [
+                    '#4ade80', '#60a5fa', '#f472b6', '#facc15',
+                    '#38bdf8', '#f87171', '#c084fc', '#fb923c',
+                ],
+                borderColor: '#ffffff',
+                borderWidth: 2,
+            },
+        ],
+    };
 
     return (
-        <div className="w-full h-[400px]">
-            <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
-                    <XAxis dataKey="date" stroke="currentColor" />
-                    <YAxis stroke="currentColor" />
-                    <Tooltip
-                        contentStyle={{ backgroundColor: '#1f2937', border: 'none' }}
-                        labelStyle={{ color: '#d1d5db' }}
-                    />
-                    <Legend />
-                    {statKeys.map((key, idx) => (
-                        <Line
-                            key={idx}
-                            type="monotone"
-                            dataKey={key}
-                            stroke="#60a5fa"
-                            strokeWidth={2}
-                            dot={false}
-                            isAnimationActive={false}
-                        />
-                    ))}
-                </LineChart>
-            </ResponsiveContainer>
+        <div className="w-full max-w-md mx-auto">
+            <h2 className="text-xl font-semibold text-center mb-4">📊 Stat Distribution (Latest Game)</h2>
+            <Pie data={data} />
         </div>
     );
 }
