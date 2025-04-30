@@ -3,6 +3,8 @@ import AveragesPanel from '../components/Analytics/AveragesPanel';
 import ProgressBarsPanel from '../components/Analytics/ProgressBarsPanel';
 import StatsGraphs from '../components/Analytics/StatsGraphs';
 import StatsHistoryTable from '../components/Analytics/StatsHistoryTable';
+import PanelHeader from '../components/Analytics/PanelHeader';
+
 import { MdBarChart, MdTimeline, MdShowChart, MdHistory } from 'react-icons/md';
 import { GiAchievement } from 'react-icons/gi';
 
@@ -39,7 +41,6 @@ function PlayerAnalyticsPage() {
             <div className="max-w-6xl mx-auto">
 
                 {/* Page Title */}
-                {/* Page Title */}
                 <div className="mb-10 text-center">
                     <div className="flex justify-center items-center gap-3 text-gray-800 dark:text-gray-100">
                         <GiAchievement className="text-4xl text-green-500 dark:text-green-300" />
@@ -73,49 +74,41 @@ function PlayerAnalyticsPage() {
 
                             {/* Averages */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
-                                <div className="mb-4 text-left">
-                                    <div className="flex items-center gap-2 text-2xl font-semibold text-gray-800 dark:text-gray-100">
-                                        <MdBarChart />
-                                        Averages
-                                    </div>
-                                    <p className="mt-1 text-sm text-gray-400">(Your per-game performance)</p>
-                                </div>
+                                <PanelHeader
+                                    icon={<MdBarChart />}
+                                    title="Averages"
+                                    subtitle="(Your per-game performance)"
+                                />
                                 <AveragesPanel filteredStats={filteredStats} />
                             </div>
 
                             {/* Progress Bars */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
-                                <div className="mb-4 text-left">
-                                    <div className="flex items-center gap-2 text-2xl font-semibold text-gray-800 dark:text-gray-100">
-                                        <MdTimeline />
-                                        Progress Bars
-                                    </div>
-                                    <p className="mt-1 text-sm text-gray-400">(How close you are to your goals)</p>
-                                </div>
+                                <PanelHeader
+                                    icon={<MdTimeline />}
+                                    title="Progress Bars"
+                                    subtitle="(How close you are to your goals)"
+                                />
                                 <ProgressBarsPanel filteredStats={filteredStats} />
                             </div>
 
                             {/* Stat Graphs */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
-                                <div className="mb-4 text-left">
-                                    <div className="flex items-center gap-2 text-2xl font-semibold text-gray-800 dark:text-gray-100">
-                                        <MdShowChart />
-                                        Stat Trends
-                                    </div>
-                                    <p className="mt-1 text-sm text-gray-400">(Visualize changes over time)</p>
-                                </div>
+                                <PanelHeader
+                                    icon={<MdShowChart />}
+                                    title="Stat Trends"
+                                    subtitle="(Visualize changes over time)"
+                                />
                                 <StatsGraphs filteredStats={filteredStats} />
                             </div>
 
                             {/* History Table */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
-                                <div className="mb-4 text-left">
-                                    <div className="flex items-center gap-2 text-2xl font-semibold text-gray-800 dark:text-gray-100">
-                                        <MdHistory />
-                                        Stat History
-                                    </div>
-                                    <p className="mt-1 text-sm text-gray-400">(Every stat you’ve logged)</p>
-                                </div>
+                                <PanelHeader
+                                    icon={<MdHistory />}
+                                    title="Stat History"
+                                    subtitle="(Every stat you’ve logged)"
+                                />
                                 <StatsHistoryTable filteredStats={filteredStats} />
                             </div>
 
