@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { MdDashboard, MdBarChart, MdTimeline, MdHistory } from 'react-icons/md';
 import AveragesPanel from '../components/Analytics/AveragesPanel';
 import ProgressBarsPanel from '../components/Analytics/ProgressBarsPanel';
 import StatsGraphs from '../components/Analytics/StatsGraphs';
 import StatsHistoryTable from '../components/Analytics/StatsHistoryTable';
+import { MdBarChart, MdTimeline, MdShowChart, MdHistory } from 'react-icons/md';
 
 function PlayerAnalyticsPage() {
     const [gameStats, setGameStats] = useState([]);
@@ -36,9 +36,8 @@ function PlayerAnalyticsPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 p-6">
             <div className="max-w-6xl mx-auto">
-                <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8 text-green-700 dark:text-green-300 flex items-center justify-center gap-2">
-                    <MdDashboard size={32} className="text-green-500" />
-                    Player Control Center
+                <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8 text-green-700 dark:text-green-300">
+                    🎯 Player Control Center
                 </h1>
 
                 {/* Sport Selector */}
@@ -61,11 +60,11 @@ function PlayerAnalyticsPage() {
                 {selectedSport ? (
                     filteredStats.length > 0 ? (
                         <div className="space-y-10">
+
                             {/* Averages */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                                 <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-                                    <MdBarChart className="text-green-500" size={24} />
-                                    Averages
+                                    <MdBarChart /> Averages <span className="text-sm text-gray-400">(Your per-game performance)</span>
                                 </h2>
                                 <AveragesPanel filteredStats={filteredStats} />
                             </div>
@@ -73,8 +72,7 @@ function PlayerAnalyticsPage() {
                             {/* Progress Bars */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                                 <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-                                    <MdTimeline className="text-blue-500" size={24} />
-                                    Progress Bars
+                                    <MdTimeline /> Progress Bars <span className="text-sm text-gray-400">(How close you are to your goals)</span>
                                 </h2>
                                 <ProgressBarsPanel filteredStats={filteredStats} />
                             </div>
@@ -82,8 +80,7 @@ function PlayerAnalyticsPage() {
                             {/* Stat Graphs */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                                 <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-                                    <MdTimeline className="text-purple-500" size={24} />
-                                    Stat Trends
+                                    <MdShowChart /> Stat Trends <span className="text-sm text-gray-400">(Visualize changes over time)</span>
                                 </h2>
                                 <StatsGraphs filteredStats={filteredStats} />
                             </div>
@@ -91,11 +88,11 @@ function PlayerAnalyticsPage() {
                             {/* History Table */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
                                 <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-                                    <MdHistory className="text-yellow-500" size={24} />
-                                    Stat History
+                                    <MdHistory /> Stat History <span className="text-sm text-gray-400">(Every stat you’ve logged)</span>
                                 </h2>
                                 <StatsHistoryTable filteredStats={filteredStats} />
                             </div>
+
                         </div>
                     ) : (
                         <div className="text-center mt-12 text-gray-500 dark:text-gray-400">
