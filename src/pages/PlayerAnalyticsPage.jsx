@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import AveragesPanel from '../components/Analytics/AveragesPanel';
 import ProgressBarsPanel from '../components/Analytics/ProgressBarsPanel';
 import StatsGraphs from '../components/Analytics/StatsGraphs';
+import StatsHistoryTable from '../components/Analytics/StatsHistoryTable';
 
 function PlayerAnalyticsPage() {
     const [gameStats, setGameStats] = useState([]);
     const [selectedSport, setSelectedSport] = useState('');
+    const [filteredStats, setFilteredStats] = useState([]);
 
     useEffect(() => {
         try {
@@ -16,9 +18,17 @@ function PlayerAnalyticsPage() {
         }
     }, []);
 
-    const filteredStats = selectedSport
-        ? gameStats.filter(stat => stat.sport?.toLowerCase() === selectedSport.toLowerCase())
-        : [];
+    useEffect(() => {
+        if (selectedSport) {
+            const normalizedSport = selectedSport.toLowerCase();
+            const filtered = gameStats.filter(
+                (stat) => stat.sport?.toLowerCase() === normalizedSport
+            );
+            setFilteredStats(filtered);
+        } else {
+            setFilteredStats([]);
+        }
+    }, [selectedSport, gameStats]);
 
     const availableSports = Array.from(new Set(gameStats.map(stat => stat.sport)));
 
@@ -29,6 +39,7 @@ function PlayerAnalyticsPage() {
                     🎯 Player Control Center
                 </h1>
 
+                {/* Sport Selector */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
                     <select
                         value={selectedSport}
@@ -44,27 +55,41 @@ function PlayerAnalyticsPage() {
                     </select>
                 </div>
 
-                {selectedSport && filteredStats.length > 0 ? (
-                    <div className="space-y-10">
-                        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                            <h2 className="text-2xl font-semibold mb-4">📊 Averages</h2>
-                            <AveragesPanel filteredStats={filteredStats} />
-                        </div>
+                {/* Analytics Panels */}
+                {selectedSport ? (
+                    filteredStats.length > 0 ? (
+                        <div className="space-y-10">
 
-                        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                            <h2 className="text-2xl font-semibold mb-4">📈 Progress Bars</h2>
-                            <ProgressBarsPanel filteredStats={filteredStats} />
-                        </div>
+                            {/* Averages */}
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                                <h2 className="text-2xl font-semibold mb-4">📊 Averages</h2>
+                                <AveragesPanel filteredStats={filteredStats} />
+                            </div>
 
-                        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                            <h2 className="text-2xl font-semibold mb-4">📈 Stat Trends</h2>
-                            <StatsGraphs filteredStats={filteredStats} />
+                            {/* Progress Bars */}
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                                <h2 className="text-2xl font-semibold mb-4">📈 Progress Bars</h2>
+                                <ProgressBarsPanel filteredStats={filteredStats} />
+                            </div>
+
+                            {/* Stat Graphs */}
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                                <h2 className="text-2xl font-semibold mb-4">📈 Stat Trends</h2>
+                                <StatsGraphs filteredStats={filteredStats} />
+                            </div>
+
+                            {/* History Table */}
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                                <h2 className="text-2xl font-semibold mb-4">📜 Stat History</h2>
+                                <StatsHistoryTable filteredStats={filteredStats} />
+                            </div>
+
                         </div>
-                    </div>
-                ) : selectedSport ? (
-                    <div className="text-center mt-12 text-yellow-600 dark:text-yellow-400">
-                        No stats found for <strong>{selectedSport}</strong>.
-                    </div>
+                    ) : (
+                        <div className="text-center mt-12 text-gray-500 dark:text-gray-400">
+                            No stats found for <strong>{selectedSport}</strong>. Start logging games!
+                        </div>
+                    )
                 ) : (
                     <div className="text-center mt-12 text-gray-500 dark:text-gray-400">
                         Please select a sport to view analytics.
