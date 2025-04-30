@@ -1,19 +1,20 @@
-import React from 'react';
-import { Line } from 'react-chartjs-2';
+import React, { useEffect } from 'react';
 import {
-    Chart as ChartJS,
-    LineElement,
-    PointElement,
-    CategoryScale,
-    LinearScale,
-    Title,
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
     Tooltip,
-    Legend,
-} from 'chart.js';
-
-ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
+    ResponsiveContainer,
+    Legend
+} from 'recharts';
 
 function StatsGraphs({ filteredStats }) {
+    useEffect(() => {
+        console.log("🧪 StatsGraphs received filteredStats:", filteredStats);
+    }, [filteredStats]);
+
     if (!filteredStats || filteredStats.length === 0) {
         return (
             <div className="text-center text-gray-500 dark:text-gray-400">
@@ -22,30 +23,55 @@ function StatsGraphs({ filteredStats }) {
         );
     }
 
-    const dates = filteredStats.map(entry => new Date(entry.date).toLocaleDateString());
-    const statKeys = Object.keys(filteredStats[0]?.stats || {});
+    // Safely parse stats to numeric values
+    const data = filteredStats.map((entry, idx) => {
+        const parsedStats = {};
+        for (const [key, value] of Object.entries(entry.stats || {})) {
+            const num = Number(value);
+            parsedStats[key] = isNaN(num) ? null : num;
+        }
+        const item = {
+            date: new Date(entry.date).toLocaleDateString(),
+            ...parsedStats
+        };
+        console.log(`📈 Entry ${idx}:`, item);
+        return item;
+    });
 
-    const datasets = statKeys.map((stat, idx) => ({
-        label: stat,
-        data: filteredStats.map(entry => Number(entry.stats[stat]) || 0),
-        borderColor: `hsl(${idx * 60}, 70%, 50%)`,
-        tension: 0.4,
-    }));
+    // Derive numeric stat keys
+    const statKeys = Object.keys(data[0] || {}).filter(
+        key => key !== 'date' && data.some(d => typeof d[key] === 'number')
+    );
 
-    const data = {
-        labels: dates,
-        datasets,
-    };
+    console.log("📊 Derived statKeys:", statKeys);
 
-    const options = {
-        responsive: true,
-        plugins: {
-            legend: { position: 'top' },
-            title: { display: true, text: 'Stat Trends Over Time' },
-        },
-    };
-
-    return <Line data={data} options={options} />;
+    return (
+        <div className="w-full h-[400px]">
+            <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
+                    <XAxis dataKey="date" stroke="currentColor" />
+                    <YAxis stroke="currentColor" />
+                    <Tooltip
+                        contentStyle={{ backgroundColor: '#1f2937', border: 'none' }}
+                        labelStyle={{ color: '#d1d5db' }}
+                    />
+                    <Legend />
+                    {statKeys.map((key, idx) => (
+                        <Line
+                            key={idx}
+                            type="monotone"
+                            dataKey={key}
+                            stroke="#4ade80"
+                            strokeWidth={2}
+                            dot={false}
+                            isAnimationActive={false}
+                        />
+                    ))}
+                </LineChart>
+            </ResponsiveContainer>
+        </div>
+    );
 }
 
 export default StatsGraphs;
