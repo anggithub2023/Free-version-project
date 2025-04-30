@@ -39,12 +39,13 @@ function PlayerAnalyticsPage() {
             <div className="max-w-6xl mx-auto">
 
                 {/* Page Title */}
-                <div className="mb-10 text-center sm:text-left">
-                    <div className="flex justify-center sm:justify-start items-center gap-3 text-gray-800 dark:text-gray-100">
+                {/* Page Title */}
+                <div className="mb-10 text-center">
+                    <div className="flex justify-center items-center gap-3 text-gray-800 dark:text-gray-100">
                         <GiAchievement className="text-4xl text-green-500 dark:text-green-300" />
                         <h1 className="text-3xl sm:text-4xl font-bold">Player Performance Center</h1>
                     </div>
-                    <p className="mt-2 text-gray-500 dark:text-gray-400 text-sm sm:text-base sm:ml-12">
+                    <p className="mt-2 text-gray-500 dark:text-gray-400 text-sm sm:text-base">
                         Monitor trends, track progress, and unlock your game insights.
                     </p>
                 </div>
