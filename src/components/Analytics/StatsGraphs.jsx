@@ -1,5 +1,14 @@
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import {
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+    Legend
+} from 'recharts';
 
 function StatsGraphs({ filteredStats }) {
     if (!filteredStats || filteredStats.length === 0) {
@@ -10,16 +19,23 @@ function StatsGraphs({ filteredStats }) {
         );
     }
 
-    // Build dataset for graphs
+    // Build dataset and safely parse numbers
     const data = filteredStats.map(entry => {
+        const parsedStats = {};
+        for (const [key, value] of Object.entries(entry.stats)) {
+            const num = Number(value);
+            parsedStats[key] = isNaN(num) ? null : num;
+        }
         return {
             date: new Date(entry.date).toLocaleDateString(),
-            ...entry.stats
+            ...parsedStats
         };
     });
 
-    // Find all stat keys
-    const statKeys = filteredStats.length > 0 ? Object.keys(filteredStats[0].stats) : [];
+    // Get valid numeric stat keys (excluding "date")
+    const statKeys = Object.keys(data[0] || {}).filter(
+        key => key !== 'date' && data.some(d => typeof d[key] === 'number')
+    );
 
     return (
         <div className="w-full h-[400px]">
@@ -28,10 +44,21 @@ function StatsGraphs({ filteredStats }) {
                     <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
                     <XAxis dataKey="date" stroke="currentColor" />
                     <YAxis stroke="currentColor" />
-                    <Tooltip contentStyle={{ backgroundColor: '#1f2937', border: 'none' }} labelStyle={{ color: '#d1d5db' }} />
+                    <Tooltip
+                        contentStyle={{ backgroundColor: '#1f2937', border: 'none' }}
+                        labelStyle={{ color: '#d1d5db' }}
+                    />
                     <Legend />
                     {statKeys.map((key, idx) => (
-                        <Line key={idx} type="monotone" dataKey={key} stroke="#4ade80" strokeWidth={2} dot={false} />
+                        <Line
+                            key={idx}
+                            type="monotone"
+                            dataKey={key}
+                            stroke="#4ade80"
+                            strokeWidth={2}
+                            dot={false}
+                            isAnimationActive={false}
+                        />
                     ))}
                 </LineChart>
             </ResponsiveContainer>
