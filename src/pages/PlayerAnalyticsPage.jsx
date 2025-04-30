@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import AveragesPanel from '../components/Analytics/AveragesPanel';
 
 function PlayerAnalyticsPage() {
     const [gameStats, setGameStats] = useState([]);
     const [selectedSport, setSelectedSport] = useState('');
+    const [filteredStats, setFilteredStats] = useState([]);
 
     useEffect(() => {
         try {
@@ -12,6 +14,17 @@ function PlayerAnalyticsPage() {
             console.error("Error parsing localStorage gameStats:", err);
         }
     }, []);
+
+    useEffect(() => {
+        if (selectedSport) {
+            const filtered = gameStats.filter(
+                (stat) => stat.sport?.toLowerCase() === selectedSport.toLowerCase()
+            );
+            setFilteredStats(filtered);
+        } else {
+            setFilteredStats([]);
+        }
+    }, [selectedSport, gameStats]);
 
     const availableSports = Array.from(new Set(gameStats.map(stat => stat.sport)));
 
@@ -37,10 +50,20 @@ function PlayerAnalyticsPage() {
                     </select>
                 </div>
 
-                {/* TEMPORARILY REMOVED analytics components */}
-                {selectedSport && (
+                {selectedSport && filteredStats.length > 0 ? (
+                    <div className="space-y-10">
+                        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
+                            <h2 className="text-2xl font-semibold mb-4">📊 Averages</h2>
+                            <AveragesPanel filteredStats={filteredStats} />
+                        </div>
+                    </div>
+                ) : selectedSport ? (
                     <div className="text-center mt-12 text-yellow-600 dark:text-yellow-400">
-                        Panels temporarily disabled for QA. You selected: <strong>{selectedSport}</strong>
+                        No stats found for <strong>{selectedSport}</strong>
+                    </div>
+                ) : (
+                    <div className="text-center mt-12 text-gray-500 dark:text-gray-400">
+                        Please select a sport to view analytics.
                     </div>
                 )}
             </div>
