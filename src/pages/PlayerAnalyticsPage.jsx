@@ -37,10 +37,17 @@ function PlayerAnalyticsPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-950 dark:to-gray-900 p-6 transition-colors duration-300">
             <div className="max-w-6xl mx-auto">
-                <h1 className="text-3xl sm:text-4xl font-bold text-center mb-10 text-gray-800 dark:text-gray-100 flex items-center justify-center gap-3">
-                    <GiAchievement className="text-4xl text-green-500 dark:text-green-300" />
-                    Player Performance Center
-                </h1>
+
+                {/* Page Title */}
+                <div className="mb-10 text-center sm:text-left">
+                    <div className="flex justify-center sm:justify-start items-center gap-3 text-gray-800 dark:text-gray-100">
+                        <GiAchievement className="text-4xl text-green-500 dark:text-green-300" />
+                        <h1 className="text-3xl sm:text-4xl font-bold">Player Performance Center</h1>
+                    </div>
+                    <p className="mt-2 text-gray-500 dark:text-gray-400 text-sm sm:text-base sm:ml-12">
+                        Monitor trends, track progress, and unlock your game insights.
+                    </p>
+                </div>
 
                 {/* Sport Selector */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
@@ -65,33 +72,49 @@ function PlayerAnalyticsPage() {
 
                             {/* Averages */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
-                                <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-gray-800 dark:text-gray-100">
-                                    <MdBarChart /> Averages <span className="text-sm text-gray-400">(Your per-game performance)</span>
-                                </h2>
+                                <div className="mb-4 text-left">
+                                    <div className="flex items-center gap-2 text-2xl font-semibold text-gray-800 dark:text-gray-100">
+                                        <MdBarChart />
+                                        Averages
+                                    </div>
+                                    <p className="mt-1 text-sm text-gray-400">(Your per-game performance)</p>
+                                </div>
                                 <AveragesPanel filteredStats={filteredStats} />
                             </div>
 
                             {/* Progress Bars */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
-                                <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-gray-800 dark:text-gray-100">
-                                    <MdTimeline /> Progress Bars <span className="text-sm text-gray-400">(How close you are to your goals)</span>
-                                </h2>
+                                <div className="mb-4 text-left">
+                                    <div className="flex items-center gap-2 text-2xl font-semibold text-gray-800 dark:text-gray-100">
+                                        <MdTimeline />
+                                        Progress Bars
+                                    </div>
+                                    <p className="mt-1 text-sm text-gray-400">(How close you are to your goals)</p>
+                                </div>
                                 <ProgressBarsPanel filteredStats={filteredStats} />
                             </div>
 
                             {/* Stat Graphs */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
-                                <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-gray-800 dark:text-gray-100">
-                                    <MdShowChart /> Stat Trends <span className="text-sm text-gray-400">(Visualize changes over time)</span>
-                                </h2>
+                                <div className="mb-4 text-left">
+                                    <div className="flex items-center gap-2 text-2xl font-semibold text-gray-800 dark:text-gray-100">
+                                        <MdShowChart />
+                                        Stat Trends
+                                    </div>
+                                    <p className="mt-1 text-sm text-gray-400">(Visualize changes over time)</p>
+                                </div>
                                 <StatsGraphs filteredStats={filteredStats} />
                             </div>
 
                             {/* History Table */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
-                                <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-gray-800 dark:text-gray-100">
-                                    <MdHistory /> Stat History <span className="text-sm text-gray-400">(Every stat you’ve logged)</span>
-                                </h2>
+                                <div className="mb-4 text-left">
+                                    <div className="flex items-center gap-2 text-2xl font-semibold text-gray-800 dark:text-gray-100">
+                                        <MdHistory />
+                                        Stat History
+                                    </div>
+                                    <p className="mt-1 text-sm text-gray-400">(Every stat you’ve logged)</p>
+                                </div>
                                 <StatsHistoryTable filteredStats={filteredStats} />
                             </div>
 
