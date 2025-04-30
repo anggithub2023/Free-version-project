@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { MdDashboard, MdBarChart, MdTimeline, MdHistory } from 'react-icons/md';
 import AveragesPanel from '../components/Analytics/AveragesPanel';
 import ProgressBarsPanel from '../components/Analytics/ProgressBarsPanel';
 import StatsGraphs from '../components/Analytics/StatsGraphs';
@@ -35,8 +36,9 @@ function PlayerAnalyticsPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 p-6">
             <div className="max-w-6xl mx-auto">
-                <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8 text-green-700 dark:text-green-300">
-                    🎯 Player Control Center
+                <h1 className="text-3xl sm:text-4xl font-bold text-center mb-8 text-green-700 dark:text-green-300 flex items-center justify-center gap-2">
+                    <MdDashboard size={32} className="text-green-500" />
+                    Player Control Center
                 </h1>
 
                 {/* Sport Selector */}
@@ -59,23 +61,39 @@ function PlayerAnalyticsPage() {
                 {selectedSport ? (
                     filteredStats.length > 0 ? (
                         <div className="space-y-10">
+                            {/* Averages */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                                <h2 className="text-2xl font-semibold mb-4">📊 Averages</h2>
+                                <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+                                    <MdBarChart className="text-green-500" size={24} />
+                                    Averages
+                                </h2>
                                 <AveragesPanel filteredStats={filteredStats} />
                             </div>
 
+                            {/* Progress Bars */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                                <h2 className="text-2xl font-semibold mb-4">📈 Progress Bars</h2>
+                                <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+                                    <MdTimeline className="text-blue-500" size={24} />
+                                    Progress Bars
+                                </h2>
                                 <ProgressBarsPanel filteredStats={filteredStats} />
                             </div>
 
+                            {/* Stat Graphs */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                                <h2 className="text-2xl font-semibold mb-4">📈 Stat Trends</h2>
+                                <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+                                    <MdTimeline className="text-purple-500" size={24} />
+                                    Stat Trends
+                                </h2>
                                 <StatsGraphs filteredStats={filteredStats} />
                             </div>
 
+                            {/* History Table */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-                                <h2 className="text-2xl font-semibold mb-4">📜 Stat History</h2>
+                                <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
+                                    <MdHistory className="text-yellow-500" size={24} />
+                                    Stat History
+                                </h2>
                                 <StatsHistoryTable filteredStats={filteredStats} />
                             </div>
                         </div>
