@@ -11,28 +11,41 @@ import { GiAchievement } from 'react-icons/gi';
 function PlayerAnalyticsPage() {
     const [gameStats, setGameStats] = useState([]);
     const [selectedSport, setSelectedSport] = useState('');
+    const [selectedPosition, setSelectedPosition] = useState('');
     const [filteredStats, setFilteredStats] = useState([]);
 
+    // Load stats from localStorage
     useEffect(() => {
         try {
             const savedStats = JSON.parse(localStorage.getItem('gameStats')) || [];
             setGameStats(savedStats);
+
+            // Auto-detect most recent position
+            if (savedStats.length > 0) {
+                const lastEntry = savedStats[savedStats.length - 1];
+                if (lastEntry.position) {
+                    setSelectedPosition(lastEntry.position.toLowerCase());
+                }
+            }
         } catch (err) {
             console.error("Error parsing localStorage gameStats:", err);
         }
     }, []);
 
+    // Filter based on sport + position
     useEffect(() => {
-        if (selectedSport) {
+        if (selectedSport && selectedPosition) {
             const normalizedSport = selectedSport.toLowerCase();
             const filtered = gameStats.filter(
-                stat => stat.sport?.toLowerCase() === normalizedSport
+                stat =>
+                    stat.sport?.toLowerCase() === normalizedSport &&
+                    stat.position?.toLowerCase() === selectedPosition
             );
             setFilteredStats(filtered);
         } else {
             setFilteredStats([]);
         }
-    }, [selectedSport, gameStats]);
+    }, [selectedSport, selectedPosition, gameStats]);
 
     const availableSports = Array.from(new Set(gameStats.map(stat => stat.sport)));
 
@@ -115,7 +128,7 @@ function PlayerAnalyticsPage() {
                         </div>
                     ) : (
                         <div className="text-center mt-12 text-gray-500 dark:text-gray-400">
-                            No stats found for <strong>{selectedSport}</strong>. Start logging games!
+                            No stats found for <strong>{selectedSport}</strong> {selectedPosition && `(${selectedPosition})`}. Start logging games!
                         </div>
                     )
                 ) : (
