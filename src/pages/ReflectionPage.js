@@ -28,6 +28,30 @@ function ReflectionPage() {
         localStorage.setItem('processAnswers', JSON.stringify(answers));
     }, [answers]);
 
+    // 🔁 Retry unsynced reflections
+    useEffect(() => {
+        const retryQueuedReflections = async () => {
+            const queue = JSON.parse(localStorage.getItem('unsyncedReflections') || '[]');
+            if (!queue.length) return;
+
+            const successful = [];
+
+            for (const item of queue) {
+                try {
+                    await saveReflection(item);
+                    successful.push(item);
+                } catch (err) {
+                    console.warn('Retry failed for reflection:', err.message);
+                }
+            }
+
+            const remaining = queue.filter(item => !successful.includes(item));
+            localStorage.setItem('unsyncedReflections', JSON.stringify(remaining));
+        };
+
+        retryQueuedReflections();
+    }, []);
+
     const handleStartFlowComplete = (sport, position) => {
         const normalizedPosition = position?.toLowerCase().replace(/\s+/g, '-');
         const key = normalizedPosition ? `${sport}-${normalizedPosition}` : sport;
@@ -66,26 +90,29 @@ function ReflectionPage() {
             return acc;
         }, {});
 
-        const summary = {
-            total,
-            ...sectionScores,
-            bonus: answers['bonusReflection'] || 50,
+        const reflectionData = {
+            sport: localStorage.getItem('selectedSport'),
+            position: localStorage.getItem('selectedPosition'),
+            scores: {
+                total,
+                ...sectionScores,
+                bonus: answers['bonusReflection'] || 50
+            },
+            created_at: new Date().toISOString()
         };
 
-        setScoreSummary(summary);
+        try {
+            await saveReflection(reflectionData);
+        } catch (err) {
+            console.warn('📦 Queuing reflection due to sync error');
+            const queue = JSON.parse(localStorage.getItem('unsyncedReflections') || '[]');
+            queue.push(reflectionData);
+            localStorage.setItem('unsyncedReflections', JSON.stringify(queue));
+        }
+
+        setScoreSummary(reflectionData.scores);
         setShowModal(true);
         dispatch({ type: 'RESET' });
-
-        try {
-            await saveReflection({
-                sport: localStorage.getItem('selectedSport'),
-                position: localStorage.getItem('selectedPosition'),
-                answers,
-                score_summary: summary
-            });
-        } catch (err) {
-            console.error('Failed to save reflection to Supabase:', err.message);
-        }
     };
 
     if (showStartFlow) {
