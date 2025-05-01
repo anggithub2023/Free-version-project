@@ -3,9 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { FaBrain, FaChartBar, FaVideo } from 'react-icons/fa';
 import { GiLevelEndFlag, GiMuscleUp } from 'react-icons/gi';
 import { MdHealthAndSafety, MdOutlineEditNote } from 'react-icons/md';
+import useAnonymousUser from '../hooks/useAnonymousUser'; // ✅ import hook
 
 function HomePage() {
     const navigate = useNavigate();
+    const userId = useAnonymousUser(); // ✅ generates/stores ID
+
     const [hideHeader, setHideHeader] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
 
