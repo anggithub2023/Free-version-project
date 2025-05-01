@@ -16,7 +16,7 @@ import {
 } from 'react-icons/md';
 import { GiAchievement } from 'react-icons/gi';
 
-import { fetchGameStats } from '../services/syncService'; // ✅ Supabase import
+import { fetchGameStats } from '../services/syncService';
 
 function PlayerAnalyticsPage() {
     const [gameStats, setGameStats] = useState([]);
@@ -25,27 +25,42 @@ function PlayerAnalyticsPage() {
     const [filteredStats, setFilteredStats] = useState([]);
     const [showFAB, setShowFAB] = useState(false);
 
-    // ✅ Load stats from Supabase
+    // ✅ Load from Supabase, fallback to localStorage
     useEffect(() => {
         const loadStats = async () => {
+            let stats = [];
             try {
-                const stats = await fetchGameStats();
-                setGameStats(stats);
-
-                if (stats.length > 0) {
-                    const latest = stats[stats.length - 1];
-                    setSelectedSport(latest.sport?.toLowerCase() || '');
-                    setSelectedPosition(latest.position?.toLowerCase() || '');
+                stats = await fetchGameStats();
+                if (stats?.length > 0) {
+                    setGameStats(stats);
+                } else {
+                    console.warn('⚠️ No data from Supabase — using localStorage.');
+                    const fallbackStats = JSON.parse(localStorage.getItem('gameStats') || '[]');
+                    setGameStats(fallbackStats);
                 }
             } catch (err) {
-                console.error('Failed to fetch game stats from Supabase:', err.message);
+                console.error('Supabase fetch failed:', err.message);
+                console.warn('⚠️ Falling back to localStorage:', err.message);
+                const localStats = JSON.parse(localStorage.getItem('gameStats')) || [];
+                stats = localStats;
+                setGameStats(localStats);
+            }
+
+            if (stats.length > 0) {
+                const latest = stats[stats.length - 1];
+                setSelectedSport(latest.sport?.toLowerCase() || '');
+                setSelectedPosition(latest.position?.toLowerCase() || '');
+            } else {
+                const storedSport = localStorage.getItem('selectedSport');
+                const storedPosition = localStorage.getItem('selectedPosition');
+                if (storedSport) setSelectedSport(storedSport.toLowerCase());
+                if (storedPosition) setSelectedPosition(storedPosition.toLowerCase());
             }
         };
 
         loadStats();
     }, []);
 
-    // 🔄 Filter by selected sport + position
     useEffect(() => {
         if (selectedSport && selectedPosition) {
             const filtered = gameStats.filter(
@@ -62,8 +77,8 @@ function PlayerAnalyticsPage() {
     const availableSports = Array.from(new Set(gameStats.map(stat => stat.sport)));
 
     const handleGoHome = () => {
-        window.localStorage.removeItem('selectedSport');
-        window.localStorage.removeItem('selectedPosition');
+        localStorage.removeItem('selectedSport');
+        localStorage.removeItem('selectedPosition');
         window.location.href = '/';
     };
 
@@ -94,8 +109,6 @@ function PlayerAnalyticsPage() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-950 dark:to-gray-900 p-6 transition-colors duration-300">
             <div className="max-w-6xl mx-auto">
-
-                {/* Page Title */}
                 <div className="mb-10 text-center">
                     <div className="flex justify-center items-center gap-3 text-gray-800 dark:text-gray-100">
                         <GiAchievement className="text-4xl text-green-500 dark:text-green-300" />
@@ -126,47 +139,22 @@ function PlayerAnalyticsPage() {
                 {selectedSport ? (
                     filteredStats.length > 0 ? (
                         <div className="space-y-10">
-
-                            {/* Averages */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
-                                <PanelHeader
-                                    icon={<MdBarChart />}
-                                    title="Averages"
-                                    subtitle="(Your per-game performance)"
-                                />
+                                <PanelHeader icon={<MdBarChart />} title="Averages" subtitle="(Your per-game performance)" />
                                 <AveragesPanel filteredStats={filteredStats} />
                             </div>
-
-                            {/* Progress Bars */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
-                                <PanelHeader
-                                    icon={<MdTimeline />}
-                                    title="Progress Bars"
-                                    subtitle="(How close you are to your goals)"
-                                />
+                                <PanelHeader icon={<MdTimeline />} title="Progress Bars" subtitle="(How close you are to your goals)" />
                                 <ProgressBarsPanel filteredStats={filteredStats} />
                             </div>
-
-                            {/* Stat Graphs */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
-                                <PanelHeader
-                                    icon={<MdShowChart />}
-                                    title="Stat Trends"
-                                    subtitle="(Visualize changes over time)"
-                                />
+                                <PanelHeader icon={<MdShowChart />} title="Stat Trends" subtitle="(Visualize changes over time)" />
                                 <StatsGraphs filteredStats={filteredStats} />
                             </div>
-
-                            {/* History Table */}
                             <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
-                                <PanelHeader
-                                    icon={<MdHistory />}
-                                    title="Stat History"
-                                    subtitle="(Every stat you’ve logged)"
-                                />
+                                <PanelHeader icon={<MdHistory />} title="Stat History" subtitle="(Every stat you’ve logged)" />
                                 <StatsHistoryTable filteredStats={filteredStats} />
                             </div>
-
                         </div>
                     ) : (
                         <div className="text-center mt-12 text-gray-500 dark:text-gray-400">
@@ -181,7 +169,7 @@ function PlayerAnalyticsPage() {
                 )}
             </div>
 
-            {/* Floating FAB Group */}
+            {/* FAB */}
             <div className="fixed bottom-6 right-6 flex flex-col items-end space-y-3 z-50">
                 {showFAB && (
                     <>
