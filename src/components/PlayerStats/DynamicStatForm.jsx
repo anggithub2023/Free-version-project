@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { saveGameStat } from '../../services/syncService'; // ✅ Supabase insert
+import { saveGameStat } from '../../services/syncService'; // Supabase insert
 
 function DynamicStatForm({ sport, position }) {
     const [formData, setFormData] = useState({});
@@ -67,8 +67,19 @@ function DynamicStatForm({ sport, position }) {
         };
 
         try {
+            // ✅ Supabase save
             await saveGameStat(statEntry);
-            alert('✅ Stats saved to Supabase!');
+
+            // ✅ LocalStorage cache (hybrid mode)
+            const localStats = JSON.parse(localStorage.getItem('gameStats') || '[]');
+            localStats.push(statEntry);
+            localStorage.setItem('gameStats', JSON.stringify(localStats));
+
+            // ✅ Save context for analytics
+            localStorage.setItem('selectedSport', sport);
+            localStorage.setItem('selectedPosition', position);
+
+            alert('✅ Stats saved to Supabase & local cache!');
             setFormData({});
         } catch (error) {
             console.error('❌ Failed to save stat:', error.message);
