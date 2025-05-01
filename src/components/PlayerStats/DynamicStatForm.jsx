@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { saveGameStat } from '../../services/syncService'; // ✅ Supabase insert
 
-function DynamicStatForm({ sport, position, onSaveStat }) {
+function DynamicStatForm({ sport, position }) {
     const [formData, setFormData] = useState({});
 
     const normalizeSport = (sportId) => sportId?.toLowerCase().replace(/[^a-z]/g, '');
@@ -12,12 +13,10 @@ function DynamicStatForm({ sport, position, onSaveStat }) {
         switch (normalized) {
             case 'basketball':
                 return ["Points", "Assists", "Rebounds", "Steals", "Blocks", "Turnovers", "Minutes Played"];
-
             case 'soccer':
                 return pos === 'goalie'
                     ? ["Saves", "Goals Against", "Clean Sheets", "Save Percentage"]
                     : ["Goals", "Assists", "Shots on Target", "Tackles Won", "Fouls Committed"];
-
             case 'football':
                 switch (pos) {
                     case 'quarterback':
@@ -31,28 +30,22 @@ function DynamicStatForm({ sport, position, onSaveStat }) {
                     default:
                         return [];
                 }
-
             case 'baseball':
                 return pos === 'pitcher'
                     ? ["Strikeouts", "ERA", "Walks Allowed", "Innings Pitched"]
                     : ["Hits", "Runs", "RBIs", "Home Runs", "Errors"];
-
             case 'icehockey':
                 return pos === 'goalie'
                     ? ["Saves", "Goals Against", "Save Percentage"]
                     : ["Goals", "Assists", "Shots on Goal", "Plus/Minus Rating"];
-
             case 'lacrosse':
                 return pos === 'goalie'
                     ? ["Saves", "Goals Against"]
                     : ["Goals", "Assists", "Ground Balls", "Faceoffs Won"];
-
             case 'trackcrosscountry':
                 return ["Event Name", "Time", "Placement"];
-
             case 'golf':
                 return ["Round Score", "Pars", "Birdies", "Bogeys", "Fairways Hit", "Greens in Regulation"];
-
             default:
                 return [];
         }
@@ -63,16 +56,23 @@ function DynamicStatForm({ sport, position, onSaveStat }) {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (onSaveStat) {
-            onSaveStat({
-                date: new Date().toISOString(),
-                sport,
-                position: position || "General Player",
-                stats: formData
-            });
+
+        const statEntry = {
+            sport,
+            position: position || "General Player",
+            stats: formData,
+            date: new Date().toISOString()
+        };
+
+        try {
+            await saveGameStat(statEntry);
+            alert('✅ Stats saved to Supabase!');
             setFormData({});
+        } catch (error) {
+            console.error('❌ Failed to save stat:', error.message);
+            alert('Error saving stats. See console for details.');
         }
     };
 
@@ -85,6 +85,7 @@ function DynamicStatForm({ sport, position, onSaveStat }) {
             <h2 className="text-2xl font-bold text-center mb-4">
                 Log Stats for {sport.charAt(0).toUpperCase() + sport.slice(1)} {position && `- ${position}`}
             </h2>
+
             {sportFields.length > 0 ? (
                 sportFields.map((field) => (
                     <div key={field} className="flex flex-col">
