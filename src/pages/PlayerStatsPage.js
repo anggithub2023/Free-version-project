@@ -3,7 +3,13 @@ import ReflectionStartFlow from '../components/PlayerStats/ReflectionStartFlow';
 import PositionSelectionModal from '../components/PlayerStats/PositionSelectionModal';
 import DynamicStatForm from '../components/PlayerStats/DynamicStatForm';
 import ConfirmModal from '../components/ConfirmModal';
-import { MdDownload, MdDelete, MdHome, MdMenu, MdInsights } from 'react-icons/md';
+import {
+    MdFileDownload,
+    MdDeleteForever,
+    MdHome,
+    MdMenu,
+    MdInsights
+} from 'react-icons/md';
 
 function PlayerStatsPage() {
     const [selectedSport, setSelectedSport] = useState(() => localStorage.getItem('selectedSport') || '');
@@ -79,8 +85,9 @@ function PlayerStatsPage() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 p-4 pb-24">
-            <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-green-700 dark:text-green-300">
-                📈 Player Stats - {selectedSport.charAt(0).toUpperCase() + selectedSport.slice(1)}
+            <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-green-700 dark:text-green-300 flex items-center justify-center gap-2">
+                <MdInsights className="text-green-500 dark:text-green-300" size={28} />
+                Player Stats - {selectedSport.charAt(0).toUpperCase() + selectedSport.slice(1)}
             </h1>
 
             <DynamicStatForm
@@ -89,6 +96,17 @@ function PlayerStatsPage() {
                 onSaveStat={handleSaveStat}
             />
 
+            {/* View Analytics Button (below form) */}
+            <div className="flex justify-center mt-6">
+                <button
+                    onClick={() => window.location.href = '/analytics'}
+                    className="bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition"
+                >
+                    <MdInsights className="inline-block mr-2" size={20} />
+                    View Analytics
+                </button>
+            </div>
+
             {/* Floating FAB group */}
             <div className="fixed bottom-6 right-6 flex flex-col items-end space-y-3 z-50">
                 {showFAB && (
@@ -96,28 +114,28 @@ function PlayerStatsPage() {
                         <button
                             onClick={() => window.location.href = '/analytics'}
                             className="bg-purple-600 hover:bg-purple-500 text-white p-3 rounded-full shadow-lg"
-                            title="📊 View Analytics"
+                            title="View Analytics"
                         >
                             <MdInsights size={24} />
                         </button>
                         <button
                             onClick={handleDownloadStats}
                             className="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-full shadow-lg"
-                            title="📅 Download CSV"
+                            title="Download CSV"
                         >
-                            <MdDownload size={24} />
+                            <MdFileDownload size={24} />
                         </button>
                         <button
                             onClick={() => setShowClearModal(true)}
                             className="bg-yellow-600 hover:bg-yellow-500 text-white p-3 rounded-full shadow-lg"
-                            title="❌ Clear Stats"
+                            title="Clear Stats"
                         >
-                            <MdDelete size={24} />
+                            <MdDeleteForever size={24} />
                         </button>
                         <button
                             onClick={handleGoHome}
                             className="bg-gray-600 hover:bg-gray-500 text-white p-3 rounded-full shadow-lg"
-                            title="🏠 Back to Home"
+                            title="Back to Home"
                         >
                             <MdHome size={24} />
                         </button>
@@ -126,7 +144,7 @@ function PlayerStatsPage() {
                 <button
                     onClick={() => setShowFAB(!showFAB)}
                     className="bg-green-600 hover:bg-green-500 text-white p-4 rounded-full shadow-xl"
-                    title="☰ Menu"
+                    title="Menu"
                 >
                     <MdMenu size={28} />
                 </button>
