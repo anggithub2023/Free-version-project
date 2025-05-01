@@ -5,7 +5,15 @@ import StatsGraphs from '../components/Analytics/StatsGraphs';
 import StatsHistoryTable from '../components/Analytics/StatsHistoryTable';
 import PanelHeader from '../components/Analytics/PanelHeader';
 
-import { MdBarChart, MdTimeline, MdShowChart, MdHistory } from 'react-icons/md';
+import {
+    MdBarChart,
+    MdTimeline,
+    MdShowChart,
+    MdHistory,
+    MdHome,
+    MdFileDownload,
+    MdMenu
+} from 'react-icons/md';
 import { GiAchievement } from 'react-icons/gi';
 
 function PlayerAnalyticsPage() {
@@ -13,6 +21,7 @@ function PlayerAnalyticsPage() {
     const [selectedSport, setSelectedSport] = useState('');
     const [selectedPosition, setSelectedPosition] = useState('');
     const [filteredStats, setFilteredStats] = useState([]);
+    const [showFAB, setShowFAB] = useState(false);
 
     // Load stats from localStorage
     useEffect(() => {
@@ -28,11 +37,9 @@ function PlayerAnalyticsPage() {
                     setSelectedPosition(lastEntry.position.toLowerCase());
                 }
 
-                // category skipped intentionally for now
                 return;
             }
 
-            // Entry path fallback
             const storedSport = localStorage.getItem('selectedSport');
             const storedPosition = localStorage.getItem('selectedPosition');
 
@@ -43,13 +50,12 @@ function PlayerAnalyticsPage() {
             if (storedPosition) {
                 setSelectedPosition(storedPosition.toLowerCase());
             }
-
         } catch (err) {
             console.error("Error reading session data from localStorage:", err);
         }
     }, []);
 
-    // Filter stats by sport + position (category skipped for now)
+    // Filter stats by sport + position
     useEffect(() => {
         if (selectedSport && selectedPosition) {
             const normalizedSport = selectedSport.toLowerCase();
@@ -65,6 +71,37 @@ function PlayerAnalyticsPage() {
     }, [selectedSport, selectedPosition, gameStats]);
 
     const availableSports = Array.from(new Set(gameStats.map(stat => stat.sport)));
+
+    const handleGoHome = () => {
+        localStorage.removeItem('selectedSport');
+        localStorage.removeItem('selectedPosition');
+        localStorage.removeItem('gameStats');
+        window.location.href = '/';
+    };
+
+    const handleDownloadStats = () => {
+        const csvContent = [
+            ['Date', 'Sport', 'Position', 'Stat', 'Value'],
+            ...filteredStats.flatMap(({ date, sport, position, stats }) =>
+                Object.entries(stats).map(([statName, statValue]) => [
+                    new Date(date).toLocaleDateString(),
+                    sport,
+                    position,
+                    statName,
+                    statValue
+                ])
+            )
+        ].map(e => e.join(",")).join("\n");
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'player_stats.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-950 dark:to-gray-900 p-6 transition-colors duration-300">
@@ -154,6 +191,35 @@ function PlayerAnalyticsPage() {
                         Please select a sport to view analytics.
                     </div>
                 )}
+            </div>
+
+            {/* Floating FAB Group */}
+            <div className="fixed bottom-6 right-6 flex flex-col items-end space-y-3 z-50">
+                {showFAB && (
+                    <>
+                        <button
+                            onClick={handleDownloadStats}
+                            className="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-full shadow-lg"
+                            title="Download CSV"
+                        >
+                            <MdFileDownload size={24} />
+                        </button>
+                        <button
+                            onClick={handleGoHome}
+                            className="bg-gray-600 hover:bg-gray-500 text-white p-3 rounded-full shadow-lg"
+                            title="Back to Home"
+                        >
+                            <MdHome size={24} />
+                        </button>
+                    </>
+                )}
+                <button
+                    onClick={() => setShowFAB(!showFAB)}
+                    className="bg-green-600 hover:bg-green-500 text-white p-4 rounded-full shadow-xl"
+                    title="Menu"
+                >
+                    <MdMenu size={28} />
+                </button>
             </div>
         </div>
     );
