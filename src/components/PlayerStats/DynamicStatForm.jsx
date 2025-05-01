@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { saveGameStat } from '../../services/syncService'; // Supabase insert
+import { saveGameStat } from '../../services/syncService';
 
 function DynamicStatForm({ sport, position }) {
     const [formData, setFormData] = useState({});
 
     const normalizeSport = (sportId) => sportId?.toLowerCase().replace(/[^a-z]/g, '');
+    const pos = position?.toLowerCase();
+    const normalized = normalizeSport(sport);
 
     const sportFields = (() => {
-        const pos = position?.toLowerCase();
-        const normalized = normalizeSport(sport);
-
         switch (normalized) {
             case 'basketball':
                 return ["Points", "Assists", "Rebounds", "Steals", "Blocks", "Turnovers", "Minutes Played"];
@@ -63,29 +62,29 @@ function DynamicStatForm({ sport, position }) {
             sport,
             position: position || "General Player",
             stats: formData,
-            date: new Date().toISOString(),
-            user_id: localStorage.getItem('userId') // ✅ Required for Supabase RLS policy
+            date: new Date().toISOString()
         };
 
+        // Save to localStorage for analytics page
+        const localStats = JSON.parse(localStorage.getItem('gameStats') || '[]');
+        localStats.push(statEntry);
+        localStorage.setItem('gameStats', JSON.stringify(localStats));
+        localStorage.setItem('selectedSport', sport);
+        localStorage.setItem('selectedPosition', position);
+
+        // Attempt Supabase save
         try {
-            // ✅ Supabase save
             await saveGameStat(statEntry);
-
-            // ✅ LocalStorage cache (hybrid mode)
-            const localStats = JSON.parse(localStorage.getItem('gameStats') || '[]');
-            localStats.push(statEntry);
-            localStorage.setItem('gameStats', JSON.stringify(localStats));
-
-            // ✅ Save context for analytics
-            localStorage.setItem('selectedSport', sport);
-            localStorage.setItem('selectedPosition', position);
-
-            alert('✅ Stats saved to Supabase & local cache!');
-            setFormData({});
+            alert('✅ Stats saved to Supabase & localStorage!');
         } catch (error) {
-            console.error('❌ Failed to save stat:', error.message);
-            alert('Error saving stats. See console for details.');
+            console.warn('📦 Queued stat for retry');
+            const queue = JSON.parse(localStorage.getItem('unsyncedGameStats') || '[]');
+            queue.push(statEntry);
+            localStorage.setItem('unsyncedGameStats', JSON.stringify(queue));
+            alert('⚠️ Offline. Stats saved locally.');
         }
+
+        setFormData({});
     };
 
     if (!sport) {
@@ -108,8 +107,8 @@ function DynamicStatForm({ sport, position }) {
                             value={formData[field] || ""}
                             onChange={handleChange}
                             className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
-                                bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white
-                                placeholder-gray-400 dark:placeholder-gray-500"
+                              bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white
+                              placeholder-gray-400 dark:placeholder-gray-500"
                             placeholder={field}
                         />
                     </div>
@@ -119,18 +118,10 @@ function DynamicStatForm({ sport, position }) {
             )}
 
             <div className="flex gap-4 mt-6">
-                <button
-                    type="submit"
-                    className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg"
-                >
+                <button type="submit" className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg">
                     Save Stats
                 </button>
-
-                <button
-                    type="button"
-                    onClick={() => setFormData({})}
-                    className="flex-1 py-3 bg-gray-400 hover:bg-gray-500 text-white font-semibold rounded-lg"
-                >
+                <button type="button" onClick={() => setFormData({})} className="flex-1 py-3 bg-gray-400 hover:bg-gray-500 text-white font-semibold rounded-lg">
                     Clear
                 </button>
             </div>
