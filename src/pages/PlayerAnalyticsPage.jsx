@@ -12,6 +12,7 @@ function PlayerAnalyticsPage() {
     const [gameStats, setGameStats] = useState([]);
     const [selectedSport, setSelectedSport] = useState('');
     const [selectedPosition, setSelectedPosition] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState('');
     const [filteredStats, setFilteredStats] = useState([]);
 
     // Load stats from localStorage
@@ -20,11 +21,13 @@ function PlayerAnalyticsPage() {
             const savedStats = JSON.parse(localStorage.getItem('gameStats')) || [];
             setGameStats(savedStats);
 
-            // Auto-detect most recent position
             if (savedStats.length > 0) {
                 const lastEntry = savedStats[savedStats.length - 1];
                 if (lastEntry.position) {
                     setSelectedPosition(lastEntry.position.toLowerCase());
+                }
+                if (lastEntry.category) {
+                    setSelectedCategory(lastEntry.category.toLowerCase());
                 }
             }
         } catch (err) {
@@ -32,20 +35,21 @@ function PlayerAnalyticsPage() {
         }
     }, []);
 
-    // Filter based on sport + position
+    // Filter stats by sport + position + category
     useEffect(() => {
-        if (selectedSport && selectedPosition) {
+        if (selectedSport && selectedPosition && selectedCategory) {
             const normalizedSport = selectedSport.toLowerCase();
             const filtered = gameStats.filter(
                 stat =>
                     stat.sport?.toLowerCase() === normalizedSport &&
-                    stat.position?.toLowerCase() === selectedPosition
+                    stat.position?.toLowerCase() === selectedPosition &&
+                    stat.category?.toLowerCase() === selectedCategory
             );
             setFilteredStats(filtered);
         } else {
             setFilteredStats([]);
         }
-    }, [selectedSport, selectedPosition, gameStats]);
+    }, [selectedSport, selectedPosition, selectedCategory, gameStats]);
 
     const availableSports = Array.from(new Set(gameStats.map(stat => stat.sport)));
 
@@ -128,7 +132,9 @@ function PlayerAnalyticsPage() {
                         </div>
                     ) : (
                         <div className="text-center mt-12 text-gray-500 dark:text-gray-400">
-                            No stats found for <strong>{selectedSport}</strong> {selectedPosition && `(${selectedPosition})`}. Start logging games!
+                            No stats found for <strong>{selectedSport}</strong>{' '}
+                            {selectedPosition && `(${selectedPosition})`}
+                            {selectedCategory && ` – ${selectedCategory}`}
                         </div>
                     )
                 ) : (
