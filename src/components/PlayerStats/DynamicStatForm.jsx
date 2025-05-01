@@ -63,7 +63,8 @@ function DynamicStatForm({ sport, position }) {
             sport,
             position: position || "General Player",
             stats: formData,
-            date: new Date().toISOString()
+            date: new Date().toISOString(),
+            user_id: localStorage.getItem('userId') // ✅ Required for Supabase RLS policy
         };
 
         try {
@@ -107,8 +108,8 @@ function DynamicStatForm({ sport, position }) {
                             value={formData[field] || ""}
                             onChange={handleChange}
                             className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
-                              bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white
-                              placeholder-gray-400 dark:placeholder-gray-500"
+                                bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white
+                                placeholder-gray-400 dark:placeholder-gray-500"
                             placeholder={field}
                         />
                     </div>
