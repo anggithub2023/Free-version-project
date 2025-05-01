@@ -7,7 +7,8 @@ import InjuryPage from './pages/InjuryPage';
 import PlayerStatsPage from './pages/PlayerStatsPage';
 import VideosPage from './pages/VideosPage';
 import WorkoutsPage from './pages/WorkoutsPage';
-import PlayerAnalyticsPage from './pages/PlayerAnalyticsPage'; // ✅ Import this
+import PlayerAnalyticsPage from './pages/PlayerAnalyticsPage';
+import TestSupabase from './pages/TestSupabase';
 
 function App() {
     return (
@@ -19,7 +20,8 @@ function App() {
             <Route path="/playerstats" element={<PlayerStatsPage />} />
             <Route path="/videos" element={<VideosPage />} />
             <Route path="/workouts" element={<WorkoutsPage />} />
-            <Route path="/analytics" element={<PlayerAnalyticsPage />} /> {/* ✅ Add this */}
+            <Route path="/analytics" element={<PlayerAnalyticsPage />} />
+            <Route path="/testsupabase" element={<TestSupabase />} />
         </Routes>
     );
 }
