@@ -19,19 +19,41 @@ function PlayerAnalyticsPage() {
     useEffect(() => {
         try {
             const savedStats = JSON.parse(localStorage.getItem('gameStats')) || [];
+
             setGameStats(savedStats);
 
+            // Entry Path A: Use most recent full entry
             if (savedStats.length > 0) {
                 const lastEntry = savedStats[savedStats.length - 1];
+                setSelectedSport(lastEntry.sport?.toLowerCase());
+
                 if (lastEntry.position) {
                     setSelectedPosition(lastEntry.position.toLowerCase());
                 }
+
                 if (lastEntry.category) {
                     setSelectedCategory(lastEntry.category.toLowerCase());
                 }
+
+                return;
             }
+
+            // Entry Path B: Use stored user selections (from PositionSelectionModal)
+            const storedSport = localStorage.getItem('selectedSport');
+            const storedPosition = localStorage.getItem('selectedPosition');
+
+            if (storedSport) {
+                setSelectedSport(storedSport.toLowerCase());
+            }
+
+            if (storedPosition) {
+                setSelectedPosition(storedPosition.toLowerCase());
+            }
+
+            // Note: Category might be unknown here unless manually inferred
+
         } catch (err) {
-            console.error("Error parsing localStorage gameStats:", err);
+            console.error("Error reading session data from localStorage:", err);
         }
     }, []);
 
