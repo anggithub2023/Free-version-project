@@ -34,14 +34,12 @@ function PlayerAnalyticsPage() {
                 if (stats?.length > 0) {
                     setGameStats(stats);
                 } else {
-                    console.warn('⚠️ No data from Supabase — using localStorage.');
                     const fallbackStats = JSON.parse(localStorage.getItem('gameStats') || '[]');
                     setGameStats(fallbackStats);
                 }
             } catch (err) {
                 console.error('Supabase fetch failed:', err.message);
-                console.warn('⚠️ Falling back to localStorage:', err.message);
-                const localStats = JSON.parse(localStorage.getItem('gameStats')) || [];
+                const localStats = JSON.parse(localStorage.getItem('gameStats') || '[]');
                 stats = localStats;
                 setGameStats(localStats);
             }
@@ -61,10 +59,13 @@ function PlayerAnalyticsPage() {
         loadStats();
     }, []);
 
+    // ✅ Filter by user_id, sport, and position
     useEffect(() => {
-        if (selectedSport && selectedPosition) {
+        const userId = localStorage.getItem('userId');
+        if (selectedSport && selectedPosition && userId) {
             const filtered = gameStats.filter(
                 stat =>
+                    stat.user_id === userId &&
                     stat.sport?.toLowerCase() === selectedSport &&
                     stat.position?.toLowerCase() === selectedPosition
             );
