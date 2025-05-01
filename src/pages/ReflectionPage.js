@@ -6,6 +6,7 @@ import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
 import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
 import getRandomQuestionsReflection from '../helpers/getRandomQuestionsReflection';
+import { saveReflection } from '../services/syncService';
 
 function ReflectionPage() {
     const [showStartFlow, setShowStartFlow] = useState(() => {
@@ -51,7 +52,7 @@ function ReflectionPage() {
         dispatch({ type: 'SET_ANSWER', key, value });
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const allKeys = Object.keys(answers).filter(k => k !== 'bonusReflection');
         const totalYes = allKeys.filter(k => answers[k] === 'yes').length;
         const total = allKeys.length ? Math.round((totalYes / allKeys.length) * 100) : 0;
@@ -65,14 +66,26 @@ function ReflectionPage() {
             return acc;
         }, {});
 
-        setScoreSummary({
+        const summary = {
             total,
             ...sectionScores,
             bonus: answers['bonusReflection'] || 50,
-        });
+        };
 
+        setScoreSummary(summary);
         setShowModal(true);
         dispatch({ type: 'RESET' });
+
+        try {
+            await saveReflection({
+                sport: localStorage.getItem('selectedSport'),
+                position: localStorage.getItem('selectedPosition'),
+                answers,
+                score_summary: summary
+            });
+        } catch (err) {
+            console.error('Failed to save reflection to Supabase:', err.message);
+        }
     };
 
     if (showStartFlow) {
