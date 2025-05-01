@@ -16,6 +16,8 @@ import {
 } from 'react-icons/md';
 import { GiAchievement } from 'react-icons/gi';
 
+import { fetchGameStats } from '../services/syncService'; // ✅ Supabase import
+
 function PlayerAnalyticsPage() {
     const [gameStats, setGameStats] = useState([]);
     const [selectedSport, setSelectedSport] = useState('');
@@ -23,45 +25,32 @@ function PlayerAnalyticsPage() {
     const [filteredStats, setFilteredStats] = useState([]);
     const [showFAB, setShowFAB] = useState(false);
 
-    // Load stats from localStorage
+    // ✅ Load stats from Supabase
     useEffect(() => {
-        try {
-            const savedStats = JSON.parse(localStorage.getItem('gameStats')) || [];
-            setGameStats(savedStats);
+        const loadStats = async () => {
+            try {
+                const stats = await fetchGameStats();
+                setGameStats(stats);
 
-            if (savedStats.length > 0) {
-                const lastEntry = savedStats[savedStats.length - 1];
-                setSelectedSport(lastEntry.sport?.toLowerCase());
-
-                if (lastEntry.position) {
-                    setSelectedPosition(lastEntry.position.toLowerCase());
+                if (stats.length > 0) {
+                    const latest = stats[stats.length - 1];
+                    setSelectedSport(latest.sport?.toLowerCase() || '');
+                    setSelectedPosition(latest.position?.toLowerCase() || '');
                 }
-
-                return;
+            } catch (err) {
+                console.error('Failed to fetch game stats from Supabase:', err.message);
             }
+        };
 
-            const storedSport = localStorage.getItem('selectedSport');
-            const storedPosition = localStorage.getItem('selectedPosition');
-
-            if (storedSport) {
-                setSelectedSport(storedSport.toLowerCase());
-            }
-
-            if (storedPosition) {
-                setSelectedPosition(storedPosition.toLowerCase());
-            }
-        } catch (err) {
-            console.error("Error reading session data from localStorage:", err);
-        }
+        loadStats();
     }, []);
 
-    // Filter stats by sport + position
+    // 🔄 Filter by selected sport + position
     useEffect(() => {
         if (selectedSport && selectedPosition) {
-            const normalizedSport = selectedSport.toLowerCase();
             const filtered = gameStats.filter(
                 stat =>
-                    stat.sport?.toLowerCase() === normalizedSport &&
+                    stat.sport?.toLowerCase() === selectedSport &&
                     stat.position?.toLowerCase() === selectedPosition
             );
             setFilteredStats(filtered);
@@ -73,9 +62,8 @@ function PlayerAnalyticsPage() {
     const availableSports = Array.from(new Set(gameStats.map(stat => stat.sport)));
 
     const handleGoHome = () => {
-        localStorage.removeItem('selectedSport');
-        localStorage.removeItem('selectedPosition');
-        localStorage.removeItem('gameStats');
+        window.localStorage.removeItem('selectedSport');
+        window.localStorage.removeItem('selectedPosition');
         window.location.href = '/';
     };
 
