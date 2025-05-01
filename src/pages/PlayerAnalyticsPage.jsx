@@ -12,17 +12,14 @@ function PlayerAnalyticsPage() {
     const [gameStats, setGameStats] = useState([]);
     const [selectedSport, setSelectedSport] = useState('');
     const [selectedPosition, setSelectedPosition] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState('');
     const [filteredStats, setFilteredStats] = useState([]);
 
     // Load stats from localStorage
     useEffect(() => {
         try {
             const savedStats = JSON.parse(localStorage.getItem('gameStats')) || [];
-
             setGameStats(savedStats);
 
-            // Entry Path A: Use most recent full entry
             if (savedStats.length > 0) {
                 const lastEntry = savedStats[savedStats.length - 1];
                 setSelectedSport(lastEntry.sport?.toLowerCase());
@@ -31,14 +28,11 @@ function PlayerAnalyticsPage() {
                     setSelectedPosition(lastEntry.position.toLowerCase());
                 }
 
-                if (lastEntry.category) {
-                    setSelectedCategory(lastEntry.category.toLowerCase());
-                }
-
+                // category skipped intentionally for now
                 return;
             }
 
-            // Entry Path B: Use stored user selections (from PositionSelectionModal)
+            // Entry path fallback
             const storedSport = localStorage.getItem('selectedSport');
             const storedPosition = localStorage.getItem('selectedPosition');
 
@@ -50,28 +44,25 @@ function PlayerAnalyticsPage() {
                 setSelectedPosition(storedPosition.toLowerCase());
             }
 
-            // Note: Category might be unknown here unless manually inferred
-
         } catch (err) {
             console.error("Error reading session data from localStorage:", err);
         }
     }, []);
 
-    // Filter stats by sport + position + category
+    // Filter stats by sport + position (category skipped for now)
     useEffect(() => {
-        if (selectedSport && selectedPosition && selectedCategory) {
+        if (selectedSport && selectedPosition) {
             const normalizedSport = selectedSport.toLowerCase();
             const filtered = gameStats.filter(
                 stat =>
                     stat.sport?.toLowerCase() === normalizedSport &&
-                    stat.position?.toLowerCase() === selectedPosition &&
-                    stat.category?.toLowerCase() === selectedCategory
+                    stat.position?.toLowerCase() === selectedPosition
             );
             setFilteredStats(filtered);
         } else {
             setFilteredStats([]);
         }
-    }, [selectedSport, selectedPosition, selectedCategory, gameStats]);
+    }, [selectedSport, selectedPosition, gameStats]);
 
     const availableSports = Array.from(new Set(gameStats.map(stat => stat.sport)));
 
@@ -154,9 +145,8 @@ function PlayerAnalyticsPage() {
                         </div>
                     ) : (
                         <div className="text-center mt-12 text-gray-500 dark:text-gray-400">
-                            No stats found for <strong>{selectedSport}</strong>{' '}
-                            {selectedPosition && `(${selectedPosition})`}
-                            {selectedCategory && ` – ${selectedCategory}`}
+                            No stats found for <strong>{selectedSport}</strong>
+                            {selectedPosition && ` (${selectedPosition})`}
                         </div>
                     )
                 ) : (
