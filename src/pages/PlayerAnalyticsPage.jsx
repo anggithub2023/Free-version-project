@@ -22,6 +22,7 @@ function PlayerAnalyticsPage() {
     const [gameStats, setGameStats] = useState([]);
     const [selectedSport, setSelectedSport] = useState('');
     const [selectedPosition, setSelectedPosition] = useState('');
+    const [availablePositions, setAvailablePositions] = useState([]);
     const [filteredStats, setFilteredStats] = useState([]);
     const [showFAB, setShowFAB] = useState(false);
 
@@ -30,29 +31,22 @@ function PlayerAnalyticsPage() {
             let stats = [];
             try {
                 stats = await fetchGameStats();
-                console.log('✅ Raw Supabase gameStats:', stats);
                 if (stats?.length > 0) {
                     setGameStats(stats);
                 } else {
-                    const fallbackStats = JSON.parse(localStorage.getItem('gameStats') || '[]');
-                    setGameStats(fallbackStats);
+                    stats = JSON.parse(localStorage.getItem('gameStats') || '[]');
+                    setGameStats(stats);
                 }
             } catch (err) {
                 console.error('Supabase fetch failed:', err.message);
-                const localStats = JSON.parse(localStorage.getItem('gameStats') || '[]');
-                stats = localStats;
-                setGameStats(localStats);
+                stats = JSON.parse(localStorage.getItem('gameStats') || '[]');
+                setGameStats(stats);
             }
 
             if (stats.length > 0) {
                 const latest = stats[stats.length - 1];
                 setSelectedSport(latest.sport?.toLowerCase() || '');
                 setSelectedPosition(latest.position?.toLowerCase() || '');
-            } else {
-                const storedSport = localStorage.getItem('selectedSport');
-                const storedPosition = localStorage.getItem('selectedPosition');
-                if (storedSport) setSelectedSport(storedSport.toLowerCase());
-                if (storedPosition) setSelectedPosition(storedPosition.toLowerCase());
             }
         };
 
@@ -61,32 +55,23 @@ function PlayerAnalyticsPage() {
 
     useEffect(() => {
         const userId = localStorage.getItem('userId');
-        if (selectedSport && selectedPosition && userId) {
-            const filtered = gameStats.filter(stat =>
-                stat.user_id === userId &&
-                stat.sport?.toLowerCase() === selectedSport.toLowerCase() &&
-                stat.position?.toLowerCase() === selectedPosition.toLowerCase()
-            );
 
-            console.log('🧪 Filter debug:', {
-                userId,
-                selectedSport,
-                selectedPosition,
-                matching: filtered.length,
-                allStats: gameStats.map(stat => ({
-                    sport: stat.sport,
-                    position: stat.position,
-                    user_id: stat.user_id
-                }))
-            });
+        const filtered = gameStats.filter(stat => {
+            const matchUser = stat.user_id === userId;
+            const matchSport = stat.sport?.toLowerCase() === selectedSport;
+            const matchPosition = !selectedPosition || stat.position?.toLowerCase() === selectedPosition;
+            return matchUser && matchSport && matchPosition;
+        });
 
-            setFilteredStats(filtered);
-        } else {
-            setFilteredStats([]);
-        }
+        setFilteredStats(filtered);
+
+        const positions = gameStats
+            .filter(stat => stat.sport?.toLowerCase() === selectedSport)
+            .map(stat => stat.position)
+            .filter((v, i, a) => v && a.indexOf(v) === i);
+
+        setAvailablePositions(positions);
     }, [selectedSport, selectedPosition, gameStats]);
-
-    const availableSports = Array.from(new Set(gameStats.map(stat => stat.sport)));
 
     const handleGoHome = () => {
         localStorage.removeItem('selectedSport');
@@ -106,7 +91,7 @@ function PlayerAnalyticsPage() {
                     statValue
                 ])
             )
-        ].map(e => e.join(',')).join('\n');
+        ].map(e => e.join(",")).join("\n");
 
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
@@ -131,37 +116,57 @@ function PlayerAnalyticsPage() {
                     </p>
                 </div>
 
+                {/* Sport + Position Selector */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
                     <select
                         value={selectedSport}
-                        onChange={(e) => setSelectedSport(e.target.value)}
+                        onChange={(e) => {
+                            setSelectedSport(e.target.value);
+                            setSelectedPosition('');
+                        }}
                         className="w-full sm:w-64 p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
                     >
                         <option value="">Select Sport</option>
-                        {availableSports.map((sport, idx) => (
+                        {Array.from(new Set(gameStats.map(stat => stat.sport?.toLowerCase()))).map((sport, idx) => (
                             <option key={idx} value={sport}>
                                 {sport.charAt(0).toUpperCase() + sport.slice(1)}
                             </option>
                         ))}
                     </select>
+
+                    {availablePositions.length > 0 && (
+                        <select
+                            value={selectedPosition}
+                            onChange={(e) => setSelectedPosition(e.target.value)}
+                            className="w-full sm:w-64 p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+                        >
+                            <option value="">All Positions</option>
+                            {availablePositions.map((pos, idx) => (
+                                <option key={idx} value={pos.toLowerCase()}>
+                                    {pos}
+                                </option>
+                            ))}
+                        </select>
+                    )}
                 </div>
 
+                {/* Panels */}
                 {selectedSport ? (
                     filteredStats.length > 0 ? (
                         <div className="space-y-10">
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
                                 <PanelHeader icon={<MdBarChart />} title="Averages" subtitle="(Your per-game performance)" />
                                 <AveragesPanel filteredStats={filteredStats} />
                             </div>
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
                                 <PanelHeader icon={<MdTimeline />} title="Progress Bars" subtitle="(How close you are to your goals)" />
                                 <ProgressBarsPanel filteredStats={filteredStats} />
                             </div>
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
                                 <PanelHeader icon={<MdShowChart />} title="Stat Trends" subtitle="(Visualize changes over time)" />
                                 <StatsGraphs filteredStats={filteredStats} />
                             </div>
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
                                 <PanelHeader icon={<MdHistory />} title="Stat History" subtitle="(Every stat you’ve logged)" />
                                 <StatsHistoryTable filteredStats={filteredStats} />
                             </div>
@@ -179,7 +184,7 @@ function PlayerAnalyticsPage() {
                 )}
             </div>
 
-            {/* FAB */}
+            {/* Floating Action Buttons */}
             <div className="fixed bottom-6 right-6 flex flex-col items-end space-y-3 z-50">
                 {showFAB && (
                     <>
