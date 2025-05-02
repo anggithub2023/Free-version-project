@@ -3,14 +3,24 @@ import { useNavigate } from 'react-router-dom';
 import { FaBrain, FaChartBar, FaVideo } from 'react-icons/fa';
 import { GiLevelEndFlag, GiMuscleUp } from 'react-icons/gi';
 import { MdHealthAndSafety, MdOutlineEditNote } from 'react-icons/md';
-import useAnonymousUser from '../hooks/useAnonymousUser'; // ✅ import hook
+import useAnonymousUser from '../hooks/useAnonymousUser'; // ✅ generates/stores ID
+import { ensureUserExists } from '../services/userService'; // ✅ sync to Supabase
 
 function HomePage() {
     const navigate = useNavigate();
-    const userId = useAnonymousUser(); // ✅ generates/stores ID
+    const userId = useAnonymousUser(); // ✅ unique persistent ID
 
     const [hideHeader, setHideHeader] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
+
+    // ✅ Ensure user exists in Supabase on mount
+    useEffect(() => {
+        if (userId) {
+            ensureUserExists(userId).catch((err) => {
+                console.error('Failed to ensure user exists:', err.message);
+            });
+        }
+    }, [userId]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -30,8 +40,7 @@ function HomePage() {
             color: 'text-indigo-700',
             shadow: 'hover:shadow-indigo-300',
             route: '/reflect',
-            description:
-                'Complete your daily reflection to stay focused on the process and track progress over time.'
+            description: 'Complete your daily reflection to stay focused on the process and track progress over time.'
         },
         {
             label: 'Readiness',
@@ -39,8 +48,7 @@ function HomePage() {
             color: 'text-purple-700',
             shadow: 'hover:shadow-purple-300',
             route: '/readiness',
-            description:
-                'Check in on your mental and physical readiness before each session — build focus, recover smarter, and show up prepared.'
+            description: 'Check in on your mental and physical readiness before each session — build focus, recover smarter, and show up prepared.'
         },
         {
             label: 'Injury Prevention',
@@ -48,8 +56,7 @@ function HomePage() {
             color: 'text-rose-600',
             shadow: 'hover:shadow-rose-300',
             route: '/injury',
-            description:
-                'Learn how to prevent injuries with real-life strategies from a Certified Athletic Trainer — warm-ups, recovery tips, and more.'
+            description: 'Learn how to prevent injuries with real-life strategies from a Certified Athletic Trainer — warm-ups, recovery tips, and more.'
         },
         {
             label: 'Player Stats',
@@ -57,8 +64,7 @@ function HomePage() {
             color: 'text-green-700',
             shadow: 'hover:shadow-green-300',
             route: '/playerstats',
-            description:
-                'Track your game-by-game performance, see averages, and download your progress.'
+            description: 'Track your game-by-game performance, see averages, and download your progress.'
         },
         {
             label: 'Workouts',
