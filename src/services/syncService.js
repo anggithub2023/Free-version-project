@@ -16,6 +16,8 @@ export const saveGameStat = async (statEntry) => {
 
 export const fetchGameStats = async () => {
     const userId = getUserId();
+    if (!userId) throw new Error('Missing user ID');
+
     const { data, error } = await supabase
         .from('game_stats')
         .select('*')
@@ -37,15 +39,20 @@ export const saveReflection = async (reflectionEntry) => {
     if (error) throw error;
 };
 
-// Optional utility to ensure user exists in `users` table
 export const ensureUserExists = async (userId) => {
-    const { error } = await supabase
+    const { data, error } = await supabase
         .from('users')
         .select('user_id')
         .eq('user_id', userId)
         .maybeSingle();
 
-    if (error?.code === 'PGRST116') {
-        return supabase.from('users').insert({ user_id: userId });
+    if (error) throw error;
+
+    if (!data) {
+        const { error: insertError } = await supabase
+            .from('users')
+            .insert({ user_id: userId });
+
+        if (insertError) throw insertError;
     }
 };
