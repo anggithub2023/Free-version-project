@@ -1,54 +1,52 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-export default function Homepage() {
+export default function HomepageLayout() {
+    const navigate = useNavigate();
+
     return (
-        <main className="min-h-screen bg-white dark:bg-gray-950 text-gray-900 dark:text-white">
-            <section className="flex flex-col items-center justify-center px-6 py-20 sm:py-32">
-                <h1 className="text-4xl sm:text-5xl font-extrabold text-center mb-4">
-                    Reflect. Improve. Win.
-                </h1>
-                <p className="text-center text-gray-600 dark:text-gray-400 max-w-md mb-8">
-                    Built for athletes who want to grow through consistent self-reflection.
-                </p>
-                <Link
-                    to="/reflection"
-                    className="inline-block px-8 py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white font-semibold transition shadow-lg"
-                >
-                    Start Reflection
-                </Link>
-            </section>
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-black text-gray-900 dark:text-white">
+            <div className="max-w-5xl mx-auto px-4 py-16">
+                <div className="text-center">
+                    <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-4">
+                        Welcome to Process Reflection
+                    </h1>
+                    <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-8">
+                        Enhance performance and growth through focused self-reflection.
+                    </p>
+                    <button
+                        onClick={() => navigate('/reflection')}
+                        className="bg-indigo-600 hover:bg-indigo-500 text-white text-lg font-semibold py-3 px-8 rounded-xl shadow-md transition"
+                    >
+                        Start Your Reflection
+                    </button>
+                </div>
 
-            <section className="grid grid-cols-1 sm:grid-cols-2 gap-12 max-w-5xl mx-auto px-6 pb-24">
-                <div>
-                    <h2 className="text-2xl font-bold mb-2">Why Reflection?</h2>
-                    <p className="text-gray-600 dark:text-gray-400">
-                        Discover trends, track mindset shifts, and make intentional adjustments to your game. Reflection is your edge.
-                    </p>
+                <div className="mt-20 grid gap-12 md:grid-cols-3 text-center">
+                    <div className="p-6 rounded-xl bg-white dark:bg-gray-800 shadow">
+                        <h3 className="text-xl font-semibold mb-2">Track</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Log detailed reflections and performance stats after every session.
+                        </p>
+                    </div>
+                    <div className="p-6 rounded-xl bg-white dark:bg-gray-800 shadow">
+                        <h3 className="text-xl font-semibold mb-2">Analyze</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                            View analytics and trends to identify strengths and growth areas.
+                        </p>
+                    </div>
+                    <div className="p-6 rounded-xl bg-white dark:bg-gray-800 shadow">
+                        <h3 className="text-xl font-semibold mb-2">Improve</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Use data-driven insights to adjust training and mindset.
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <h2 className="text-2xl font-bold mb-2">Visual Feedback</h2>
-                    <p className="text-gray-600 dark:text-gray-400">
-                        See your performance visualized over time to identify what’s working and what needs attention.
-                    </p>
-                </div>
-                <div>
-                    <h2 className="text-2xl font-bold mb-2">Privacy First</h2>
-                    <p className="text-gray-600 dark:text-gray-400">
-                        Your reflections are securely stored and never shared. You control your data.
-                    </p>
-                </div>
-                <div>
-                    <h2 className="text-2xl font-bold mb-2">Mobile-Friendly</h2>
-                    <p className="text-gray-600 dark:text-gray-400">
-                        Designed for quick check-ins whether you're in the locker room, on the bus, or at home.
-                    </p>
-                </div>
-            </section>
 
-            <footer className="text-center text-sm text-gray-500 dark:text-gray-600 pb-6">
-                © 2025 processwins.app. All rights reserved. This platform, concept, design, and workflow are the original intellectual property of the creator.
-            </footer>
-        </main>
+                <footer className="mt-24 text-center text-sm text-gray-500 dark:text-gray-400">
+                    © 2025 <span className="font-medium">processwins.app</span>. All rights reserved.<br />
+                    This platform, concept, design, and workflow are the original intellectual property of the creator.
+                </footer>
+            </div>
+        </div>
     );
 }
