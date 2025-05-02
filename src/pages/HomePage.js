@@ -3,9 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { FaBrain, FaChartBar, FaVideo } from 'react-icons/fa';
 import { GiLevelEndFlag, GiMuscleUp } from 'react-icons/gi';
 import { MdHealthAndSafety, MdOutlineEditNote } from 'react-icons/md';
+import useAnonymousUser from '../hooks/useAnonymousUser';
+import { ensureUserExists } from '../services/syncService';
 
 function HomePage() {
     const navigate = useNavigate();
+    const userId = useAnonymousUser();
 
     const [hideHeader, setHideHeader] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
@@ -20,6 +23,15 @@ function HomePage() {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, [lastScrollY]);
+
+    // 🔁 Ensure user exists in Supabase
+    useEffect(() => {
+        if (userId) {
+            ensureUserExists(userId).catch((err) => {
+                console.error('Failed to ensure user exists:', err.message);
+            });
+        }
+    }, [userId]);
 
     const sections = [
         {
