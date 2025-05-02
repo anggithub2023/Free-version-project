@@ -6,6 +6,7 @@ import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
 import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
 import getRandomQuestionsReflection from '../helpers/getRandomQuestionsReflection';
+import { saveReflection } from '../services/syncService'; // ✅ Add this line
 
 function ReflectionPage() {
     const [showStartFlow, setShowStartFlow] = useState(() => {
@@ -51,7 +52,7 @@ function ReflectionPage() {
         dispatch({ type: 'SET_ANSWER', key, value });
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const allKeys = Object.keys(answers).filter(k => k !== 'bonusReflection');
         const totalYes = allKeys.filter(k => answers[k] === 'yes').length;
         const total = allKeys.length ? Math.round((totalYes / allKeys.length) * 100) : 0;
@@ -75,6 +76,15 @@ function ReflectionPage() {
             },
             created_at: new Date().toISOString()
         };
+
+        try {
+            await saveReflection(reflectionData); // ✅ Send to Supabase
+        } catch (err) {
+            console.warn('📦 Queuing reflection due to sync error');
+            const queue = JSON.parse(localStorage.getItem('unsyncedReflections') || '[]');
+            queue.push(reflectionData);
+            localStorage.setItem('unsyncedReflections', JSON.stringify(queue));
+        }
 
         localStorage.setItem('latestReflection', JSON.stringify(reflectionData));
         setScoreSummary(reflectionData.scores);
