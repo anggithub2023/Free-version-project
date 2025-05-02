@@ -6,7 +6,6 @@ import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
 import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
 import getRandomQuestionsReflection from '../helpers/getRandomQuestionsReflection';
-import { saveReflection } from '../services/syncService';
 
 function ReflectionPage() {
     const [showStartFlow, setShowStartFlow] = useState(() => {
@@ -27,30 +26,6 @@ function ReflectionPage() {
     useEffect(() => {
         localStorage.setItem('processAnswers', JSON.stringify(answers));
     }, [answers]);
-
-    // 🔁 Retry unsynced reflections
-    useEffect(() => {
-        const retryQueuedReflections = async () => {
-            const queue = JSON.parse(localStorage.getItem('unsyncedReflections') || '[]');
-            if (!queue.length) return;
-
-            const successful = [];
-
-            for (const item of queue) {
-                try {
-                    await saveReflection(item);
-                    successful.push(item);
-                } catch (err) {
-                    console.warn('Retry failed for reflection:', err.message);
-                }
-            }
-
-            const remaining = queue.filter(item => !successful.includes(item));
-            localStorage.setItem('unsyncedReflections', JSON.stringify(remaining));
-        };
-
-        retryQueuedReflections();
-    }, []);
 
     const handleStartFlowComplete = (sport, position) => {
         const normalizedPosition = position?.toLowerCase().replace(/\s+/g, '-');
@@ -76,7 +51,7 @@ function ReflectionPage() {
         dispatch({ type: 'SET_ANSWER', key, value });
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         const allKeys = Object.keys(answers).filter(k => k !== 'bonusReflection');
         const totalYes = allKeys.filter(k => answers[k] === 'yes').length;
         const total = allKeys.length ? Math.round((totalYes / allKeys.length) * 100) : 0;
@@ -101,15 +76,7 @@ function ReflectionPage() {
             created_at: new Date().toISOString()
         };
 
-        try {
-            await saveReflection(reflectionData);
-        } catch (err) {
-            console.warn('📦 Queuing reflection due to sync error');
-            const queue = JSON.parse(localStorage.getItem('unsyncedReflections') || '[]');
-            queue.push(reflectionData);
-            localStorage.setItem('unsyncedReflections', JSON.stringify(queue));
-        }
-
+        localStorage.setItem('latestReflection', JSON.stringify(reflectionData));
         setScoreSummary(reflectionData.scores);
         setShowModal(true);
         dispatch({ type: 'RESET' });
