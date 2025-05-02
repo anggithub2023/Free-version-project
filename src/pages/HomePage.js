@@ -123,7 +123,7 @@ function HomePage() {
             </main>
 
             <footer className="mt-12 text-center text-xs text-gray-500 dark:text-gray-400 px-4 pb-6">
-                © {new Date().getFullYear()} Process Reflection™ by Alex Ng. All rights reserved.<br />
+                © {new Date().getFullYear()} © 2025 Process Reflection™ — processwins.app. All rights reserved.
                 This platform, concept, design, and workflow are the original intellectual property of the creator.
             </footer>
         </div>
