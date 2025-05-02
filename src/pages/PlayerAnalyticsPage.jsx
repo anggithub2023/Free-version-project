@@ -25,12 +25,16 @@ function PlayerAnalyticsPage() {
     const [filteredStats, setFilteredStats] = useState([]);
     const [showFAB, setShowFAB] = useState(false);
 
-    // ✅ Load from Supabase, fallback to localStorage
+    const normalize = (val) =>
+        (val || '').toString().toLowerCase().replace(/\s+/g, '-').trim();
+
     useEffect(() => {
         const loadStats = async () => {
             let stats = [];
             try {
                 stats = await fetchGameStats();
+                console.log('✅ Raw Supabase gameStats:', stats);
+
                 if (stats?.length > 0) {
                     setGameStats(stats);
                 } else {
@@ -46,29 +50,34 @@ function PlayerAnalyticsPage() {
 
             if (stats.length > 0) {
                 const latest = stats[stats.length - 1];
-                setSelectedSport(latest.sport?.toLowerCase() || '');
-                setSelectedPosition(latest.position?.toLowerCase() || '');
+                setSelectedSport(normalize(latest.sport));
+                setSelectedPosition(normalize(latest.position));
             } else {
                 const storedSport = localStorage.getItem('selectedSport');
                 const storedPosition = localStorage.getItem('selectedPosition');
-                if (storedSport) setSelectedSport(storedSport.toLowerCase());
-                if (storedPosition) setSelectedPosition(storedPosition.toLowerCase());
+                if (storedSport) setSelectedSport(normalize(storedSport));
+                if (storedPosition) setSelectedPosition(normalize(storedPosition));
             }
         };
 
         loadStats();
     }, []);
 
-    // ✅ Filter by user_id, sport, and position
     useEffect(() => {
         const userId = localStorage.getItem('userId');
         if (selectedSport && selectedPosition && userId) {
             const filtered = gameStats.filter(
                 stat =>
                     stat.user_id === userId &&
-                    stat.sport?.toLowerCase() === selectedSport &&
-                    stat.position?.toLowerCase() === selectedPosition
+                    normalize(stat.sport) === selectedSport &&
+                    normalize(stat.position) === selectedPosition
             );
+            console.log('🧪 Filtering with:', {
+                userId,
+                selectedSport,
+                selectedPosition
+            });
+            console.log('📊 Matching entries:', filtered);
             setFilteredStats(filtered);
         } else {
             setFilteredStats([]);
@@ -124,12 +133,12 @@ function PlayerAnalyticsPage() {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
                     <select
                         value={selectedSport}
-                        onChange={(e) => setSelectedSport(e.target.value)}
+                        onChange={(e) => setSelectedSport(normalize(e.target.value))}
                         className="w-full sm:w-64 p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
                     >
                         <option value="">Select Sport</option>
                         {availableSports.map((sport, idx) => (
-                            <option key={idx} value={sport}>
+                            <option key={idx} value={normalize(sport)}>
                                 {sport.charAt(0).toUpperCase() + sport.slice(1)}
                             </option>
                         ))}
