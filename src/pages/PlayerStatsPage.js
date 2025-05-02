@@ -25,12 +25,6 @@ function PlayerStatsPage() {
         setGameStats(savedStats);
     }, []);
 
-    const handleSaveStat = (statEntry) => {
-        const updatedStats = [...gameStats, statEntry];
-        setGameStats(updatedStats);
-        localStorage.setItem('gameStats', JSON.stringify(updatedStats));
-    };
-
     const handleClearStats = () => {
         setGameStats([]);
         localStorage.removeItem('gameStats');
@@ -93,10 +87,8 @@ function PlayerStatsPage() {
             <DynamicStatForm
                 sport={selectedSport}
                 position={selectedPosition}
-                onSaveStat={handleSaveStat}
             />
 
-            {/* View Analytics Button (below form) */}
             <div className="flex justify-center mt-6">
                 <button
                     onClick={() => window.location.href = '/analytics'}
