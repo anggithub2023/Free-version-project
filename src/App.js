@@ -9,6 +9,7 @@ import PlayerStatsPage from './pages/PlayerStatsPage';
 import VideosPage from './pages/VideosPage';
 import WorkoutsPage from './pages/WorkoutsPage';
 import PlayerAnalyticsPage from './pages/PlayerAnalyticsPage';
+import DashboardPage from './pages/DashboardPage'; // ✅ FIXED
 import useAnonymousUser from './hooks/useAnonymousUser'; // ✅ Hook for generating anonymous user ID
 
 function App() {
@@ -25,7 +26,6 @@ function App() {
             <Route path="/workouts" element={<WorkoutsPage />} />
             <Route path="/analytics" element={<PlayerAnalyticsPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
-
         </Routes>
     );
 }
