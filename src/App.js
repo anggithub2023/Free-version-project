@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
+
 import HomePage from './pages/HomePage';
 import ReflectionPage from './pages/ReflectionPage';
 import ReadinessPage from './pages/ReadinessPage';
@@ -9,8 +10,11 @@ import VideosPage from './pages/VideosPage';
 import WorkoutsPage from './pages/WorkoutsPage';
 import PlayerAnalyticsPage from './pages/PlayerAnalyticsPage';
 import TestSupabase from './pages/TestSupabase';
+import useAnonymousUser from './hooks/useAnonymousUser'; // ✅ Hook for generating anonymous user ID
 
 function App() {
+    useAnonymousUser(); // ✅ Ensures userId is set once when the app loads
+
     return (
         <Routes>
             <Route path="/" element={<HomePage />} />
