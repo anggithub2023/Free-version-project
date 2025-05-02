@@ -25,16 +25,12 @@ function PlayerAnalyticsPage() {
     const [filteredStats, setFilteredStats] = useState([]);
     const [showFAB, setShowFAB] = useState(false);
 
-    const normalize = (val) =>
-        (val || '').toString().toLowerCase().replace(/\s+/g, '-').trim();
-
     useEffect(() => {
         const loadStats = async () => {
             let stats = [];
             try {
                 stats = await fetchGameStats();
                 console.log('✅ Raw Supabase gameStats:', stats);
-
                 if (stats?.length > 0) {
                     setGameStats(stats);
                 } else {
@@ -50,13 +46,13 @@ function PlayerAnalyticsPage() {
 
             if (stats.length > 0) {
                 const latest = stats[stats.length - 1];
-                setSelectedSport(normalize(latest.sport));
-                setSelectedPosition(normalize(latest.position));
+                setSelectedSport(latest.sport?.toLowerCase() || '');
+                setSelectedPosition(latest.position?.toLowerCase() || '');
             } else {
                 const storedSport = localStorage.getItem('selectedSport');
                 const storedPosition = localStorage.getItem('selectedPosition');
-                if (storedSport) setSelectedSport(normalize(storedSport));
-                if (storedPosition) setSelectedPosition(normalize(storedPosition));
+                if (storedSport) setSelectedSport(storedSport.toLowerCase());
+                if (storedPosition) setSelectedPosition(storedPosition.toLowerCase());
             }
         };
 
@@ -66,18 +62,24 @@ function PlayerAnalyticsPage() {
     useEffect(() => {
         const userId = localStorage.getItem('userId');
         if (selectedSport && selectedPosition && userId) {
-            const filtered = gameStats.filter(
-                stat =>
-                    stat.user_id === userId &&
-                    normalize(stat.sport) === selectedSport &&
-                    normalize(stat.position) === selectedPosition
+            const filtered = gameStats.filter(stat =>
+                stat.user_id === userId &&
+                stat.sport?.toLowerCase() === selectedSport.toLowerCase() &&
+                stat.position?.toLowerCase() === selectedPosition.toLowerCase()
             );
-            console.log('🧪 Filtering with:', {
+
+            console.log('🧪 Filter debug:', {
                 userId,
                 selectedSport,
-                selectedPosition
+                selectedPosition,
+                matching: filtered.length,
+                allStats: gameStats.map(stat => ({
+                    sport: stat.sport,
+                    position: stat.position,
+                    user_id: stat.user_id
+                }))
             });
-            console.log('📊 Matching entries:', filtered);
+
             setFilteredStats(filtered);
         } else {
             setFilteredStats([]);
@@ -104,7 +106,7 @@ function PlayerAnalyticsPage() {
                     statValue
                 ])
             )
-        ].map(e => e.join(",")).join("\n");
+        ].map(e => e.join(',')).join('\n');
 
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
@@ -129,23 +131,21 @@ function PlayerAnalyticsPage() {
                     </p>
                 </div>
 
-                {/* Sport Selector */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
                     <select
                         value={selectedSport}
-                        onChange={(e) => setSelectedSport(normalize(e.target.value))}
+                        onChange={(e) => setSelectedSport(e.target.value)}
                         className="w-full sm:w-64 p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
                     >
                         <option value="">Select Sport</option>
                         {availableSports.map((sport, idx) => (
-                            <option key={idx} value={normalize(sport)}>
+                            <option key={idx} value={sport}>
                                 {sport.charAt(0).toUpperCase() + sport.slice(1)}
                             </option>
                         ))}
                     </select>
                 </div>
 
-                {/* Analytics Panels */}
                 {selectedSport ? (
                     filteredStats.length > 0 ? (
                         <div className="space-y-10">
