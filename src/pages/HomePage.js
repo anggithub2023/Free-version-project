@@ -1,48 +1,76 @@
-// src/pages/HomePage.jsx
-import { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import useAnonymousUser from '../hooks/useAnonymousUser';
-import { ensureUserExists } from '../services/syncService';
+import { FiBarChart2, FiTrendingUp } from 'react-icons/fi';
+import { HiOutlineLightBulb } from 'react-icons/hi';
 
-export default function HomePage() {
+function HomePage() {
     const navigate = useNavigate();
-    const userId = useAnonymousUser();
 
-    useEffect(() => {
-        if (userId) {
-            ensureUserExists(userId).catch((err) => {
-                console.error('Failed to ensure user exists:', err.message);
-            });
-        }
-    }, [userId]);
+    const cards = [
+        {
+            title: 'Track Progress',
+            icon: <FiBarChart2 size={28} />,
+            route: '/dashboard',
+        },
+        {
+            title: 'Get Insights',
+            icon: <HiOutlineLightBulb size={28} />,
+            route: '/dashboard',
+        },
+        {
+            title: 'Build Consistency',
+            icon: <FiTrendingUp size={28} />,
+            route: '/dashboard',
+        },
+    ];
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-white dark:from-gray-900 dark:to-gray-800 px-4 py-10">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-[#fdfbf9] px-6 py-12">
+            {/* Header */}
+            <div className="mb-8 text-sm font-semibold text-gray-900">
+        <span className="inline-block px-3 py-1 rounded-full border border-gray-300 bg-white">
+          ✔ processwins.app
+        </span>
+            </div>
+
+            {/* Main Headline */}
             <div className="text-center space-y-4">
-                <h1 className="text-4xl sm:text-5xl font-bold text-indigo-700 dark:text-indigo-300">Reflect Better</h1>
-                <p className="text-gray-600 dark:text-gray-300 max-w-md mx-auto">
-                    Ground yourself before every session. Stay consistent. Let your process tell the story.
+                <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 leading-tight">
+                    Reflect on <br /> your performance.
+                </h1>
+                <p className="text-base sm:text-lg text-gray-600">
+                    Turn self-awareness into progress.
                 </p>
-                <button
-                    onClick={() => navigate('/reflect')}
-                    className="mt-6 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition duration-300"
-                >
-                    Begin Reflection
-                </button>
             </div>
 
-            <div className="mt-10 text-center">
-                <button
-                    onClick={() => navigate('/dashboard')}
-                    className="text-sm text-indigo-500 hover:underline"
-                >
-                    Go to Full Dashboard
-                </button>
+            {/* Start Reflection Button */}
+            <button
+                onClick={() => navigate('/reflect')}
+                className="mt-8 px-6 py-3 bg-black text-white text-sm font-semibold rounded-lg shadow hover:opacity-90 transition"
+            >
+                Start Reflection
+            </button>
+
+            {/* Cards */}
+            <div className="mt-10 flex flex-col sm:flex-row gap-4 items-center">
+                {cards.map((card, idx) => (
+                    <button
+                        key={idx}
+                        onClick={() => navigate(card.route)}
+                        className="flex flex-col items-center p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition w-40"
+                    >
+                        <div className="text-gray-800 mb-2">{card.icon}</div>
+                        <span className="text-sm font-medium text-gray-900">{card.title}</span>
+                    </button>
+                ))}
             </div>
 
-            <footer className="absolute bottom-4 text-center text-xs text-gray-400">
-                © {new Date().getFullYear()} Process Reflection™ — processwins.app
+            {/* Footer */}
+            <footer className="mt-12 text-xs text-gray-500 text-center">
+                © 2025 processwins.app
             </footer>
         </div>
     );
 }
+
+export default HomePage;
