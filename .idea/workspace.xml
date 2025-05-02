@@ -4,9 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e26899b4-322b-4923-a887-5b56653fcf45" name="Changes" comment="first commit - after git clean up issues">
+    <list default="true" id="e26899b4-322b-4923-a887-5b56653fcf45" name="Changes" comment="VITE changes">
+      <change afterPath="$PROJECT_DIR$/src/components/Workout/WorkoutRow.jsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/data/constants.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/helpers/workoutStorage.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/supabaseClient.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/supabaseClient.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/StatsPage.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +19,7 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="JSX File" />
         <option value="JavaScript File" />
       </list>
     </option>
@@ -50,13 +54,16 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "Node.js.HomePage.js.executor": "Debug",
+    "Node.js.ReflectionModal.jsx.executor": "Debug",
     "Node.js.ReflectionPage.js.executor": "Debug",
     "Node.js.ResultsPage.js.executor": "Debug",
     "Node.js.StatsPage.js.executor": "Debug",
     "Node.js.VideosPage.js.executor": "Debug",
+    "Node.js.WorkoutFormModal.jsx.executor": "Debug",
+    "Node.js.WorkoutsPage.js.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "Rebasing main",
+    "git-widget-placeholder": "main",
     "junie.onboarding.icon.badge.shown": "true",
     "last_opened_file_path": "/Users/ang/Documents/Webstorm Projects/Free-version-project",
     "node.js.detected.package.eslint": "true",
@@ -65,19 +72,27 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_interpreter_path": "/Users/ang/Library/Application Support/JetBrains/WebStorm2025.1/node/versions/22.14.0/bin/node",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "vcs.Git",
     "ts.external.directory.path": "/Applications/WebStorm.app/Contents/plugins/javascript-plugin/jsLanguageServicesImpl/external",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "ChangesTree.GroupingKeys": [
+      "directory",
+      "repository"
+    ]
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components/ReflectionModal" />
       <recent name="$PROJECT_DIR$/src/data/Basketball" />
       <recent name="$PROJECT_DIR$/src/components" />
     </key>
   </component>
-  <component name="RunManager" selected="Node.js.ResultsPage.js">
-    <configuration name="HomePage.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/pages/HomePage.js" working-dir="$PROJECT_DIR$/src/pages">
+  <component name="RunManager" selected="Node.js.ReflectionModal.jsx">
+    <configuration name="ReflectionModal.jsx" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/components/ReflectionModal/ReflectionModal.jsx" working-dir="$PROJECT_DIR$/src/components/ReflectionModal">
       <method v="2" />
     </configuration>
     <configuration name="ReflectionPage.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/pages/ReflectionPage.js" working-dir="$PROJECT_DIR$/src/pages">
@@ -86,19 +101,19 @@
     <configuration name="ResultsPage.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/pages/ResultsPage.js" working-dir="$PROJECT_DIR$/src/pages">
       <method v="2" />
     </configuration>
-    <configuration name="StatsPage.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/pages/StatsPage.js" working-dir="$PROJECT_DIR$/src/pages">
+    <configuration name="WorkoutFormModal.jsx" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/components/Workout/WorkoutFormModal.jsx" working-dir="$PROJECT_DIR$/src/components/Workout">
       <method v="2" />
     </configuration>
-    <configuration name="VideosPage.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/pages/VideosPage.js" working-dir="$PROJECT_DIR$/src/pages">
+    <configuration name="WorkoutsPage.js" type="NodeJSConfigurationType" temporary="true" nameIsGenerated="true" path-to-js-file="$PROJECT_DIR$/src/pages/WorkoutsPage.js" working-dir="$PROJECT_DIR$/src/pages">
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Node.js.ReflectionModal.jsx" />
+        <item itemvalue="Node.js.WorkoutFormModal.jsx" />
+        <item itemvalue="Node.js.WorkoutsPage.js" />
         <item itemvalue="Node.js.ResultsPage.js" />
         <item itemvalue="Node.js.ReflectionPage.js" />
-        <item itemvalue="Node.js.VideosPage.js" />
-        <item itemvalue="Node.js.StatsPage.js" />
-        <item itemvalue="Node.js.HomePage.js" />
       </list>
     </recent_temporary>
   </component>
@@ -125,400 +140,402 @@
       <workItem from="1745369089305" duration="14000" />
       <workItem from="1745369112293" duration="4077000" />
       <workItem from="1745400788836" duration="4277000" />
+      <workItem from="1745414648192" duration="52005000" />
+      <workItem from="1745532932459" duration="172243000" />
     </task>
-    <task id="LOCAL-00079" summary="button changes">
+    <task id="LOCAL-00450" summary="Modernized Tailwind classes:&#10;&#9;•&#9;Smooth transitions on interactive elements.&#10;&#9;•&#9;Better dark mode contrast.&#10;&#9;•&#9;Added focus:ring for accessibility.&#10;&#9;•&#9;Consistent shadow-lg and rounded elements.&#10;&#9;2.&#9;Dark Mode Enhancements:&#10;&#9;•&#9;Improved default and dark mode gradients.&#10;&#9;•&#9;Unified text colors for readability.&#10;&#9;•&#9;Consistent neutral coloring using gray-* over green-* for a calmer palette.&#10;&#9;3.&#9;Component Safety:&#10;&#9;•&#9;Preserved original component integration: ✅ AveragesPanel, ProgressBarsPanel, StatsGraphs, StatsHistoryTable.&#10;&#9;4.&#9;No logic changes — All useEffect and state logic untouched. QA safe.">
       <option name="closed" value="true" />
-      <created>1745178347004</created>
-      <option name="number" value="00079" />
-      <option name="presentableId" value="LOCAL-00079" />
+      <created>1746053681575</created>
+      <option name="number" value="00450" />
+      <option name="presentableId" value="LOCAL-00450" />
       <option name="project" value="LOCAL" />
-      <updated>1745178347004</updated>
+      <updated>1746053681575</updated>
     </task>
-    <task id="LOCAL-00080" summary="button changes">
+    <task id="LOCAL-00451" summary="new title">
       <option name="closed" value="true" />
-      <created>1745178556866</created>
-      <option name="number" value="00080" />
-      <option name="presentableId" value="LOCAL-00080" />
+      <created>1746054272887</created>
+      <option name="number" value="00451" />
+      <option name="presentableId" value="LOCAL-00451" />
       <option name="project" value="LOCAL" />
-      <updated>1745178556866</updated>
+      <updated>1746054272887</updated>
     </task>
-    <task id="LOCAL-00081" summary="button changes">
+    <task id="LOCAL-00452" summary="title changes / descriptions">
       <option name="closed" value="true" />
-      <created>1745178818160</created>
-      <option name="number" value="00081" />
-      <option name="presentableId" value="LOCAL-00081" />
+      <created>1746054772016</created>
+      <option name="number" value="00452" />
+      <option name="presentableId" value="LOCAL-00452" />
       <option name="project" value="LOCAL" />
-      <updated>1745178818160</updated>
+      <updated>1746054772016</updated>
     </task>
-    <task id="LOCAL-00082" summary="button changes">
+    <task id="LOCAL-00453" summary="title changes / descriptions">
       <option name="closed" value="true" />
-      <created>1745179081435</created>
-      <option name="number" value="00082" />
-      <option name="presentableId" value="LOCAL-00082" />
+      <created>1746054918505</created>
+      <option name="number" value="00453" />
+      <option name="presentableId" value="LOCAL-00453" />
       <option name="project" value="LOCAL" />
-      <updated>1745179081435</updated>
+      <updated>1746054918505</updated>
     </task>
-    <task id="LOCAL-00083" summary="button changes">
+    <task id="LOCAL-00454" summary="title changes / descriptions">
       <option name="closed" value="true" />
-      <created>1745179775792</created>
-      <option name="number" value="00083" />
-      <option name="presentableId" value="LOCAL-00083" />
+      <created>1746055094193</created>
+      <option name="number" value="00454" />
+      <option name="presentableId" value="LOCAL-00454" />
       <option name="project" value="LOCAL" />
-      <updated>1745179775792</updated>
+      <updated>1746055094193</updated>
     </task>
-    <task id="LOCAL-00084" summary="button changes">
+    <task id="LOCAL-00455" summary="panel new page">
       <option name="closed" value="true" />
-      <created>1745180790511</created>
-      <option name="number" value="00084" />
-      <option name="presentableId" value="LOCAL-00084" />
+      <created>1746055130856</created>
+      <option name="number" value="00455" />
+      <option name="presentableId" value="LOCAL-00455" />
       <option name="project" value="LOCAL" />
-      <updated>1745180790511</updated>
+      <updated>1746055130856</updated>
     </task>
-    <task id="LOCAL-00085" summary="button changes">
+    <task id="LOCAL-00456" summary="selectedPosition auto-set from the most recent stat entry&#10;&#9;•&#9;filteredStats narrowed down by selectedSport + selectedPosition&#10;&#9;•&#9;No changes to component structure or analytics panels">
       <option name="closed" value="true" />
-      <created>1745181216253</created>
-      <option name="number" value="00085" />
-      <option name="presentableId" value="LOCAL-00085" />
+      <created>1746059736720</created>
+      <option name="number" value="00456" />
+      <option name="presentableId" value="LOCAL-00456" />
       <option name="project" value="LOCAL" />
-      <updated>1745181216253</updated>
+      <updated>1746059736720</updated>
     </task>
-    <task id="LOCAL-00086" summary="button changes">
+    <task id="LOCAL-00457" summary="selectedCategory as new state&#10;&#9;•&#9;Auto-detection logic on mount&#10;&#9;•&#9;Use it in your filter condition">
       <option name="closed" value="true" />
-      <created>1745181573270</created>
-      <option name="number" value="00086" />
-      <option name="presentableId" value="LOCAL-00086" />
+      <created>1746060370669</created>
+      <option name="number" value="00457" />
+      <option name="presentableId" value="LOCAL-00457" />
       <option name="project" value="LOCAL" />
-      <updated>1745181573270</updated>
+      <updated>1746060370669</updated>
     </task>
-    <task id="LOCAL-00087" summary="button changes">
+    <task id="LOCAL-00458" summary="player localstorage load logic">
       <option name="closed" value="true" />
-      <created>1745182447548</created>
-      <option name="number" value="00087" />
-      <option name="presentableId" value="LOCAL-00087" />
+      <created>1746060871675</created>
+      <option name="number" value="00458" />
+      <option name="presentableId" value="LOCAL-00458" />
       <option name="project" value="LOCAL" />
-      <updated>1745182447548</updated>
+      <updated>1746060871675</updated>
     </task>
-    <task id="LOCAL-00088" summary="button changes">
+    <task id="LOCAL-00459" summary="Missing category values ✅&#10;&#9;•&#9;Legacy data ✅&#10;&#9;•&#9;New entries from modals without category logic ✅">
       <option name="closed" value="true" />
-      <created>1745182461066</created>
-      <option name="number" value="00088" />
-      <option name="presentableId" value="LOCAL-00088" />
+      <created>1746062024639</created>
+      <option name="number" value="00459" />
+      <option name="presentableId" value="LOCAL-00459" />
       <option name="project" value="LOCAL" />
-      <updated>1745182461066</updated>
+      <updated>1746062024639</updated>
     </task>
-    <task id="LOCAL-00089" summary="button changes">
+    <task id="LOCAL-00460" summary=" Consistent styling and alignment&#10;✅ All previously added changes intact (analytics button, FAB icons)">
       <option name="closed" value="true" />
-      <created>1745189152619</created>
-      <option name="number" value="00089" />
-      <option name="presentableId" value="LOCAL-00089" />
+      <created>1746062491368</created>
+      <option name="number" value="00460" />
+      <option name="presentableId" value="LOCAL-00460" />
       <option name="project" value="LOCAL" />
-      <updated>1745189152619</updated>
+      <updated>1746062491368</updated>
     </task>
-    <task id="LOCAL-00090" summary="button changes">
+    <task id="LOCAL-00461" summary="FAB + child buttins">
       <option name="closed" value="true" />
-      <created>1745189501065</created>
-      <option name="number" value="00090" />
-      <option name="presentableId" value="LOCAL-00090" />
+      <created>1746062756939</created>
+      <option name="number" value="00461" />
+      <option name="presentableId" value="LOCAL-00461" />
       <option name="project" value="LOCAL" />
-      <updated>1745189501065</updated>
+      <updated>1746062756939</updated>
     </task>
-    <task id="LOCAL-00091" summary="button changes">
+    <task id="LOCAL-00462" summary="initial code for useAnonymousUser.js">
       <option name="closed" value="true" />
-      <created>1745190550095</created>
-      <option name="number" value="00091" />
-      <option name="presentableId" value="LOCAL-00091" />
+      <created>1746063623424</created>
+      <option name="number" value="00462" />
+      <option name="presentableId" value="LOCAL-00462" />
       <option name="project" value="LOCAL" />
-      <updated>1745190550095</updated>
+      <updated>1746063623424</updated>
     </task>
-    <task id="LOCAL-00092" summary="button changes">
+    <task id="LOCAL-00463" summary="initial code for useAnonymousUser.js">
       <option name="closed" value="true" />
-      <created>1745191044392</created>
-      <option name="number" value="00092" />
-      <option name="presentableId" value="LOCAL-00092" />
+      <created>1746064041036</created>
+      <option name="number" value="00463" />
+      <option name="presentableId" value="LOCAL-00463" />
       <option name="project" value="LOCAL" />
-      <updated>1745191044392</updated>
+      <updated>1746064041036</updated>
     </task>
-    <task id="LOCAL-00093" summary="button changes">
+    <task id="LOCAL-00464" summary="supabase">
       <option name="closed" value="true" />
-      <created>1745232286958</created>
-      <option name="number" value="00093" />
-      <option name="presentableId" value="LOCAL-00093" />
+      <created>1746104389198</created>
+      <option name="number" value="00464" />
+      <option name="presentableId" value="LOCAL-00464" />
       <option name="project" value="LOCAL" />
-      <updated>1745232286958</updated>
+      <updated>1746104389198</updated>
     </task>
-    <task id="LOCAL-00094" summary="button changes">
+    <task id="LOCAL-00465" summary="supabase install npm">
       <option name="closed" value="true" />
-      <created>1745232639352</created>
-      <option name="number" value="00094" />
-      <option name="presentableId" value="LOCAL-00094" />
+      <created>1746122868408</created>
+      <option name="number" value="00465" />
+      <option name="presentableId" value="LOCAL-00465" />
       <option name="project" value="LOCAL" />
-      <updated>1745232639352</updated>
+      <updated>1746122868408</updated>
     </task>
-    <task id="LOCAL-00095" summary="button changes">
+    <task id="LOCAL-00466" summary="supabase install npm">
       <option name="closed" value="true" />
-      <created>1745257857532</created>
-      <option name="number" value="00095" />
-      <option name="presentableId" value="LOCAL-00095" />
+      <created>1746122873311</created>
+      <option name="number" value="00466" />
+      <option name="presentableId" value="LOCAL-00466" />
       <option name="project" value="LOCAL" />
-      <updated>1745257857532</updated>
+      <updated>1746122873311</updated>
     </task>
-    <task id="LOCAL-00096" summary="button changes">
+    <task id="LOCAL-00467" summary="Handles saving + reading from Supabase using userId from localStorage.">
       <option name="closed" value="true" />
-      <created>1745260565933</created>
-      <option name="number" value="00096" />
-      <option name="presentableId" value="LOCAL-00096" />
+      <created>1746122963751</created>
+      <option name="number" value="00467" />
+      <option name="presentableId" value="LOCAL-00467" />
       <option name="project" value="LOCAL" />
-      <updated>1745260565933</updated>
+      <updated>1746122963751</updated>
     </task>
-    <task id="LOCAL-00097" summary="button changes">
+    <task id="LOCAL-00468" summary="API setup">
       <option name="closed" value="true" />
-      <created>1745264334188</created>
-      <option name="number" value="00097" />
-      <option name="presentableId" value="LOCAL-00097" />
+      <created>1746123718506</created>
+      <option name="number" value="00468" />
+      <option name="presentableId" value="LOCAL-00468" />
       <option name="project" value="LOCAL" />
-      <updated>1745264334188</updated>
+      <updated>1746123718506</updated>
     </task>
-    <task id="LOCAL-00098" summary="button changes">
+    <task id="LOCAL-00469" summary="Supabase test">
       <option name="closed" value="true" />
-      <created>1745264891202</created>
-      <option name="number" value="00098" />
-      <option name="presentableId" value="LOCAL-00098" />
+      <created>1746124174223</created>
+      <option name="number" value="00469" />
+      <option name="presentableId" value="LOCAL-00469" />
       <option name="project" value="LOCAL" />
-      <updated>1745264891202</updated>
+      <updated>1746124174223</updated>
     </task>
-    <task id="LOCAL-00099" summary="button changes">
+    <task id="LOCAL-00470" summary="Supabase test">
       <option name="closed" value="true" />
-      <created>1745269693314</created>
-      <option name="number" value="00099" />
-      <option name="presentableId" value="LOCAL-00099" />
+      <created>1746125494800</created>
+      <option name="number" value="00470" />
+      <option name="presentableId" value="LOCAL-00470" />
       <option name="project" value="LOCAL" />
-      <updated>1745269693315</updated>
+      <updated>1746125494800</updated>
     </task>
-    <task id="LOCAL-00100" summary="button changes">
+    <task id="LOCAL-00471" summary="Supabase integration">
       <option name="closed" value="true" />
-      <created>1745270277972</created>
-      <option name="number" value="00100" />
-      <option name="presentableId" value="LOCAL-00100" />
+      <created>1746127341114</created>
+      <option name="number" value="00471" />
+      <option name="presentableId" value="LOCAL-00471" />
       <option name="project" value="LOCAL" />
-      <updated>1745270277972</updated>
+      <updated>1746127341114</updated>
     </task>
-    <task id="LOCAL-00101" summary="change re-direct to home page">
+    <task id="LOCAL-00472" summary="Supabase integration">
       <option name="closed" value="true" />
-      <created>1745330528027</created>
-      <option name="number" value="00101" />
-      <option name="presentableId" value="LOCAL-00101" />
+      <created>1746127617609</created>
+      <option name="number" value="00472" />
+      <option name="presentableId" value="LOCAL-00472" />
       <option name="project" value="LOCAL" />
-      <updated>1745330528027</updated>
+      <updated>1746127617609</updated>
     </task>
-    <task id="LOCAL-00102" summary="change re-direct to home page">
+    <task id="LOCAL-00473" summary="fixed hybrid mode">
       <option name="closed" value="true" />
-      <created>1745333326309</created>
-      <option name="number" value="00102" />
-      <option name="presentableId" value="LOCAL-00102" />
+      <created>1746128235065</created>
+      <option name="number" value="00473" />
+      <option name="presentableId" value="LOCAL-00473" />
       <option name="project" value="LOCAL" />
-      <updated>1745333326309</updated>
+      <updated>1746128235065</updated>
     </task>
-    <task id="LOCAL-00103" summary="change re-direct to home page">
+    <task id="LOCAL-00474" summary="fixed hybrid mode">
       <option name="closed" value="true" />
-      <created>1745333756031</created>
-      <option name="number" value="00103" />
-      <option name="presentableId" value="LOCAL-00103" />
+      <created>1746128474114</created>
+      <option name="number" value="00474" />
+      <option name="presentableId" value="LOCAL-00474" />
       <option name="project" value="LOCAL" />
-      <updated>1745333756031</updated>
+      <updated>1746128474114</updated>
     </task>
-    <task id="LOCAL-00104" summary="average logic change for answered questions">
+    <task id="LOCAL-00475" summary="full updated DynamicStatForm.jsx with user_id included for Supabase RLS, and hybrid local storage fallback:">
       <option name="closed" value="true" />
-      <created>1745333847233</created>
-      <option name="number" value="00104" />
-      <option name="presentableId" value="LOCAL-00104" />
+      <created>1746135140843</created>
+      <option name="number" value="00475" />
+      <option name="presentableId" value="LOCAL-00475" />
       <option name="project" value="LOCAL" />
-      <updated>1745333847234</updated>
+      <updated>1746135140843</updated>
     </task>
-    <task id="LOCAL-00105" summary="average logic change for answered questions">
+    <task id="LOCAL-00476" summary="pdated PlayerAnalyticsPage.jsx with hybrid mode + per-user user_id filtering:">
       <option name="closed" value="true" />
-      <created>1745333871962</created>
-      <option name="number" value="00105" />
-      <option name="presentableId" value="LOCAL-00105" />
+      <created>1746135323611</created>
+      <option name="number" value="00476" />
+      <option name="presentableId" value="LOCAL-00476" />
       <option name="project" value="LOCAL" />
-      <updated>1745333871962</updated>
+      <updated>1746135323611</updated>
     </task>
-    <task id="LOCAL-00106" summary="changed readiness quote">
+    <task id="LOCAL-00477" summary="Full hybrid-mode version of ReflectionPage.jsx is ready and synced to Supabase via saveReflection().">
       <option name="closed" value="true" />
-      <created>1745334745020</created>
-      <option name="number" value="00106" />
-      <option name="presentableId" value="LOCAL-00106" />
+      <created>1746135504437</created>
+      <option name="number" value="00477" />
+      <option name="presentableId" value="LOCAL-00477" />
       <option name="project" value="LOCAL" />
-      <updated>1745334745020</updated>
+      <updated>1746135504437</updated>
     </task>
-    <task id="LOCAL-00107" summary="added new button for injure prevention">
+    <task id="LOCAL-00478" summary="timestamp and offline queueing">
       <option name="closed" value="true" />
-      <created>1745336355681</created>
-      <option name="number" value="00107" />
-      <option name="presentableId" value="LOCAL-00107" />
+      <created>1746135845195</created>
+      <option name="number" value="00478" />
+      <option name="presentableId" value="LOCAL-00478" />
       <option name="project" value="LOCAL" />
-      <updated>1745336355681</updated>
+      <updated>1746135845195</updated>
     </task>
-    <task id="LOCAL-00108" summary="added new button for injure prevention">
+    <task id="LOCAL-00479" summary="timestamp and offline queueing">
       <option name="closed" value="true" />
-      <created>1745336635796</created>
-      <option name="number" value="00108" />
-      <option name="presentableId" value="LOCAL-00108" />
+      <created>1746135951965</created>
+      <option name="number" value="00479" />
+      <option name="presentableId" value="LOCAL-00479" />
       <option name="project" value="LOCAL" />
-      <updated>1745336635796</updated>
+      <updated>1746135951965</updated>
     </task>
-    <task id="LOCAL-00109" summary="added injury page and code for the injury page">
+    <task id="LOCAL-00480" summary="&#9;user_id foreign key constraints&#10;&#9;•&#9;fallback to localStorage&#10;&#9;•&#9;reflection + game stat syncing&#10;&#9;•&#9;safe inserts that won’t break Supabase">
       <option name="closed" value="true" />
-      <created>1745337037995</created>
-      <option name="number" value="00109" />
-      <option name="presentableId" value="LOCAL-00109" />
+      <created>1746142270569</created>
+      <option name="number" value="00480" />
+      <option name="presentableId" value="LOCAL-00480" />
       <option name="project" value="LOCAL" />
-      <updated>1745337037995</updated>
+      <updated>1746142270569</updated>
     </task>
-    <task id="LOCAL-00110" summary="added import and route for Injury">
+    <task id="LOCAL-00481" summary="&#9;user_id foreign key constraints&#10;&#9;•&#9;fallback to localStorage&#10;&#9;•&#9;reflection + game stat syncing&#10;&#9;•&#9;safe inserts that won’t break Supabase">
       <option name="closed" value="true" />
-      <created>1745337286077</created>
-      <option name="number" value="00110" />
-      <option name="presentableId" value="LOCAL-00110" />
+      <created>1746143731520</created>
+      <option name="number" value="00481" />
+      <option name="presentableId" value="LOCAL-00481" />
       <option name="project" value="LOCAL" />
-      <updated>1745337286077</updated>
+      <updated>1746143731520</updated>
     </task>
-    <task id="LOCAL-00111" summary="changed Video color to Teal">
+    <task id="LOCAL-00482" summary="userservice">
       <option name="closed" value="true" />
-      <created>1745338033044</created>
-      <option name="number" value="00111" />
-      <option name="presentableId" value="LOCAL-00111" />
+      <created>1746150301441</created>
+      <option name="number" value="00482" />
+      <option name="presentableId" value="LOCAL-00482" />
       <option name="project" value="LOCAL" />
-      <updated>1745338033044</updated>
+      <updated>1746150301441</updated>
     </task>
-    <task id="LOCAL-00112" summary="changed button description for Injury">
+    <task id="LOCAL-00483" summary=" ensureUserExists logic cleanly integrated near the top:">
       <option name="closed" value="true" />
-      <created>1745338699713</created>
-      <option name="number" value="00112" />
-      <option name="presentableId" value="LOCAL-00112" />
+      <created>1746150621185</created>
+      <option name="number" value="00483" />
+      <option name="presentableId" value="LOCAL-00483" />
       <option name="project" value="LOCAL" />
-      <updated>1745338699713</updated>
+      <updated>1746150621185</updated>
     </task>
-    <task id="LOCAL-00113" summary="changed button description for Injury">
+    <task id="LOCAL-00484" summary="Supabase syncing logic (ensureUserExists) removed, ensuring a fully offline-friendly dev experience:">
       <option name="closed" value="true" />
-      <created>1745339702484</created>
-      <option name="number" value="00113" />
-      <option name="presentableId" value="LOCAL-00113" />
+      <created>1746195848856</created>
+      <option name="number" value="00484" />
+      <option name="presentableId" value="LOCAL-00484" />
       <option name="project" value="LOCAL" />
-      <updated>1745339702484</updated>
+      <updated>1746195848856</updated>
     </task>
-    <task id="LOCAL-00114" summary="changed button description for Injury">
+    <task id="LOCAL-00485" summary="keeoing Hybrid logic">
       <option name="closed" value="true" />
-      <created>1745340243042</created>
-      <option name="number" value="00114" />
-      <option name="presentableId" value="LOCAL-00114" />
+      <created>1746199137139</created>
+      <option name="number" value="00485" />
+      <option name="presentableId" value="LOCAL-00485" />
       <option name="project" value="LOCAL" />
-      <updated>1745340243042</updated>
+      <updated>1746199137139</updated>
     </task>
-    <task id="LOCAL-00115" summary="changed button description for Injury">
+    <task id="LOCAL-00486" summary="passing onSaveStat={handleSaveStat}, which updates localStorage — but this is redundant, because DynamicStatForm does this itself and also syncs with Supabase.">
       <option name="closed" value="true" />
-      <created>1745340342715</created>
-      <option name="number" value="00115" />
-      <option name="presentableId" value="LOCAL-00115" />
+      <created>1746199992097</created>
+      <option name="number" value="00486" />
+      <option name="presentableId" value="LOCAL-00486" />
       <option name="project" value="LOCAL" />
-      <updated>1745340342715</updated>
+      <updated>1746199992098</updated>
     </task>
-    <task id="LOCAL-00116" summary="updated Injure page template">
+    <task id="LOCAL-00487" summary="updated supabase sync info">
       <option name="closed" value="true" />
-      <created>1745340520152</created>
-      <option name="number" value="00116" />
-      <option name="presentableId" value="LOCAL-00116" />
+      <created>1746200242127</created>
+      <option name="number" value="00487" />
+      <option name="presentableId" value="LOCAL-00487" />
       <option name="project" value="LOCAL" />
-      <updated>1745340520152</updated>
+      <updated>1746200242128</updated>
     </task>
-    <task id="LOCAL-00117" summary="updated Injure page template - new icons and modern design">
+    <task id="LOCAL-00488" summary=" anonymous user logic added:">
       <option name="closed" value="true" />
-      <created>1745340745230</created>
-      <option name="number" value="00117" />
-      <option name="presentableId" value="LOCAL-00117" />
+      <created>1746200748421</created>
+      <option name="number" value="00488" />
+      <option name="presentableId" value="LOCAL-00488" />
       <option name="project" value="LOCAL" />
-      <updated>1745340745230</updated>
+      <updated>1746200748421</updated>
     </task>
-    <task id="LOCAL-00118" summary="updated path to data/basketball">
+    <task id="LOCAL-00489" summary="updated HomePage.jsx including the logic to register the user_id in Supabase automatically:">
       <option name="closed" value="true" />
-      <created>1745353464789</created>
-      <option name="number" value="00118" />
-      <option name="presentableId" value="LOCAL-00118" />
+      <created>1746203204507</created>
+      <option name="number" value="00489" />
+      <option name="presentableId" value="LOCAL-00489" />
       <option name="project" value="LOCAL" />
-      <updated>1745353464789</updated>
+      <updated>1746203204507</updated>
     </task>
-    <task id="LOCAL-00119" summary="created bball folder, moved questions">
+    <task id="LOCAL-00490" summary="updated HomePage.jsx including the logic to register the user_id in Supabase automatically:">
       <option name="closed" value="true" />
-      <created>1745353516649</created>
-      <option name="number" value="00119" />
-      <option name="presentableId" value="LOCAL-00119" />
+      <created>1746203546191</created>
+      <option name="number" value="00490" />
+      <option name="presentableId" value="LOCAL-00490" />
       <option name="project" value="LOCAL" />
-      <updated>1745353516649</updated>
+      <updated>1746203546191</updated>
     </task>
-    <task id="LOCAL-00120" summary="created bball folder, moved questions">
+    <task id="LOCAL-00491" summary="With DB Sync on Submit">
       <option name="closed" value="true" />
-      <created>1745353882378</created>
-      <option name="number" value="00120" />
-      <option name="presentableId" value="LOCAL-00120" />
+      <created>1746204197956</created>
+      <option name="number" value="00491" />
+      <option name="presentableId" value="LOCAL-00491" />
       <option name="project" value="LOCAL" />
-      <updated>1745353882378</updated>
+      <updated>1746204197956</updated>
     </task>
-    <task id="LOCAL-00121" summary="created bball folder, moved questions">
+    <task id="LOCAL-00492" summary="normalizing sport &amp; position for reliable analytics filtering… deploying clean version now.">
       <option name="closed" value="true" />
-      <created>1745369785867</created>
-      <option name="number" value="00121" />
-      <option name="presentableId" value="LOCAL-00121" />
+      <created>1746207378384</created>
+      <option name="number" value="00492" />
+      <option name="presentableId" value="LOCAL-00492" />
       <option name="project" value="LOCAL" />
-      <updated>1745369785867</updated>
+      <updated>1746207378384</updated>
     </task>
-    <task id="LOCAL-00122" summary="created bball folder, moved questions">
+    <task id="LOCAL-00493" summary="ll updated code for PlayerAnalyticsPage.jsx, including the improved Supabase filtering logic and enhanced debug logging:">
       <option name="closed" value="true" />
-      <created>1745370023441</created>
-      <option name="number" value="00122" />
-      <option name="presentableId" value="LOCAL-00122" />
+      <created>1746207920083</created>
+      <option name="number" value="00493" />
+      <option name="presentableId" value="LOCAL-00493" />
       <option name="project" value="LOCAL" />
-      <updated>1745370023441</updated>
+      <updated>1746207920083</updated>
     </task>
-    <task id="LOCAL-00123" summary="created bball folder, moved questions">
+    <task id="LOCAL-00494" summary="filtering properly, supporting dropdowns for both dimensions, and avoiding stale state bugs.">
       <option name="closed" value="true" />
-      <created>1745370051988</created>
-      <option name="number" value="00123" />
-      <option name="presentableId" value="LOCAL-00123" />
+      <created>1746208973912</created>
+      <option name="number" value="00494" />
+      <option name="presentableId" value="LOCAL-00494" />
       <option name="project" value="LOCAL" />
-      <updated>1745370051988</updated>
+      <updated>1746208973913</updated>
     </task>
-    <task id="LOCAL-00124" summary="created bball folder, moved questions">
+    <task id="LOCAL-00495" summary="normalization applied to both sport and position values (to lowercase and trimmed), ensuring consistent filtering and dropdown values:">
       <option name="closed" value="true" />
-      <created>1745370151054</created>
-      <option name="number" value="00124" />
-      <option name="presentableId" value="LOCAL-00124" />
+      <created>1746209595289</created>
+      <option name="number" value="00495" />
+      <option name="presentableId" value="LOCAL-00495" />
       <option name="project" value="LOCAL" />
-      <updated>1745370151054</updated>
+      <updated>1746209595289</updated>
     </task>
-    <task id="LOCAL-00125" summary="created bball folder, moved questions">
+    <task id="LOCAL-00496" summary=" dropdown labels prettier, or automatically remember last-used selections across sessions.">
       <option name="closed" value="true" />
-      <created>1745370426153</created>
-      <option name="number" value="00125" />
-      <option name="presentableId" value="LOCAL-00125" />
+      <created>1746209988250</created>
+      <option name="number" value="00496" />
+      <option name="presentableId" value="LOCAL-00496" />
       <option name="project" value="LOCAL" />
-      <updated>1745370426153</updated>
+      <updated>1746209988250</updated>
     </task>
-    <task id="LOCAL-00126" summary="created bball folder, moved questions">
+    <task id="LOCAL-00497" summary=" dropdown labels prettier, or automatically remember last-used selections across sessions.">
       <option name="closed" value="true" />
-      <created>1745371393233</created>
-      <option name="number" value="00126" />
-      <option name="presentableId" value="LOCAL-00126" />
+      <created>1746214743862</created>
+      <option name="number" value="00497" />
+      <option name="presentableId" value="LOCAL-00497" />
       <option name="project" value="LOCAL" />
-      <updated>1745371393233</updated>
+      <updated>1746214743862</updated>
     </task>
-    <task id="LOCAL-00127" summary="first commit - after git clean up issues">
+    <task id="LOCAL-00498" summary="VITE changes">
       <option name="closed" value="true" />
-      <created>1745414090149</created>
-      <option name="number" value="00127" />
-      <option name="presentableId" value="LOCAL-00127" />
+      <created>1746217289393</created>
+      <option name="number" value="00498" />
+      <option name="presentableId" value="LOCAL-00498" />
       <option name="project" value="LOCAL" />
-      <updated>1745414090149</updated>
+      <updated>1746217289393</updated>
     </task>
-    <option name="localTasksCounter" value="128" />
+    <option name="localTasksCounter" value="499" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -536,20 +553,31 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="button changes" />
-    <MESSAGE value="change re-direct to home page" />
-    <MESSAGE value="average logic change for answered questions" />
-    <MESSAGE value="changed readiness quote" />
-    <MESSAGE value="added new button for injure prevention" />
-    <MESSAGE value="added injury page and code for the injury page" />
-    <MESSAGE value="added import and route for Injury" />
-    <MESSAGE value="changed Video color to Teal" />
-    <MESSAGE value="changed button description for Injury" />
-    <MESSAGE value="updated Injure page template" />
-    <MESSAGE value="updated Injure page template - new icons and modern design" />
-    <MESSAGE value="updated path to data/basketball" />
-    <MESSAGE value="created bball folder, moved questions" />
-    <MESSAGE value="first commit - after git clean up issues" />
-    <option name="LAST_COMMIT_MESSAGE" value="first commit - after git clean up issues" />
+    <MESSAGE value="Handles saving + reading from Supabase using userId from localStorage." />
+    <MESSAGE value="API setup" />
+    <MESSAGE value="Supabase test" />
+    <MESSAGE value="Supabase integration" />
+    <MESSAGE value="fixed hybrid mode" />
+    <MESSAGE value="full updated DynamicStatForm.jsx with user_id included for Supabase RLS, and hybrid local storage fallback:" />
+    <MESSAGE value="pdated PlayerAnalyticsPage.jsx with hybrid mode + per-user user_id filtering:" />
+    <MESSAGE value="Full hybrid-mode version of ReflectionPage.jsx is ready and synced to Supabase via saveReflection()." />
+    <MESSAGE value="timestamp and offline queueing" />
+    <MESSAGE value="&#9;user_id foreign key constraints&#10;&#9;•&#9;fallback to localStorage&#10;&#9;•&#9;reflection + game stat syncing&#10;&#9;•&#9;safe inserts that won’t break Supabase" />
+    <MESSAGE value="userservice" />
+    <MESSAGE value=" ensureUserExists logic cleanly integrated near the top:" />
+    <MESSAGE value="Supabase syncing logic (ensureUserExists) removed, ensuring a fully offline-friendly dev experience:" />
+    <MESSAGE value="keeoing Hybrid logic" />
+    <MESSAGE value="passing onSaveStat={handleSaveStat}, which updates localStorage — but this is redundant, because DynamicStatForm does this itself and also syncs with Supabase." />
+    <MESSAGE value="updated supabase sync info" />
+    <MESSAGE value=" anonymous user logic added:" />
+    <MESSAGE value="updated HomePage.jsx including the logic to register the user_id in Supabase automatically:" />
+    <MESSAGE value="With DB Sync on Submit" />
+    <MESSAGE value="normalizing sport &amp; position for reliable analytics filtering… deploying clean version now." />
+    <MESSAGE value="ll updated code for PlayerAnalyticsPage.jsx, including the improved Supabase filtering logic and enhanced debug logging:" />
+    <MESSAGE value="filtering properly, supporting dropdowns for both dimensions, and avoiding stale state bugs." />
+    <MESSAGE value="normalization applied to both sport and position values (to lowercase and trimmed), ensuring consistent filtering and dropdown values:" />
+    <MESSAGE value=" dropdown labels prettier, or automatically remember last-used selections across sessions." />
+    <MESSAGE value="VITE changes" />
+    <option name="LAST_COMMIT_MESSAGE" value="VITE changes" />
   </component>
 </project>
