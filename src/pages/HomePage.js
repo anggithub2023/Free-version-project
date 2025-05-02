@@ -3,24 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { FaBrain, FaChartBar, FaVideo } from 'react-icons/fa';
 import { GiLevelEndFlag, GiMuscleUp } from 'react-icons/gi';
 import { MdHealthAndSafety, MdOutlineEditNote } from 'react-icons/md';
-import useAnonymousUser from '../hooks/useAnonymousUser'; // ✅ generates/stores ID
-import { ensureUserExists } from '../services/userService'; // ✅ sync to Supabase
 
 function HomePage() {
     const navigate = useNavigate();
-    const userId = useAnonymousUser(); // ✅ unique persistent ID
 
     const [hideHeader, setHideHeader] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
-
-    // ✅ Ensure user exists in Supabase on mount
-    useEffect(() => {
-        if (userId) {
-            ensureUserExists(userId).catch((err) => {
-                console.error('Failed to ensure user exists:', err.message);
-            });
-        }
-    }, [userId]);
 
     useEffect(() => {
         const handleScroll = () => {
