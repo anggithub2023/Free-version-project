@@ -1,55 +1,77 @@
-import { FaCheckCircle } from 'react-icons/fa';
-import { FaChartLine } from 'react-icons/fa';
-import { FaLightbulb } from 'react-icons/fa';
-import { FaBars } from 'react-icons/fa';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaCheckCircle, FaChartLine } from 'react-icons/fa';
+import { MdInsights, MdKeyboardArrowDown } from 'react-icons/md';
+import { BsCheckAll } from 'react-icons/bs';
+import useAnonymousUser from '../hooks/useAnonymousUser';
+import { ensureUserExists } from '../services/syncService';
 
 export default function HomePage() {
+    const navigate = useNavigate();
+    const userId = useAnonymousUser();
+
+    useEffect(() => {
+        if (userId) {
+            ensureUserExists(userId).catch((err) =>
+                console.error('User sync failed:', err)
+            );
+        }
+    }, [userId]);
+
     return (
-        <div className="min-h-screen flex flex-col items-center justify-between px-6 py-10 bg-[#faf6f1] text-gray-900 font-sans">
-            {/* Logo and Title */}
-            <div className="flex items-center gap-2 mb-8">
-                <FaCheckCircle className="text-black text-lg" />
-                <span className="font-semibold text-sm">processwins.app</span>
+        <div className="min-h-screen bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-gray-800 flex flex-col items-center justify-center text-center px-4 py-10">
+            {/* Logo */}
+            <div className="flex items-center gap-2 mb-6 text-gray-800 dark:text-white">
+                <FaCheckCircle className="text-black dark:text-white" />
+                <span className="text-lg font-semibold">processwins.app</span>
             </div>
 
-            {/* Headline and Subtext */}
-            <div className="text-center">
-                <h1 className="text-4xl font-bold leading-tight mb-4">
-                    Reflect on<br />your<br />performance.
-                </h1>
-                <p className="text-base text-gray-700 mb-6">
-                    Turn self-awareness<br />into progress.
-                </p>
+            {/* Headline */}
+            <h1 className="text-4xl font-extrabold text-black dark:text-white leading-tight">
+                Reflect on<br />your<br />performance.
+            </h1>
+            <p className="mt-4 text-gray-600 dark:text-gray-300 text-lg">
+                Turn self-awareness into progress.
+            </p>
 
-                {/* CTA Button */}
-                <button className="bg-black text-white text-lg font-medium py-3 px-8 rounded-xl shadow-md hover:scale-[1.02] transition">
-                    Start Reflection
-                </button>
-            </div>
+            {/* Start Button */}
+            <button
+                onClick={() => navigate('/reflect')}
+                className="mt-8 px-8 py-4 text-lg font-semibold rounded-xl bg-black text-white dark:bg-white dark:text-black animate-pulse hover:scale-105 transition shadow-lg"
+            >
+                Start Reflection
+            </button>
 
-            {/* Arrow and Cards */}
-            <div className="flex flex-col items-center gap-6 mt-10">
-                <span className="text-2xl">↓</span>
+            {/* Down Arrow */}
+            <MdKeyboardArrowDown className="mt-10 text-3xl text-gray-700 dark:text-gray-300 animate-bounce" />
 
-                {/* Cards */}
-                <div className="flex gap-4">
-                    <div className="flex flex-col items-center bg-white rounded-xl px-6 py-5 shadow">
-                        <FaChartLine className="text-2xl mb-2" />
-                        <p className="text-sm font-semibold">Track<br />Progress</p>
-                    </div>
-                    <div className="flex flex-col items-center bg-white rounded-xl px-6 py-5 shadow">
-                        <FaLightbulb className="text-2xl mb-2" />
-                        <p className="text-sm font-semibold">Get<br />Insights</p>
-                    </div>
-                    <div className="flex flex-col items-center bg-white rounded-xl px-6 py-5 shadow">
-                        <FaBars className="text-2xl mb-2" />
-                        <p className="text-sm font-semibold">Build<br />Consistency</p>
-                    </div>
+            {/* Feature Cards */}
+            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+                <div
+                    onClick={() => navigate('/dashboard')}
+                    className="bg-white dark:bg-gray-700 p-4 rounded-xl shadow-md cursor-pointer hover:scale-105 transition w-48"
+                >
+                    <FaChartLine className="mx-auto text-3xl text-black dark:text-white" />
+                    <p className="mt-2 text-sm font-semibold text-gray-800 dark:text-white">Track Progress</p>
+                </div>
+                <div
+                    onClick={() => navigate('/dashboard')}
+                    className="bg-white dark:bg-gray-700 p-4 rounded-xl shadow-md cursor-pointer hover:scale-105 transition w-48"
+                >
+                    <MdInsights className="mx-auto text-3xl text-black dark:text-white" />
+                    <p className="mt-2 text-sm font-semibold text-gray-800 dark:text-white">Get Insights</p>
+                </div>
+                <div
+                    onClick={() => navigate('/dashboard')}
+                    className="bg-white dark:bg-gray-700 p-4 rounded-xl shadow-md cursor-pointer hover:scale-105 transition w-48"
+                >
+                    <BsCheckAll className="mx-auto text-3xl text-black dark:text-white" />
+                    <p className="mt-2 text-sm font-semibold text-gray-800 dark:text-white">Build Consistency</p>
                 </div>
             </div>
 
             {/* Footer */}
-            <footer className="mt-10 text-xs text-gray-500">
+            <footer className="mt-12 text-sm text-gray-500 dark:text-gray-400">
                 © 2025 processwins.app
             </footer>
         </div>
