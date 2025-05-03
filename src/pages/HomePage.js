@@ -35,16 +35,16 @@ export default function HomePage() {
             </div>
 
             {/* Title */}
-            <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight mb-2 text-center">
+            <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight mb-2 text-left">
                 Reflect on<br />Your<br />Performance
             </h1>
 
             {/* Subtitle */}
-            <p className="text-lg sm:text-xl text-center text-gray-600 dark:text-gray-300 mb-8">
+            <p className="text-lg sm:text-xl text-left text-gray-600 dark:text-gray-300 mb-8">
                 A modern way to track, improve, and stay consistent with your goals.
             </p>
 
-            {/* Start Reflection Button - Centered */}
+            {/* Start Reflection Button - centered */}
             <div className="mb-10 flex justify-center">
                 <button
                     onClick={() => navigate('/reflect')}
@@ -54,13 +54,13 @@ export default function HomePage() {
                 </button>
             </div>
 
-            {/* Cards in a single row, even on mobile */}
-            <div className="flex flex-col xs:flex-row sm:flex-row justify-center items-stretch gap-4 max-w-5xl mx-auto">
+            {/* Cards - always side-by-side, scrollable on mobile if needed */}
+            <div className="flex gap-4 overflow-x-auto pb-4 max-w-full">
                 {features.map(({ icon: Icon, title, route, color }, idx) => (
                     <div
                         key={idx}
                         onClick={() => navigate(route)}
-                        className="flex-1 min-w-0 cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition p-6 rounded-xl text-center"
+                        className="min-w-[300px] flex-shrink-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition p-6 rounded-xl text-center cursor-pointer"
                     >
                         <Icon className={`mx-auto text-4xl mb-2 ${color}`} />
                         <h3 className="text-lg font-semibold">{title}</h3>
