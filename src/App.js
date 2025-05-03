@@ -8,7 +8,7 @@ import InjuryPage from './pages/InjuryPage';
 import PlayerStatsPage from './pages/PlayerStatsPage';
 import VideosPage from './pages/VideosPage';
 import WorkoutsPage from './pages/WorkoutsPage';
-import PlayerAnalyticsPage from './pages/PlayerAnalyticsPage';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import DashboardPage from './pages/DashboardPage'; // ✅ FIXED
 import useAnonymousUser from './hooks/useAnonymousUser'; // ✅ Hook for generating anonymous user ID
 
@@ -24,7 +24,7 @@ function App() {
             <Route path="/playerstats" element={<PlayerStatsPage />} />
             <Route path="/videos" element={<VideosPage />} />
             <Route path="/workouts" element={<WorkoutsPage />} />
-            <Route path="/analytics" element={<PlayerAnalyticsPage />} />
+            <Route path="/analytics" element={<AnalyticsDashboard />} />
             <Route path="/dashboard" element={<DashboardPage />} />
         </Routes>
     );
