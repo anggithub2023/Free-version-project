@@ -1,74 +1,71 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { MdOutlineEditNote, MdLeaderboard, MdAccessTime } from 'react-icons/md';
 import useAnonymousUser from '../hooks/useAnonymousUser';
 
-function HomePage() {
-    const navigate = useNavigate();
-    const userId = useAnonymousUser();
+const cards = [
+    {
+        icon: <MdOutlineEditNote className="text-indigo-500 text-3xl" />,
+        title: 'Reflect Now',
+        description: 'Capture your thoughts and track progress daily.',
+        route: '/reflect',
+    },
+    {
+        icon: <MdLeaderboard className="text-purple-500 text-3xl" />,
+        title: 'Analytics',
+        description: 'View trends and insights over time.',
+        route: '/analytics',
+    },
+    {
+        icon: <MdAccessTime className="text-teal-500 text-3xl" />,
+        title: 'History',
+        description: 'Look back on all your reflections.',
+        route: '/dashboard',
+    },
+];
 
-    useEffect(() => {
-        if (userId) {
-            console.log('✅ User ID initialized:', userId);
-        }
-    }, [userId]);
+export default function HomePage() {
+    const navigate = useNavigate();
+    useAnonymousUser();
 
     return (
-        <div className="min-h-screen bg-white dark:bg-black text-gray-900 dark:text-white font-sans">
-            {/* Header */}
-            <div className="w-full py-4 text-center text-sm font-semibold text-gray-500 dark:text-gray-400">
-                processwins.app
-            </div>
+        <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 dark:from-gray-900 dark:to-gray-950 text-gray-900 dark:text-white px-4 py-8">
+            <div className="max-w-6xl mx-auto">
+                <div className="text-sm font-semibold text-indigo-600 dark:text-indigo-300 uppercase tracking-wide mb-4">
+                    processwins.app
+                </div>
 
-            {/* Hero Section */}
-            <div className="flex flex-col items-start px-6 sm:px-12 pt-4 pb-8 sm:pb-12">
-                <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
-                    <span>Reflect on</span><br />
-                    <span>Your</span><br />
-                    <span>Performance</span>
+                <h1 className="text-4xl sm:text-5xl font-extrabold text-left leading-tight text-gray-900 dark:text-white">
+                    Reflect on<br />Your<br />Performance
                 </h1>
 
-                <button
-                    onClick={() => navigate('/reflect')}
-                    className="mt-6 px-8 py-4 text-lg font-bold text-white bg-indigo-600 dark:bg-indigo-500 rounded-xl shadow-md animate-pulse hover:scale-105 transition-transform"
-                >
-                    Start Reflection
-                </button>
-            </div>
+                <p className="mt-4 text-md sm:text-lg font-medium text-left text-gray-600 dark:text-gray-300">
+                    A process-based approach to performance and development.
+                </p>
 
-            {/* Cards */}
-            <div className="w-full px-4 sm:px-12 pb-12">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    {[
-                        {
-                            title: 'Track',
-                            description: 'Stay consistent with your daily reflections.',
-                            icon: '📈'
-                        },
-                        {
-                            title: 'Insight',
-                            description: 'Discover how mindset affects performance.',
-                            icon: '💡'
-                        },
-                        {
-                            title: 'Consistency',
-                            description: 'Build the habit that separates elite players.',
-                            icon: '🎯'
-                        },
-                    ].map((card, idx) => (
+                <div className="mt-10 flex flex-nowrap gap-4 overflow-x-auto sm:overflow-visible sm:flex-row">
+                    {cards.map((card, index) => (
                         <div
-                            key={idx}
-                            onClick={() => navigate('/dashboard')}
-                            className="cursor-pointer bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl p-6 text-center shadow-md hover:shadow-lg transition"
+                            key={index}
+                            onClick={() => navigate(card.route)}
+                            className="cursor-pointer min-w-[250px] sm:min-w-[200px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 p-5 flex flex-col items-start gap-3"
                         >
-                            <div className="text-3xl mb-2">{card.icon}</div>
-                            <h3 className="text-xl font-semibold mb-1">{card.title}</h3>
+                            {card.icon}
+                            <h3 className="text-lg font-semibold">{card.title}</h3>
                             <p className="text-sm text-gray-600 dark:text-gray-400">{card.description}</p>
                         </div>
                     ))}
+                </div>
+
+                <div className="mt-10">
+                    <button
+                        onClick={() => navigate('/reflect')}
+                        className="px-6 py-3 text-lg font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-full animate-pulse shadow-md"
+                    >
+                        Start Reflection
+                    </button>
                 </div>
             </div>
         </div>
     );
 }
-
-export default HomePage;
