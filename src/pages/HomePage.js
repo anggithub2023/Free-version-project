@@ -30,38 +30,38 @@ export default function HomePage() {
                 <span>processwins.app</span>
             </div>
 
-            {/* Hero */}
-            <div className="text-left mb-4">
-                <h1 className="text-4xl font-black leading-tight mb-4">
+            {/* Hero Text */}
+            <div className="text-left mb-4 animate-fade-up">
+                <h1 className="font-heading text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight mb-4">
                     Reflect on<br />your<br />performance.
                 </h1>
-                <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed">
+                <p className="font-sans text-lg sm:text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
                     Turn self-awareness<br />into progress.
                 </p>
             </div>
 
             {/* Arrow Above Button */}
-            <div className="flex justify-center my-4">
+            <div className="flex justify-center my-4 animate-fade-up">
                 <HiOutlineArrowDown className="text-2xl text-gray-400 dark:text-gray-500" />
             </div>
 
             {/* CTA Button */}
-            <div className="flex justify-center mb-4">
+            <div className="flex justify-center mb-4 animate-fade-up">
                 <button
                     onClick={() => navigate('/reflect')}
-                    className="bg-black text-white dark:bg-indigo-500 dark:text-white rounded-xl px-6 py-4 w-full font-bold text-base max-w-xs shadow hover:scale-105 transition"
+                    className="bg-black text-white dark:bg-indigo-500 hover:dark:bg-indigo-400 rounded-xl px-6 py-4 w-full font-bold text-base max-w-xs shadow hover:scale-105 transition"
                 >
                     Start Reflection
                 </button>
             </div>
 
             {/* Arrow Below Button */}
-            <div className="flex justify-center my-4">
+            <div className="flex justify-center my-4 animate-fade-up">
                 <HiOutlineArrowDown className="text-2xl text-gray-400 dark:text-gray-500" />
             </div>
 
-            {/* Icon Cards – now pushed lower */}
-            <div className="flex justify-between gap-3 mt-12 mb-10">
+            {/* Feature Cards */}
+            <div className="flex justify-between gap-3 mt-12 mb-10 animate-fade-up">
                 {[ 'Track Progress', 'Get Insights', 'Build Consistency' ].map((label, idx) => {
                     const icons = [FaChartLine, FaLightbulb, FaCheckDouble];
                     const Icon = icons[idx];
