@@ -49,10 +49,9 @@ export default function HomePage() {
             <div className="flex justify-center mb-4 animate-fade-up">
                 <button
                     onClick={() => navigate('/reflect')}
-                    className="bg-black text-white
-                     dark:bg-yellow-400 dark:text-black
-                     hover:dark:bg-yellow-300
-                     rounded-xl px-6 py-4 w-full font-bold text-base max-w-xs
+                    className="bg-amber-500 text-white
+                     hover:bg-amber-400
+                     rounded-xl px-6 py-4 w-full font-bold text-lg max-w-xs
                      shadow hover:scale-105 transition
                      animate-pulse-slow"
                 >
