@@ -18,7 +18,7 @@ import { GiAchievement } from 'react-icons/gi';
 
 import { fetchGameStats } from '../services/syncService';
 
-function PlayerAnalyticsPage() {
+function AnalyticsDashboard() {
     const [gameStats, setGameStats] = useState([]);
     const [selectedSport, setSelectedSport] = useState('');
     const [selectedPosition, setSelectedPosition] = useState('');
@@ -231,4 +231,4 @@ function PlayerAnalyticsPage() {
     );
 }
 
-export default PlayerAnalyticsPage;
+export default AnalyticsDashboard;
