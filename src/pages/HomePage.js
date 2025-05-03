@@ -1,94 +1,55 @@
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { MdEditNote, MdDarkMode, MdLightMode } from 'react-icons/md';
-import { FaChartBar, FaBrain } from 'react-icons/fa';
-import useAnonymousUser from '../hooks/useAnonymousUser';
-import { ensureUserExists } from '../services/syncService';
+import { MdTrackChanges, MdInsights, MdRepeat } from 'react-icons/md';
 
-function HomePage() {
+export default function HomePage() {
     const navigate = useNavigate();
-    const userId = useAnonymousUser();
-    const [theme, setTheme] = useState('light');
 
-    useEffect(() => {
-        // Apply saved theme or detect system preference
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const appliedTheme = savedTheme || (prefersDark ? 'dark' : 'light');
-        setTheme(appliedTheme);
-        document.documentElement.classList.toggle('dark', appliedTheme === 'dark');
-    }, []);
-
-    useEffect(() => {
-        if (userId) {
-            ensureUserExists(userId).catch((err) => {
-                console.error('Failed to ensure user exists:', err.message);
-            });
-        }
-    }, [userId]);
-
-    const toggleTheme = () => {
-        const newTheme = theme === 'dark' ? 'light' : 'dark';
-        setTheme(newTheme);
-        localStorage.setItem('theme', newTheme);
-        document.documentElement.classList.toggle('dark', newTheme === 'dark');
-    };
-
-    const cards = [
+    const features = [
         {
-            icon: <MdEditNote size={28} />, title: 'Reflect', description: 'Start your mental prep',
+            icon: <MdTrackChanges className="text-indigo-600 text-3xl" />,
+            title: 'Track',
+            subtitle: 'Log what matters most',
         },
         {
-            icon: <FaBrain size={28} />, title: 'Mindset', description: 'Log your readiness',
+            icon: <MdInsights className="text-indigo-600 text-3xl" />,
+            title: 'Gain Insight',
+            subtitle: 'Spot patterns and behaviors',
         },
         {
-            icon: <FaChartBar size={28} />, title: 'Track', description: 'Monitor your performance',
+            icon: <MdRepeat className="text-indigo-600 text-3xl" />,
+            title: 'Stay Consistent',
+            subtitle: 'Build better habits over time',
         },
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 relative">
-            {/* Dark Mode Toggle */}
-            <button
-                onClick={toggleTheme}
-                className="fixed top-4 right-4 z-50 bg-white dark:bg-gray-800 p-2 rounded-full shadow-md hover:scale-110 transition"
-                title="Toggle Theme"
-            >
-                {theme === 'dark' ? <MdLightMode /> : <MdDarkMode />}
-            </button>
-
-            {/* Hero */}
-            <section className="text-center py-16 px-4">
-                <h1 className="text-4xl font-bold tracking-tight mb-4">Unlock Your Process</h1>
-                <p className="text-lg text-gray-600 dark:text-gray-300 max-w-xl mx-auto">
-                    This is your reflection hub. Track your mindset, performance, and goals.
+        <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col items-center justify-start px-4 py-10">
+            <header className="text-center mt-6">
+                <h1 className="text-3xl font-bold text-black dark:text-white leading-snug">
+                    Reflect on<br />your performance.
+                </h1>
+                <p className="text-gray-600 dark:text-gray-300 mt-2 text-base">
+                    Turn self-awareness into progress.
                 </p>
-                <button
-                    onClick={() => navigate('/dashboard')}
-                    className="mt-8 px-6 py-3 bg-indigo-600 text-white font-semibold text-lg rounded-xl shadow-lg animate-pulse hover:bg-indigo-500"
-                >
-                    Start Reflection
-                </button>
-            </section>
+            </header>
 
-            {/* Cards */}
-            <section className="px-4 pb-12 max-w-4xl mx-auto">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    {cards.map((card, idx) => (
-                        <button
-                            key={idx}
-                            onClick={() => navigate('/dashboard')}
-                            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col items-center text-center hover:shadow-xl transition"
-                        >
-                            <div className="mb-3 text-indigo-600 dark:text-indigo-400">{card.icon}</div>
-                            <h3 className="text-lg font-semibold mb-1">{card.title}</h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">{card.description}</p>
-                        </button>
-                    ))}
-                </div>
-            </section>
+            <div className="mt-8 grid grid-cols-3 gap-4 w-full max-w-md">
+                {features.map((feature, idx) => (
+                    <div key={idx} className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 flex flex-col items-center shadow">
+                        {feature.icon}
+                        <h3 className="text-sm font-semibold text-black dark:text-white mt-2">{feature.title}</h3>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 text-center">{feature.subtitle}</p>
+                    </div>
+                ))}
+            </div>
+
+            <button
+                onClick={() => navigate('/reflect')}
+                className="mt-10 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-full text-lg shadow-lg animate-pulse"
+            >
+                Start Reflection
+            </button>
         </div>
     );
 }
-
-export default HomePage;
