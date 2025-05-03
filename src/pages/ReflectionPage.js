@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer } from 'react';
 import ReflectionStartFlow from '../components/ReflectionModal/ReflectionStartFlow';
 import SectionBlock from '../components/ReflectionModal/SectionBlock';
 import BonusQuestion from '../components/ReflectionModal/BonusQuestion';
-import ReflectionModal from '../components/ReflectionModal/ReflectionModal';
+import ReflectionModal from '../features/reflection/ReflectionModal';
 import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
 import getRandomQuestionsReflection from '../helpers/getRandomQuestionsReflection';
