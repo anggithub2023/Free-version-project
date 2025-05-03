@@ -6,7 +6,8 @@ export default function StatsConfirmationModal({ visible, onClose }) {
 
     useEffect(() => {
         if (visible) {
-            localStorage.removeItem('sport'); // ensure ReflectionModal reappears
+            localStorage.removeItem('selectedSport');
+            localStorage.removeItem('selectedPosition'); // ensure ReflectionModal reappears
         }
     }, [visible]);
 
