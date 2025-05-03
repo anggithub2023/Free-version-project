@@ -6,24 +6,23 @@ function DynamicStatForm({ sport, position }) {
     const [formData, setFormData] = useState({});
     const [showStatsModal, setShowStatsModal] = useState(false);
 
-    const normalizeSport = sportId =>
-        sportId?.toLowerCase().replace(/[^a-z]/g, '');
-    const pos = position?.toLowerCase();
-    const normalized = normalizeSport(sport);
+    const normalizeKey = key => key.trim().toLowerCase().replace(/\s+/g, '_');
+    const normalizeValue = val => (isNaN(val) ? val : Number(val));
 
-    const normalizeKey = key =>
-        key.trim().toLowerCase().replace(/\s+/g, '_');
+    const normalizeSport = sportId => sportId?.toLowerCase().replace(/[^a-z]/g, '');
+    const normalizedSport = normalizeSport(sport);
+    const normalizedPosition = position?.toLowerCase() || 'general player';
 
     const sportFields = (() => {
-        switch (normalized) {
+        switch (normalizedSport) {
             case 'basketball':
                 return ['Points', 'Assists', 'Rebounds', 'Steals', 'Blocks', 'Turnovers', 'Minutes Played'];
             case 'soccer':
-                return pos === 'goalie'
+                return normalizedPosition === 'goalie'
                     ? ['Saves', 'Goals Against', 'Clean Sheets', 'Save Percentage']
                     : ['Goals', 'Assists', 'Shots on Target', 'Tackles Won', 'Fouls Committed'];
             case 'football':
-                switch (pos) {
+                switch (normalizedPosition) {
                     case 'quarterback':
                         return ['Passing Yards', 'Passing TDs', 'Completions', 'Interceptions Thrown', 'Completion Percentage'];
                     case 'running-back':
@@ -36,15 +35,15 @@ function DynamicStatForm({ sport, position }) {
                         return [];
                 }
             case 'baseball':
-                return pos === 'pitcher'
+                return normalizedPosition === 'pitcher'
                     ? ['Strikeouts', 'ERA', 'Walks Allowed', 'Innings Pitched']
                     : ['Hits', 'Runs', 'RBIs', 'Home Runs', 'Errors'];
             case 'icehockey':
-                return pos === 'goalie'
+                return normalizedPosition === 'goalie'
                     ? ['Saves', 'Goals Against', 'Save Percentage']
                     : ['Goals', 'Assists', 'Shots on Goal', 'Plus/Minus Rating'];
             case 'lacrosse':
-                return pos === 'goalie'
+                return normalizedPosition === 'goalie'
                     ? ['Saves', 'Goals Against']
                     : ['Goals', 'Assists', 'Ground Balls', 'Faceoffs Won'];
             case 'trackcrosscountry':
@@ -67,13 +66,13 @@ function DynamicStatForm({ sport, position }) {
         const normalizedStats = Object.fromEntries(
             Object.entries(formData).map(([key, val]) => [
                 normalizeKey(key),
-                isNaN(val) ? val : Number(val)
+                normalizeValue(val)
             ])
         );
 
         const statEntry = {
-            sport,
-            position: position || 'General Player',
+            sport: normalizedSport,
+            position: normalizedPosition,
             stats: normalizedStats,
             date: new Date().toISOString()
         };
@@ -82,8 +81,8 @@ function DynamicStatForm({ sport, position }) {
         const localStats = JSON.parse(localStorage.getItem('gameStats') || '[]');
         localStats.push(statEntry);
         localStorage.setItem('gameStats', JSON.stringify(localStats));
-        localStorage.setItem('selectedSport', sport);
-        localStorage.setItem('selectedPosition', position);
+        localStorage.setItem('selectedSport', normalizedSport);
+        localStorage.setItem('selectedPosition', normalizedPosition);
 
         try {
             await saveGameStat(statEntry);
@@ -107,8 +106,7 @@ function DynamicStatForm({ sport, position }) {
         <>
             <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto">
                 <h2 className="text-2xl font-bold text-center mb-4">
-                    Log Stats for {sport.charAt(0).toUpperCase() + sport.slice(1)}{' '}
-                    {position && `- ${position}`}
+                    Log Stats for {sport} {position && `- ${position}`}
                 </h2>
 
                 {sportFields.length > 0 ? (
@@ -123,8 +121,8 @@ function DynamicStatForm({ sport, position }) {
                                 value={formData[field] || ''}
                                 onChange={handleChange}
                                 className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
-                  bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white
-                  placeholder-gray-400 dark:placeholder-gray-500"
+                                    bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white
+                                    placeholder-gray-400 dark:placeholder-gray-500"
                                 placeholder={field}
                             />
                         </div>
