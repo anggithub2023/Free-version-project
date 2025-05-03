@@ -30,7 +30,7 @@ export default function HomePage() {
                 <span>processwins.app</span>
             </div>
 
-            {/* Hero Text */}
+            {/* Hero */}
             <div className="text-left mb-4">
                 <h1 className="text-4xl font-black leading-tight mb-4">
                     Reflect on<br />your<br />performance.
@@ -40,7 +40,7 @@ export default function HomePage() {
                 </p>
             </div>
 
-            {/* Arrow Above CTA */}
+            {/* Arrow Above Button */}
             <div className="flex justify-center my-4">
                 <HiOutlineArrowDown className="text-2xl text-gray-400 dark:text-gray-500" />
             </div>
@@ -49,19 +49,19 @@ export default function HomePage() {
             <div className="flex justify-center mb-4">
                 <button
                     onClick={() => navigate('/reflect')}
-                    className="bg-black text-white dark:bg-white dark:text-black rounded-xl px-6 py-4 w-full font-bold text-base max-w-xs shadow hover:scale-105 transition"
+                    className="bg-black text-white dark:bg-indigo-500 dark:text-white rounded-xl px-6 py-4 w-full font-bold text-base max-w-xs shadow hover:scale-105 transition"
                 >
                     Start Reflection
                 </button>
             </div>
 
-            {/* Arrow Below CTA */}
+            {/* Arrow Below Button */}
             <div className="flex justify-center my-4">
                 <HiOutlineArrowDown className="text-2xl text-gray-400 dark:text-gray-500" />
             </div>
 
-            {/* Icon Cards */}
-            <div className="flex justify-between gap-3 mt-6 mb-10">
+            {/* Icon Cards – now pushed lower */}
+            <div className="flex justify-between gap-3 mt-12 mb-10">
                 {[ 'Track Progress', 'Get Insights', 'Build Consistency' ].map((label, idx) => {
                     const icons = [FaChartLine, FaLightbulb, FaCheckDouble];
                     const Icon = icons[idx];
