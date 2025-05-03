@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { saveGameStat } from '../../services/syncService';
+import StatsConfirmationModal from './StatsConfirmationModal'; // adjust path if needed
 
 function DynamicStatForm({ sport, position }) {
     const [formData, setFormData] = useState({});
+    const [showStatsModal, setShowStatsModal] = useState(false);
 
     const normalizeSport = (sportId) => sportId?.toLowerCase().replace(/[^a-z]/g, '');
     const pos = position?.toLowerCase();
@@ -65,17 +67,15 @@ function DynamicStatForm({ sport, position }) {
             date: new Date().toISOString()
         };
 
-        // Save to localStorage for analytics page
         const localStats = JSON.parse(localStorage.getItem('gameStats') || '[]');
         localStats.push(statEntry);
         localStorage.setItem('gameStats', JSON.stringify(localStats));
         localStorage.setItem('selectedSport', sport);
         localStorage.setItem('selectedPosition', position);
 
-        // Attempt Supabase save
         try {
             await saveGameStat(statEntry);
-            alert('✅ Stats saved to Supabase & localStorage!');
+            setShowStatsModal(true); // ✅ replaces alert
         } catch (error) {
             console.warn('📦 Queued stat for retry');
             const queue = JSON.parse(localStorage.getItem('unsyncedGameStats') || '[]');
@@ -92,40 +92,48 @@ function DynamicStatForm({ sport, position }) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto">
-            <h2 className="text-2xl font-bold text-center mb-4">
-                Log Stats for {sport.charAt(0).toUpperCase() + sport.slice(1)} {position && `- ${position}`}
-            </h2>
+        <>
+            <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto">
+                <h2 className="text-2xl font-bold text-center mb-4">
+                    Log Stats for {sport.charAt(0).toUpperCase() + sport.slice(1)} {position && `- ${position}`}
+                </h2>
 
-            {sportFields.length > 0 ? (
-                sportFields.map((field) => (
-                    <div key={field} className="flex flex-col">
-                        <label className="text-gray-700 dark:text-gray-300 font-medium mb-1">{field}</label>
-                        <input
-                            type="number"
-                            name={field}
-                            value={formData[field] || ""}
-                            onChange={handleChange}
-                            className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
-                              bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white
-                              placeholder-gray-400 dark:placeholder-gray-500"
-                            placeholder={field}
-                        />
-                    </div>
-                ))
-            ) : (
-                <div className="text-center text-gray-500">No input fields configured for this sport yet.</div>
-            )}
+                {sportFields.length > 0 ? (
+                    sportFields.map((field) => (
+                        <div key={field} className="flex flex-col">
+                            <label className="text-gray-700 dark:text-gray-300 font-medium mb-1">{field}</label>
+                            <input
+                                type="number"
+                                name={field}
+                                value={formData[field] || ""}
+                                onChange={handleChange}
+                                className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
+                                  bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white
+                                  placeholder-gray-400 dark:placeholder-gray-500"
+                                placeholder={field}
+                            />
+                        </div>
+                    ))
+                ) : (
+                    <div className="text-center text-gray-500">No input fields configured for this sport yet.</div>
+                )}
 
-            <div className="flex gap-4 mt-6">
-                <button type="submit" className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg">
-                    Save Stats
-                </button>
-                <button type="button" onClick={() => setFormData({})} className="flex-1 py-3 bg-gray-400 hover:bg-gray-500 text-white font-semibold rounded-lg">
-                    Clear
-                </button>
-            </div>
-        </form>
+                <div className="flex gap-4 mt-6">
+                    <button type="submit" className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg">
+                        Save Stats
+                    </button>
+                    <button type="button" onClick={() => setFormData({})} className="flex-1 py-3 bg-gray-400 hover:bg-gray-500 text-white font-semibold rounded-lg">
+                        Clear
+                    </button>
+                </div>
+            </form>
+
+            {/* ✅ Stats Confirmation Modal */}
+            <StatsConfirmationModal
+                visible={showStatsModal}
+                onClose={() => setShowStatsModal(false)}
+            />
+        </>
     );
 }
 
