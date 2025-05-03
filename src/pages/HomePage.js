@@ -1,8 +1,6 @@
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaCheckCircle, FaChartLine } from 'react-icons/fa';
-import { MdInsights, MdKeyboardArrowDown } from 'react-icons/md';
-import { BsCheckAll } from 'react-icons/bs';
+import { FaChartLine, FaLightbulb, FaSyncAlt } from 'react-icons/fa';
 import useAnonymousUser from '../hooks/useAnonymousUser';
 import { ensureUserExists } from '../services/syncService';
 
@@ -12,68 +10,54 @@ export default function HomePage() {
 
     useEffect(() => {
         if (userId) {
-            ensureUserExists(userId).catch((err) =>
-                console.error('User sync failed:', err)
-            );
+            ensureUserExists(userId).catch((err) => {
+                console.error('Failed to ensure user exists:', err.message);
+            });
         }
     }, [userId]);
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-white to-gray-100 dark:from-gray-900 dark:to-gray-800 flex flex-col items-center justify-center text-center px-4 py-10">
-            {/* Logo */}
-            <div className="flex items-center gap-2 mb-6 text-gray-800 dark:text-white">
-                <FaCheckCircle className="text-black dark:text-white" />
-                <span className="text-lg font-semibold">processwins.app</span>
+        <div className="min-h-screen bg-gradient-to-b from-white via-indigo-50 to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-800 dark:text-white">
+            {/* Hero Section */}
+            <div className="text-center pt-16 pb-10 px-4">
+                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-indigo-700 dark:text-indigo-300">
+                    Processwins.app
+                </h1>
+                <p className="text-lg sm:text-xl font-medium mt-2">
+                    Reflect on your performance<br />Unlock your potential
+                </p>
+                <button
+                    onClick={() => navigate('/reflect')}
+                    className="mt-6 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full text-lg font-semibold animate-pulse shadow-lg"
+                >
+                    Start Reflection
+                </button>
             </div>
 
-            {/* Headline */}
-            <h1 className="text-4xl font-extrabold text-black dark:text-white leading-tight">
-                Reflect on<br />your<br />performance.
-            </h1>
-            <p className="mt-4 text-gray-600 dark:text-gray-300 text-lg">
-                Turn self-awareness into progress.
-            </p>
-
-            {/* Start Button */}
-            <button
-                onClick={() => navigate('/reflect')}
-                className="mt-8 px-8 py-4 text-lg font-semibold rounded-xl bg-black text-white dark:bg-white dark:text-black animate-pulse hover:scale-105 transition shadow-lg"
-            >
-                Start Reflection
-            </button>
-
-            {/* Down Arrow */}
-            <MdKeyboardArrowDown className="mt-10 text-3xl text-gray-700 dark:text-gray-300 animate-bounce" />
-
             {/* Feature Cards */}
-            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-                <div
-                    onClick={() => navigate('/dashboard')}
-                    className="bg-white dark:bg-gray-700 p-4 rounded-xl shadow-md cursor-pointer hover:scale-105 transition w-48"
-                >
-                    <FaChartLine className="mx-auto text-3xl text-black dark:text-white" />
-                    <p className="mt-2 text-sm font-semibold text-gray-800 dark:text-white">Track Progress</p>
-                </div>
-                <div
-                    onClick={() => navigate('/dashboard')}
-                    className="bg-white dark:bg-gray-700 p-4 rounded-xl shadow-md cursor-pointer hover:scale-105 transition w-48"
-                >
-                    <MdInsights className="mx-auto text-3xl text-black dark:text-white" />
-                    <p className="mt-2 text-sm font-semibold text-gray-800 dark:text-white">Get Insights</p>
-                </div>
-                <div
-                    onClick={() => navigate('/dashboard')}
-                    className="bg-white dark:bg-gray-700 p-4 rounded-xl shadow-md cursor-pointer hover:scale-105 transition w-48"
-                >
-                    <BsCheckAll className="mx-auto text-3xl text-black dark:text-white" />
-                    <p className="mt-2 text-sm font-semibold text-gray-800 dark:text-white">Build Consistency</p>
-                </div>
+            <div className="flex flex-wrap justify-center items-center gap-6 px-4 sm:px-8 py-10">
+                <Card icon={<FaChartLine size={40} />} label="Track" navigate={() => navigate('/dashboard')} />
+                <Card icon={<FaLightbulb size={40} />} label="Insight" navigate={() => navigate('/dashboard')} />
+                <Card icon={<FaSyncAlt size={40} />} label="Consistency" navigate={() => navigate('/dashboard')} />
             </div>
 
             {/* Footer */}
-            <footer className="mt-12 text-sm text-gray-500 dark:text-gray-400">
-                © 2025 processwins.app
+            <footer className="text-xs text-center text-gray-500 dark:text-gray-400 py-6 px-4">
+                © {new Date().getFullYear()} Process Reflection™ — processwins.app. All rights reserved.<br />
+                This platform, concept, design, and workflow are the original intellectual property of the creator.
             </footer>
+        </div>
+    );
+}
+
+function Card({ icon, label, navigate }) {
+    return (
+        <div
+            onClick={navigate}
+            className="w-40 h-40 sm:w-44 sm:h-44 md:w-48 md:h-48 cursor-pointer bg-white dark:bg-gray-800 rounded-2xl shadow-md flex flex-col items-center justify-center text-center hover:shadow-xl transition duration-300"
+        >
+            <div className="mb-2 text-indigo-600 dark:text-indigo-400">{icon}</div>
+            <h3 className="text-lg font-semibold tracking-tight">{label}</h3>
         </div>
     );
 }
