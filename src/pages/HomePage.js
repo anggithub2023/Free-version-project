@@ -1,71 +1,71 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdOutlineEditNote, MdLeaderboard, MdAccessTime } from 'react-icons/md';
+import { FaChartBar, FaLightbulb, FaRegCalendarCheck } from 'react-icons/fa';
 import useAnonymousUser from '../hooks/useAnonymousUser';
 
-const cards = [
-    {
-        icon: <MdOutlineEditNote className="text-indigo-500 text-3xl" />,
-        title: 'Reflect Now',
-        description: 'Capture your thoughts and track progress daily.',
-        route: '/reflect',
-    },
-    {
-        icon: <MdLeaderboard className="text-purple-500 text-3xl" />,
-        title: 'Analytics',
-        description: 'View trends and insights over time.',
-        route: '/analytics',
-    },
-    {
-        icon: <MdAccessTime className="text-teal-500 text-3xl" />,
-        title: 'History',
-        description: 'Look back on all your reflections.',
-        route: '/dashboard',
-    },
-];
-
-export default function HomePage() {
+function HomePage() {
     const navigate = useNavigate();
     useAnonymousUser();
 
+    const cards = [
+        {
+            title: 'Track',
+            icon: <FaChartBar className="text-white text-3xl" />,
+            color: 'bg-indigo-600',
+            route: '/dashboard',
+        },
+        {
+            title: 'Insights',
+            icon: <FaLightbulb className="text-white text-3xl" />,
+            color: 'bg-purple-600',
+            route: '/dashboard',
+        },
+        {
+            title: 'Consistency',
+            icon: <FaRegCalendarCheck className="text-white text-3xl" />,
+            color: 'bg-emerald-600',
+            route: '/dashboard',
+        },
+    ];
+
     return (
-        <div className="min-h-screen bg-gradient-to-br from-white to-gray-100 dark:from-gray-900 dark:to-gray-950 text-gray-900 dark:text-white px-4 py-8">
-            <div className="max-w-6xl mx-auto">
-                <div className="text-sm font-semibold text-indigo-600 dark:text-indigo-300 uppercase tracking-wide mb-4">
-                    processwins.app
+        <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white px-6 py-8">
+            <div className="max-w-5xl mx-auto flex flex-col gap-8">
+                <p className="text-sm text-center text-gray-500 dark:text-gray-400">processwins.app</p>
+
+                <div className="text-left">
+                    <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight">
+                        Reflect on<br />Your<br />Performance
+                    </h1>
+                    <p className="text-base mt-2 text-gray-600 dark:text-gray-300">
+                        A focused environment for clarity, reflection, and growth.
+                    </p>
                 </div>
 
-                <h1 className="text-4xl sm:text-5xl font-extrabold text-left leading-tight text-gray-900 dark:text-white">
-                    Reflect on<br />Your<br />Performance
-                </h1>
-
-                <p className="mt-4 text-md sm:text-lg font-medium text-left text-gray-600 dark:text-gray-300">
-                    A process-based approach to performance and development.
-                </p>
-
-                <div className="mt-10 flex flex-nowrap gap-4 overflow-x-auto sm:overflow-visible sm:flex-row">
-                    {cards.map((card, index) => (
-                        <div
-                            key={index}
-                            onClick={() => navigate(card.route)}
-                            className="cursor-pointer min-w-[250px] sm:min-w-[200px] bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md hover:shadow-xl transition-shadow duration-300 p-5 flex flex-col items-start gap-3"
-                        >
-                            {card.icon}
-                            <h3 className="text-lg font-semibold">{card.title}</h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">{card.description}</p>
-                        </div>
-                    ))}
-                </div>
-
-                <div className="mt-10">
+                <div className="w-full flex justify-start">
                     <button
                         onClick={() => navigate('/reflect')}
-                        className="px-6 py-3 text-lg font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-full animate-pulse shadow-md"
+                        className="animate-pulse bg-indigo-600 text-white px-6 py-3 rounded-xl text-lg font-semibold shadow-md hover:bg-indigo-700 transition"
                     >
                         Start Reflection
                     </button>
+                </div>
+
+                <div className="flex flex-wrap justify-start gap-4 mt-6">
+                    {cards.map((card, idx) => (
+                        <div
+                            key={idx}
+                            onClick={() => navigate(card.route)}
+                            className={`cursor-pointer w-36 h-36 rounded-2xl flex flex-col justify-center items-center ${card.color} hover:brightness-110 transition shadow-lg`}
+                        >
+                            {card.icon}
+                            <span className="mt-2 text-lg font-semibold text-white">{card.title}</span>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
     );
 }
+
+export default HomePage;
