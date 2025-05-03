@@ -49,7 +49,12 @@ export default function HomePage() {
             <div className="flex justify-center mb-4 animate-fade-up">
                 <button
                     onClick={() => navigate('/reflect')}
-                    className="bg-black text-white dark:bg-indigo-500 hover:dark:bg-indigo-400 rounded-xl px-6 py-4 w-full font-bold text-base max-w-xs shadow hover:scale-105 transition"
+                    className="bg-black text-white
+                     dark:bg-yellow-400 dark:text-black
+                     hover:dark:bg-yellow-300
+                     rounded-xl px-6 py-4 w-full font-bold text-base max-w-xs
+                     shadow hover:scale-105 transition
+                     animate-pulse-slow"
                 >
                     Start Reflection
                 </button>
@@ -62,7 +67,7 @@ export default function HomePage() {
 
             {/* Feature Cards */}
             <div className="flex justify-between gap-3 mt-12 mb-10 animate-fade-up">
-                {[ 'Track Progress', 'Get Insights', 'Build Consistency' ].map((label, idx) => {
+                {['Track Progress', 'Get Insights', 'Build Consistency'].map((label, idx) => {
                     const icons = [FaChartLine, FaLightbulb, FaCheckDouble];
                     const Icon = icons[idx];
                     return (
