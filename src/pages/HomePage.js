@@ -34,14 +34,18 @@ export default function HomePage() {
                 processwins.app
             </div>
 
-            {/* Hero Section */}
-            <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight mb-2 text-left">
+            {/* Title */}
+            <h1 className="text-4xl sm:text-5xl font-extrabold leading-tight mb-2 text-center">
                 Reflect on<br />Your<br />Performance
             </h1>
-            <p className="text-lg sm:text-xl text-left text-gray-600 dark:text-gray-300 mb-8">
+
+            {/* Subtitle */}
+            <p className="text-lg sm:text-xl text-center text-gray-600 dark:text-gray-300 mb-8">
                 A modern way to track, improve, and stay consistent with your goals.
             </p>
-            <div className="mb-10">
+
+            {/* Start Reflection Button - Centered */}
+            <div className="mb-10 flex justify-center">
                 <button
                     onClick={() => navigate('/reflect')}
                     className="animate-pulse bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-3 rounded-full transition-all duration-300"
@@ -50,13 +54,13 @@ export default function HomePage() {
                 </button>
             </div>
 
-            {/* Feature Cards */}
-            <div className="flex flex-col sm:flex-row gap-4 max-w-5xl mx-auto">
+            {/* Cards in a single row, even on mobile */}
+            <div className="flex flex-col xs:flex-row sm:flex-row justify-center items-stretch gap-4 max-w-5xl mx-auto">
                 {features.map(({ icon: Icon, title, route, color }, idx) => (
                     <div
                         key={idx}
                         onClick={() => navigate(route)}
-                        className="cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition p-6 rounded-xl text-center w-full sm:w-auto flex-1"
+                        className="flex-1 min-w-0 cursor-pointer bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition p-6 rounded-xl text-center"
                     >
                         <Icon className={`mx-auto text-4xl mb-2 ${color}`} />
                         <h3 className="text-lg font-semibold">{title}</h3>
