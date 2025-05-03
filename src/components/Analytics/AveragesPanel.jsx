@@ -1,44 +1,46 @@
 import React from 'react';
+import { statLabels } from '../../config/statLabels'; // Adjust path as needed
 
-function AveragesPanel({ filteredStats }) {
-    if (!filteredStats || filteredStats.length === 0) {
-        return (
-            <div className="text-center text-gray-500 dark:text-gray-400">
-                No stats to calculate averages.
-            </div>
-        );
+function AveragesPanel({ stats }) {
+    if (!stats || stats.length === 0) {
+        return <div className="text-center text-gray-500 dark:text-gray-400">No stats available.</div>;
     }
 
-    const totalStats = {};
-    const statCounts = {};
+    const totals = {};
+    const counts = {};
 
-    // Sum all stats across games
-    filteredStats.forEach(entry => {
-        for (const [statName, statValue] of Object.entries(entry.stats)) {
-            if (!totalStats[statName]) {
-                totalStats[statName] = 0;
-                statCounts[statName] = 0;
+    stats.forEach(entry => {
+        const statSet = entry.stats;
+        for (const [key, value] of Object.entries(statSet)) {
+            const numericValue = Number(value);
+            if (!isNaN(numericValue)) {
+                totals[key] = (totals[key] || 0) + numericValue;
+                counts[key] = (counts[key] || 0) + 1;
             }
-            totalStats[statName] += Number(statValue);
-            statCounts[statName] += 1;
         }
     });
 
-    // Calculate averages
-    const averages = Object.keys(totalStats).map(statName => ({
-        stat: statName,
-        average: (totalStats[statName] / statCounts[statName]).toFixed(1)
-    }));
+    const averages = Object.entries(totals).map(([key, total]) => {
+        const avg = total / counts[key];
+        return { key, avg: Number(avg.toFixed(2)) };
+    });
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {averages.map(({ stat, average }, idx) => (
-                <div key={idx} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md flex flex-col items-center">
-                    <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">{stat}</h3>
-                    <p className="text-2xl font-bold text-green-600 dark:text-green-400">{average}</p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Avg/Game</p>
-                </div>
-            ))}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Stat Averages</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {averages.map(({ key, avg }) => (
+                    <div
+                        key={key}
+                        className="bg-indigo-50 dark:bg-gray-700 p-4 rounded shadow text-center"
+                    >
+                        <div className="text-lg font-semibold text-gray-700 dark:text-white">
+                            {statLabels[key] || key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
+                        </div>
+                        <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-300">{avg}</div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }
