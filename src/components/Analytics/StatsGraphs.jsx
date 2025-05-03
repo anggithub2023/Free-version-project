@@ -1,59 +1,45 @@
 import React from 'react';
-import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-    Legend
-} from 'recharts';
-import { MdBarChart } from 'react-icons/md';
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend } from 'recharts';
+import { statLabels } from '../../config/statLabels';
 
-function StatsGraphs({ filteredStats }) {
-    if (!filteredStats || filteredStats.length === 0) {
-        return (
-            <div className="text-center text-gray-500 dark:text-gray-400">
-                No stats available to graph.
-            </div>
-        );
+function StatsGraphs({ stats }) {
+    if (!stats || stats.length === 0) {
+        return <div className="text-center text-gray-500 dark:text-gray-400">No stats to visualize.</div>;
     }
 
-    // Build chart data
-    const data = filteredStats.map((entry, index) => {
-        const base = { game: `Game ${index + 1}` };
-        for (const [key, value] of Object.entries(entry.stats)) {
-            base[key] = Number(value);
-        }
-        return base;
-    });
+    // Get all stat keys present in any entry
+    const allStatKeys = Array.from(
+        new Set(stats.flatMap(entry => Object.keys(entry.stats)))
+    );
 
-    const statKeys = Object.keys(data[0]).filter(k => k !== "game");
+    // Build chart data: merge date + stats into a flat object
+    const chartData = stats.map(entry => ({
+        date: new Date(entry.date).toLocaleDateString(),
+        ...entry.stats
+    }));
 
     return (
-        <div className="h-[400px] bg-white dark:bg-gray-800 rounded-lg p-4 shadow-md">
-            <div className="flex items-center gap-2 mb-3 text-green-700 dark:text-green-300">
-                <MdBarChart size={24} />
-                <h3 className="text-xl font-semibold">Stat Comparison</h3>
-            </div>
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mt-6">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Stat Trends</h2>
 
-            <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data} margin={{ top: 20, right: 30, bottom: 30, left: 20 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="game" />
-                    <YAxis />
+            <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ccc" />
+                    <XAxis dataKey="date" />
+                    <YAxis allowDecimals={false} />
                     <Tooltip />
                     <Legend />
-                    {statKeys.map((key, idx) => (
-                        <Bar
-                            key={idx}
+                    {allStatKeys.map((key, i) => (
+                        <Line
+                            key={key}
+                            type="monotone"
                             dataKey={key}
-                            fill={`hsl(${(idx * 60) % 360}, 70%, 50%)`}
-                            radius={[4, 4, 0, 0]}
+                            strokeWidth={2}
+                            stroke={`hsl(${(i * 60) % 360}, 70%, 50%)`}
+                            name={statLabels[key] || key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
                         />
                     ))}
-                </BarChart>
+                </LineChart>
             </ResponsiveContainer>
         </div>
     );
