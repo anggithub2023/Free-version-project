@@ -1,13 +1,14 @@
 import React from 'react';
 
-function PanelHeader({ icon, title, subtitle }) {
+function PanelHeader({ title = "Performance Dashboard" }) {
     return (
-        <div className="mb-4 text-left">
-            <div className="flex items-center gap-2 text-2xl font-semibold text-gray-800 dark:text-gray-100">
-                {icon}
+        <div className="mb-6">
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-white tracking-tight text-center sm:text-left">
                 {title}
-            </div>
-            <p className="mt-1 text-sm text-gray-400">{subtitle}</p>
+            </h1>
+            <p className="text-gray-500 dark:text-gray-400 text-sm text-center sm:text-left mt-1">
+                Your personal performance stats and progress insights.
+            </p>
         </div>
     );
 }
