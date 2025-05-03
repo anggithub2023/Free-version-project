@@ -3,13 +3,31 @@ import supabase from '../lib/supabaseClient';
 
 const getUserId = () => localStorage.getItem('userId');
 
+// Normalize stat keys consistently
+const normalizeStatKeys = (statsObj) => {
+    if (!statsObj || typeof statsObj !== 'object') return {};
+
+    return Object.fromEntries(
+        Object.entries(statsObj).map(([key, val]) => [
+            key.trim().toLowerCase().replace(/\s+/g, '_'),
+            isNaN(val) ? val : Number(val),
+        ])
+    );
+};
+
 export const saveGameStat = async (statEntry) => {
     const userId = getUserId();
     if (!userId) throw new Error('Missing user ID');
 
-    const { error } = await supabase.from('game_stats').insert([
-        { ...statEntry, user_id: userId }
-    ]);
+    const normalizedStatEntry = {
+        user_id: userId,
+        sport: statEntry.sport?.toLowerCase(),
+        position: statEntry.position?.toLowerCase(),
+        stats: normalizeStatKeys(statEntry.stats),
+        date: statEntry.date,
+    };
+
+    const { error } = await supabase.from('game_stats').insert([normalizedStatEntry]);
 
     if (error) throw error;
 };
@@ -25,7 +43,13 @@ export const fetchGameStats = async () => {
         .order('created_at', { ascending: false });
 
     if (error) throw error;
-    return data;
+
+    return data.map(entry => ({
+        ...entry,
+        sport: entry.sport?.toLowerCase(),
+        position: entry.position?.toLowerCase(),
+        stats: normalizeStatKeys(entry.stats),
+    }));
 };
 
 export const saveReflection = async (reflectionEntry) => {
