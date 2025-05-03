@@ -23,18 +23,18 @@ export default function HomePage() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex justify-center items-center px-4 py-6">
-            <div className="bg-white dark:bg-gray-900 rounded-[40px] shadow-md w-full max-w-sm p-6 pt-4 text-black dark:text-white font-sans">
+        <div className="min-h-screen bg-gray-100 dark:bg-black flex justify-center items-start px-4 py-8">
+            <div className="bg-white dark:bg-gray-950 rounded-3xl shadow-xl w-full max-w-sm p-5 text-black dark:text-white font-sans transition-colors">
 
                 {/* Header */}
-                <div className="flex items-center justify-center gap-2 text-sm font-medium mb-8">
+                <div className="flex items-center justify-center gap-2 text-sm font-medium mb-6">
                     <BsCheckCircleFill className="text-black dark:text-white" />
                     <span>processwins.app</span>
                 </div>
 
                 {/* Hero Text */}
-                <div className="text-left mb-6">
-                    <h1 className="text-4xl font-black leading-tight mb-4">
+                <div className="text-left mb-4">
+                    <h1 className="text-4xl font-black leading-tight mb-3">
                         Reflect on<br />your<br />performance.
                     </h1>
                     <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -42,11 +42,13 @@ export default function HomePage() {
                     </p>
                 </div>
 
-                {/* Arrow ABOVE CTA */}
-                <HiOutlineArrowDown className="text-2xl mx-auto mb-4 animate-bounce-slow" />
+                {/* Arrow BETWEEN text and button */}
+                <div className="flex justify-center my-4">
+                    <HiOutlineArrowDown className="text-2xl text-gray-400 dark:text-gray-500" />
+                </div>
 
                 {/* CTA Button */}
-                <div className="flex justify-center mb-10">
+                <div className="flex justify-center mb-6">
                     <button
                         onClick={() => navigate('/reflect')}
                         className="bg-black text-white dark:bg-white dark:text-black rounded-xl px-6 py-4 w-full font-bold text-base max-w-xs shadow hover:scale-105 transition"
