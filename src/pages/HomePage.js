@@ -1,56 +1,80 @@
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 import { FaChartLine, FaLightbulb, FaCheckDouble } from 'react-icons/fa';
 import { BsCheckCircleFill } from 'react-icons/bs';
 import { HiOutlineArrowDown } from 'react-icons/hi';
+import useAnonymousUser from '../hooks/useAnonymousUser';
+import { ensureUserExists } from '../services/syncService';
 
 export default function HomePage() {
-    return (
-        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex justify-center items-center px-4 py-6">
-            <div className="bg-white rounded-[40px] shadow-lg w-full max-w-sm p-6 pt-4 text-black font-sans">
+    const navigate = useNavigate();
+    const userId = useAnonymousUser();
 
-                {/* Header – moved to top */}
+    useEffect(() => {
+        if (userId) {
+            ensureUserExists(userId).catch(err =>
+                console.error('Failed to sync user:', err.message)
+            );
+        }
+    }, [userId]);
+
+    const handleCardClick = () => {
+        navigate('/dashboard');
+    };
+
+    return (
+        <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex justify-center items-center px-4 py-6">
+            <div className="bg-white dark:bg-gray-900 rounded-[40px] shadow-md w-full max-w-sm p-6 pt-4 text-black dark:text-white font-sans">
+
+                {/* Header */}
                 <div className="flex items-center justify-center gap-2 text-sm font-medium mb-8">
-                    <BsCheckCircleFill className="text-black" />
+                    <BsCheckCircleFill className="text-black dark:text-white" />
                     <span>processwins.app</span>
                 </div>
 
-                {/* Hero */}
-                <div className="text-left mb-8">
+                {/* Hero Text */}
+                <div className="text-left mb-6">
                     <h1 className="text-4xl font-black leading-tight mb-4">
                         Reflect on<br />your<br />performance.
                     </h1>
-                    <p className="text-base text-gray-700 leading-relaxed">
+                    <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed">
                         Turn self-awareness<br />into progress.
                     </p>
                 </div>
 
-                {/* CTA Button - Centered */}
+                {/* Arrow ABOVE CTA */}
+                <HiOutlineArrowDown className="text-2xl mx-auto mb-4 animate-bounce-slow" />
+
+                {/* CTA Button */}
                 <div className="flex justify-center mb-10">
-                    <button className="bg-black text-white rounded-xl px-6 py-3 w-full font-semibold text-sm max-w-xs">
+                    <button
+                        onClick={() => navigate('/reflect')}
+                        className="bg-black text-white dark:bg-white dark:text-black rounded-xl px-6 py-4 w-full font-bold text-base max-w-xs shadow hover:scale-105 transition"
+                    >
                         Start Reflection
                     </button>
                 </div>
 
-                {/* Down Arrow */}
-                <HiOutlineArrowDown className="text-2xl mx-auto mb-6" />
-
                 {/* Icon Cards */}
-                <div className="flex justify-between gap-3 mb-8">
-                    <div className="bg-gray-50 rounded-xl p-4 flex-1 shadow-sm text-center">
-                        <FaChartLine className="text-2xl mx-auto mb-2" />
-                        <p className="text-xs font-medium leading-tight">Track<br />Progress</p>
-                    </div>
-                    <div className="bg-gray-50 rounded-xl p-4 flex-1 shadow-sm text-center">
-                        <FaLightbulb className="text-2xl mx-auto mb-2" />
-                        <p className="text-xs font-medium leading-tight">Get<br />Insights</p>
-                    </div>
-                    <div className="bg-gray-50 rounded-xl p-4 flex-1 shadow-sm text-center">
-                        <FaCheckDouble className="text-2xl mx-auto mb-2" />
-                        <p className="text-xs font-medium leading-tight">Build<br />Consistency</p>
-                    </div>
+                <div className="flex justify-between gap-3 mb-6">
+                    {[ 'Track Progress', 'Get Insights', 'Build Consistency' ].map((label, idx) => {
+                        const icons = [FaChartLine, FaLightbulb, FaCheckDouble];
+                        const Icon = icons[idx];
+                        return (
+                            <div
+                                key={idx}
+                                onClick={handleCardClick}
+                                className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 flex-1 shadow-sm text-center cursor-pointer hover:shadow-md transition"
+                            >
+                                <Icon className="text-2xl mx-auto mb-2" />
+                                <p className="text-xs font-medium leading-tight">{label}</p>
+                            </div>
+                        );
+                    })}
                 </div>
 
                 {/* Footer */}
-                <p className="text-[10px] text-gray-500 text-center">
+                <p className="text-[10px] text-gray-500 dark:text-gray-400 text-center">
                     © {new Date().getFullYear()} processwins.app
                 </p>
             </div>
