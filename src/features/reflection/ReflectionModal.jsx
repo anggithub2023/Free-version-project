@@ -18,7 +18,7 @@ function ReflectionModal({ sport, position, bonus, ...scores }) {
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg max-w-md w-full text-center">
-                <h2 className="text-3xl font-bold text-indigo-600 dark:text-indigo-300 mb-4">🔥Great Work Reflecting!🔥</h2>
+                <h2 className="text-3xl font-bold text-indigo-600 dark:text-indigo-300 mb-4">🔥Great Work Reflecting🔥</h2>
 
                 <div className="space-y-2 text-lg">
                     <p>Total: <span className="text-indigo-500">{scores.total}%</span></p>
