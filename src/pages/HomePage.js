@@ -33,8 +33,8 @@ export default function HomePage() {
                 </div>
 
                 {/* Hero Text */}
-                <div className="text-left mb-4">
-                    <h1 className="text-4xl font-black leading-tight mb-3">
+                <div className="text-left mb-6">
+                    <h1 className="text-4xl font-black leading-tight mb-4">
                         Reflect on<br />your<br />performance.
                     </h1>
                     <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -42,13 +42,8 @@ export default function HomePage() {
                     </p>
                 </div>
 
-                {/* Arrow BETWEEN text and button */}
-                <div className="flex justify-center my-4">
-                    <HiOutlineArrowDown className="text-2xl text-gray-400 dark:text-gray-500" />
-                </div>
-
                 {/* CTA Button */}
-                <div className="flex justify-center mb-6">
+                <div className="flex justify-center mb-3">
                     <button
                         onClick={() => navigate('/reflect')}
                         className="bg-black text-white dark:bg-white dark:text-black rounded-xl px-6 py-4 w-full font-bold text-base max-w-xs shadow hover:scale-105 transition"
@@ -56,6 +51,9 @@ export default function HomePage() {
                         Start Reflection
                     </button>
                 </div>
+
+                {/* Arrow BELOW button */}
+                <HiOutlineArrowDown className="text-2xl mx-auto mb-6 animate-bounce-slow" />
 
                 {/* Icon Cards */}
                 <div className="flex justify-between gap-3 mb-6">
