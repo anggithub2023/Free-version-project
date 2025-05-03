@@ -60,7 +60,7 @@ export default function HomePage() {
             </div>
 
             {/* Arrow Below Button */}
-            <div className="flex justify-center my-4 animate-fade-up">
+            <div className="flex justify-center mt-8 mb-4 animate-fade-up">
                 <HiOutlineArrowDown className="text-2xl text-gray-400 dark:text-gray-500" />
             </div>
 
