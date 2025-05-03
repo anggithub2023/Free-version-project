@@ -44,7 +44,7 @@ export default function HomePage() {
                 A modern way to track, improve, and stay consistent with your goals.
             </p>
 
-            {/* Start Reflection Button - centered */}
+            {/* Start Button - Centered */}
             <div className="mb-10 flex justify-center">
                 <button
                     onClick={() => navigate('/reflect')}
@@ -54,15 +54,17 @@ export default function HomePage() {
                 </button>
             </div>
 
-            {/* Cards - always side-by-side, scrollable on mobile if needed */}
-            <div className="flex gap-4 overflow-x-auto pb-4 max-w-full">
+            {/* Feature Cards - Wrap and shrink nicely */}
+            <div className="flex flex-wrap justify-center gap-4 max-w-5xl mx-auto">
                 {features.map(({ icon: Icon, title, route, color }, idx) => (
                     <div
                         key={idx}
                         onClick={() => navigate(route)}
-                        className="min-w-[300px] flex-shrink-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition p-6 rounded-xl text-center cursor-pointer"
+                        className="cursor-pointer flex flex-col items-center justify-center basis-full sm:basis-1/3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition p-6 rounded-xl text-center"
                     >
-                        <Icon className={`mx-auto text-4xl mb-2 ${color}`} />
+                        <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 mb-4">
+                            <Icon className={`text-3xl ${color}`} />
+                        </div>
                         <h3 className="text-lg font-semibold">{title}</h3>
                     </div>
                 ))}
