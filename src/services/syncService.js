@@ -91,7 +91,13 @@ export const fetchReflections = async () => {
         }
 
         console.log(`✅ Reflections fetched from DB (${data.length} entries):`, data);
-        return data;
+
+        return data.map(entry => ({
+            ...entry,
+            sport: entry.sport?.toLowerCase(),
+            position: entry.position?.toLowerCase(),
+            scores: normalizeStatKeys(entry.scores), // ✅ FIXED
+        }));
     } catch (err) {
         console.error('❌ Unexpected failure in fetchReflections():', err.message);
         return [];
