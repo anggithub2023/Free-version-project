@@ -16,7 +16,7 @@ function DynamicStatForm({ sport, position }) {
     const sportFields = (() => {
         switch (normalizedSport) {
             case 'basketball':
-                return ['Points', 'Assists', 'Rebounds', 'Steals', 'Blocks', 'Turnovers', 'Minutes Played'];
+                return ['Points', 'Assists', 'Rebounds', 'Steals', 'Blocks', 'Turnovers', 'Free Throws', 'Minutes Played'];
             case 'soccer':
                 return normalizedPosition === 'goalie'
                     ? ['Saves', 'Goals Against', 'Clean Sheets', 'Save Percentage']
