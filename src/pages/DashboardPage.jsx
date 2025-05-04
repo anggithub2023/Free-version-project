@@ -74,7 +74,7 @@ function HomePage() {
             shadow: 'hover:shadow-yellow-300',
             description: 'Explore training plans aligned with your goals.',
         },
-        {
+        devMode && {
             label: 'Videos',
             route: '/videos',
             icon: <FaVideo className="text-white bg-teal-500 rounded-full p-1 text-4xl" />,
