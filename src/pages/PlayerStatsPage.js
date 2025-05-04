@@ -78,11 +78,13 @@ function PlayerStatsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 p-4 pb-24">
-            <h1 className="text-2xl sm:text-3xl font-bold text-center mb-6 text-green-700 dark:text-green-300 flex items-center justify-center gap-2">
-                <MdInsights className="text-green-500 dark:text-green-300" size={28} />
-                Player Stats - {selectedSport.charAt(0).toUpperCase() + selectedSport.slice(1)}
+        <div className="min-h-screen bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 p-4 pb-24 font-sans">
+            <h1 className="text-3xl sm:text-4xl font-bold text-center mb-2 text-green-700 dark:text-green-300">
+                Track Your Performance
             </h1>
+            <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">
+                Record detailed stats by sport and position
+            </p>
 
             <DynamicStatForm
                 sport={selectedSport}
