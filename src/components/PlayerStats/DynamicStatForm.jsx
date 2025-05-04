@@ -1,179 +1,87 @@
 import React, { useState } from 'react';
-import { saveGameStat } from '../../services/syncService';
-import StatsConfirmationModal from './StatsConfirmationModal';
-import { saveAs } from 'file-saver';
 
-const groupedStatFields = {
-    basketball: [
-        { label: 'Scoring', fields: ['Points', 'Free Throws Made', 'Free Throws Attempted', 'Field Goals Made', 'Field Goals Attempted', 'Three-Pointers Made', 'Three-Pointers Attempted'] },
-        { label: 'Rebounding', fields: ['Rebounds', 'Offensive Rebounds', 'Defensive Rebounds'] },
-        { label: 'Defense', fields: ['Steals', 'Blocks'] },
-        { label: 'Ball Control', fields: ['Assists', 'Turnovers', 'Fouls'] },
-        { label: 'Other', fields: ['Minutes Played'] }
-    ],
-    // other sports config omitted for brevity – retain yours
-};
+function AccordionUXTest() {
+    const fieldGroups = [
+        {
+            label: 'Scoring',
+            fields: ['Points', 'Free Throws', 'Field Goals']
+        },
+        {
+            label: 'Rebounding',
+            fields: ['Offensive Rebounds', 'Defensive Rebounds']
+        }
+    ];
 
-function DynamicStatForm({ sport, position }) {
     const [formData, setFormData] = useState({});
-    const [showStatsModal, setShowStatsModal] = useState(false);
     const [openGroup, setOpenGroup] = useState(null);
-
-    const normalizeKey = key => key.trim().toLowerCase().replace(/\s+/g, '_');
-    const normalizeValue = val => (isNaN(val) ? val : Number(val));
-    const normalizeSport = sportId => sportId?.toLowerCase().replace(/[^a-z]/g, '');
-    const normalizedSport = normalizeSport(sport);
-    const normalizedPosition = position?.toLowerCase() || 'default';
-
-    const resolveFieldGroups = () => {
-        const group = groupedStatFields[normalizedSport];
-        if (!group) return [];
-        if (Array.isArray(group)) return group;
-        return group[normalizedPosition] || group.default || [];
-    };
-
-    const fieldGroups = resolveFieldGroups();
 
     const handleChange = e => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = async e => {
-        e.preventDefault();
-
-        const normalizedStats = Object.fromEntries(
-            Object.entries(formData).map(([key, val]) => [normalizeKey(key), normalizeValue(val)])
-        );
-
-        const statEntry = {
-            sport: normalizedSport,
-            position: normalizedPosition,
-            stats: normalizedStats,
-            date: new Date().toISOString()
-        };
-
-        const localStats = JSON.parse(localStorage.getItem('gameStats') || '[]');
-        localStats.push(statEntry);
-        localStorage.setItem('gameStats', JSON.stringify(localStats));
-        localStorage.setItem('selectedSport', normalizedSport);
-        localStorage.setItem('selectedPosition', normalizedPosition);
-
-        try {
-            await saveGameStat(statEntry);
-            setShowStatsModal(true);
-        } catch (error) {
-            const queue = JSON.parse(localStorage.getItem('unsyncedGameStats') || '[]');
-            queue.push(statEntry);
-            localStorage.setItem('unsyncedGameStats', JSON.stringify(queue));
-            alert('⚠️ Offline. Stats saved locally.');
-        }
-
-        setFormData({});
+    const handleSubmit = () => {
+        alert('Saved!\n' + JSON.stringify(formData, null, 2));
     };
 
-    const handleDownload = () => {
-        const stats = JSON.parse(localStorage.getItem('gameStats') || '[]');
-        const csvHeader = ['Sport', 'Position', 'Date', ...Object.keys(stats[0]?.stats || {})];
-        const csvRows = stats.map(stat => {
-            const values = csvHeader.map(h => {
-                if (h === 'Sport') return stat.sport;
-                if (h === 'Position') return stat.position;
-                if (h === 'Date') return new Date(stat.date).toLocaleDateString();
-                return stat.stats?.[h.toLowerCase().replace(/\s+/g, '_')] ?? '';
-            });
-            return values.join(',');
-        });
-        const csvContent = [csvHeader.join(','), ...csvRows].join('\n');
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        saveAs(blob, 'game_stats.csv');
-    };
-
+    const handleClear = () => setFormData({});
+    const handleDownload = () => alert('Pretend CSV downloaded 🧾');
     const handleHome = () => {
         localStorage.removeItem('selectedSport');
         localStorage.removeItem('selectedPosition');
-        window.location.href = '/';
+        alert('Home clicked');
     };
 
-    if (!sport) {
-        return <div className="text-center mt-10 text-gray-500">No sport selected yet.</div>;
-    }
-
     return (
-        <>
-            <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto pb-32">
-                <h2 className="text-2xl font-bold text-center mb-4">
-                    Log Stats for {sport} {position && `- ${position}`}
-                </h2>
+        <div className="max-w-xl mx-auto pb-40 px-4 pt-6">
+            <h2 className="text-2xl font-bold text-center mb-6">Accordion UX Test</h2>
 
-                {fieldGroups.length > 0 ? (
-                    fieldGroups.map(group => (
-                        <div key={group.label} className="mb-4 border rounded overflow-hidden">
-                            <button
-                                type="button"
-                                className="w-full bg-gray-100 dark:bg-gray-800 text-left px-4 py-2 font-semibold text-gray-700 dark:text-white"
-                                onClick={() => setOpenGroup(openGroup === group.label ? null : group.label)}
-                            >
-                                {group.label}
-                            </button>
-                            {openGroup === group.label && (
-                                <div className="p-4 bg-white dark:bg-gray-700">
-                                    {group.fields.map(field => (
-                                        <div key={field} className="flex flex-col mb-3">
-                                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{field}</label>
-                                            <input
-                                                type="number"
-                                                name={field}
-                                                value={formData[field] || ''}
-                                                onChange={handleChange}
-                                                className="mt-1 border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
-                        bg-white dark:bg-gray-800 dark:border-gray-500 dark:text-white"
-                                                placeholder={field}
-                                            />
-                                        </div>
-                                    ))}
+            {fieldGroups.map(group => (
+                <div key={group.label} className="mb-4 border border-gray-300 rounded">
+                    <button
+                        type="button"
+                        className="w-full bg-gray-200 px-4 py-2 font-semibold text-left"
+                        onClick={() => setOpenGroup(openGroup === group.label ? null : group.label)}
+                    >
+                        {group.label}
+                    </button>
+                    {openGroup === group.label && (
+                        <div className="p-4 bg-yellow-100">
+                            {group.fields.map(field => (
+                                <div key={field} className="mb-3">
+                                    <label className="block font-medium text-sm mb-1">{field}</label>
+                                    <input
+                                        type="number"
+                                        name={field}
+                                        value={formData[field] || ''}
+                                        onChange={handleChange}
+                                        className="w-full border rounded px-2 py-1"
+                                        placeholder={field}
+                                    />
                                 </div>
-                            )}
+                            ))}
                         </div>
-                    ))
-                ) : (
-                    <div className="text-center text-gray-500">No input fields configured for this sport yet.</div>
-                )}
-            </form>
+                    )}
+                </div>
+            ))}
 
-            <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 shadow-md px-4 py-3 flex justify-between items-center z-50 border-t dark:border-gray-700">
-                <button
-                    onClick={handleSubmit}
-                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-semibold"
-                >
+            {/* Sticky CTA bar */}
+            <div className="fixed bottom-0 left-0 right-0 bg-white shadow-md px-4 py-3 flex justify-around z-50 border-t">
+                <button onClick={handleSubmit} className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded">
                     Save
                 </button>
-                <button
-                    onClick={() => setFormData({})}
-                    className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded font-semibold"
-                >
+                <button onClick={handleClear} className="bg-gray-500 hover:bg-gray-400 text-white px-4 py-2 rounded">
                     Clear
                 </button>
-                <button
-                    onClick={handleDownload}
-                    className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded font-semibold"
-                >
-                    Download CSV
+                <button onClick={handleDownload} className="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded">
+                    Download
                 </button>
-                <button
-                    onClick={handleHome}
-                    className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded font-semibold"
-                >
+                <button onClick={handleHome} className="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded">
                     Home
                 </button>
             </div>
-
-            <StatsConfirmationModal
-                visible={showStatsModal}
-                onClose={() => setShowStatsModal(false)}
-            />
-        </>
+        </div>
     );
 }
 
-export default DynamicStatForm;
+export default AccordionUXTest;
