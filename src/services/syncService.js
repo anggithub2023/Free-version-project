@@ -1,7 +1,10 @@
 // src/services/syncService.js
 import supabase from '../lib/supabaseClient';
 
-const getUserId = () => localStorage.getItem('userId');
+const getUserId = () => {
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem('userId');
+};
 
 // 🔁 Normalize stat keys for consistency
 const normalizeStatKeys = (statsObj) => {
@@ -10,7 +13,7 @@ const normalizeStatKeys = (statsObj) => {
     return Object.fromEntries(
         Object.entries(statsObj).map(([key, val]) => [
             key.trim().toLowerCase().replace(/\s+/g, '_'),
-            isNaN(val) ? val : Number(val),
+            isNaN(val) ? String(val) : Number(val),
         ])
     );
 };
@@ -28,6 +31,7 @@ export const saveGameStat = async (statEntry) => {
         date: statEntry.date,
     };
 
+    console.log('📊 Saving game stat:', normalizedStatEntry);
     const { error } = await supabase.from('game_stats').insert([normalizedStatEntry]);
     if (error) throw error;
 };
@@ -58,10 +62,15 @@ export const saveReflection = async (reflectionEntry) => {
     const userId = getUserId();
     if (!userId) throw new Error('Missing user ID');
 
-    const { error } = await supabase
-        .from('reflections')
-        .insert([{ ...reflectionEntry, user_id: userId }]);
+    const normalizedReflection = {
+        ...reflectionEntry,
+        user_id: userId,
+        sport: reflectionEntry.sport?.toLowerCase(),
+        position: reflectionEntry.position?.toLowerCase(),
+    };
 
+    console.log('📝 Saving reflection:', normalizedReflection);
+    const { error } = await supabase.from('reflections').insert([normalizedReflection]);
     if (error) throw error;
 };
 
