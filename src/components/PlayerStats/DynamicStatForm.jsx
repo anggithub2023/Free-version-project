@@ -2,6 +2,70 @@ import React, { useState } from 'react';
 import { saveGameStat } from '../../services/syncService';
 import StatsConfirmationModal from './StatsConfirmationModal';
 
+const groupedStatFields = {
+    basketball: [
+        { label: 'Scoring', fields: ['Points', 'Free Throws Made', 'Free Throws Attempted', 'Field Goals Made', 'Field Goals Attempted', 'Three-Pointers Made', 'Three-Pointers Attempted'] },
+        { label: 'Rebounding', fields: ['Rebounds', 'Offensive Rebounds', 'Defensive Rebounds'] },
+        { label: 'Defense', fields: ['Steals', 'Blocks'] },
+        { label: 'Ball Control', fields: ['Assists', 'Turnovers', 'Fouls'] },
+        { label: 'Other', fields: ['Minutes Played'] }
+    ],
+    soccer: {
+        goalie: [
+            { label: 'Goalkeeping', fields: ['Saves', 'Goals Against', 'Clean Sheets', 'Save Percentage'] }
+        ],
+        default: [
+            { label: 'Offense', fields: ['Goals', 'Assists', 'Shots on Target'] },
+            { label: 'Defense', fields: ['Tackles Won', 'Fouls Committed'] }
+        ]
+    },
+    football: {
+        quarterback: [
+            { label: 'Passing', fields: ['Passing Yards', 'Passing TDs', 'Completions', 'Interceptions Thrown', 'Completion Percentage'] }
+        ],
+        'running-back': [
+            { label: 'Rushing', fields: ['Rushing Yards', 'Rushing TDs', 'Fumbles Lost'] }
+        ],
+        'wide-receiver': [
+            { label: 'Receiving', fields: ['Receiving Yards', 'Receiving TDs', 'Receptions'] }
+        ],
+        'defensive-player': [
+            { label: 'Defense', fields: ['Tackles', 'Sacks', 'Interceptions Caught'] }
+        ]
+    },
+    baseball: {
+        pitcher: [
+            { label: 'Pitching', fields: ['Innings Pitched', 'Strikeouts', 'Walks Allowed', 'Earned Runs', 'ERA', 'Hits Allowed', 'Home Runs Allowed', 'Wins', 'Losses', 'Saves'] }
+        ],
+        default: [
+            { label: 'Batting', fields: ['At Bats', 'Hits', 'Runs', 'RBIs', 'Home Runs', 'Doubles', 'Triples', 'Stolen Bases', 'Strikeouts', 'Walks'] },
+            { label: 'Defense', fields: ['Errors'] }
+        ]
+    },
+    icehockey: {
+        goalie: [
+            { label: 'Goalkeeping', fields: ['Saves', 'Goals Against', 'Save Percentage'] }
+        ],
+        default: [
+            { label: 'Performance', fields: ['Goals', 'Assists', 'Shots on Goal', 'Plus/Minus Rating'] }
+        ]
+    },
+    lacrosse: {
+        goalie: [
+            { label: 'Goalkeeping', fields: ['Saves', 'Goals Against'] }
+        ],
+        default: [
+            { label: 'Field Play', fields: ['Goals', 'Assists', 'Ground Balls', 'Faceoffs Won'] }
+        ]
+    },
+    trackcrosscountry: [
+        { label: 'Event Performance', fields: ['Event Name', 'Time', 'Placement'] }
+    ],
+    golf: [
+        { label: 'Round Stats', fields: ['Round Score', 'Pars', 'Birdies', 'Bogeys', 'Fairways Hit', 'Greens in Regulation'] }
+    ]
+};
+
 function DynamicStatForm({ sport, position }) {
     const [formData, setFormData] = useState({});
     const [showStatsModal, setShowStatsModal] = useState(false);
@@ -11,89 +75,16 @@ function DynamicStatForm({ sport, position }) {
 
     const normalizeSport = sportId => sportId?.toLowerCase().replace(/[^a-z]/g, '');
     const normalizedSport = normalizeSport(sport);
-    const normalizedPosition = position?.toLowerCase() || 'general player';
+    const normalizedPosition = position?.toLowerCase() || 'default';
 
-    const sportFields = (() => {
-        switch (normalizedSport) {
-            case 'basketball':
-                return [
-                    'Points',
-                    'Assists',
-                    'Rebounds',
-                    'Offensive Rebounds',
-                    'Defensive Rebounds',
-                    'Steals',
-                    'Blocks',
-                    'Turnovers',
-                    'Fouls',
-                    'Field Goals Made',
-                    'Field Goals Attempted',
-                    'Three-Pointers Made',
-                    'Three-Pointers Attempted',
-                    'Free Throws Made',
-                    'Free Throws Attempted',
-                    'Minutes Played'
-                ];
-            case 'soccer':
-                return normalizedPosition === 'goalie'
-                    ? ['Saves', 'Goals Against', 'Clean Sheets', 'Save Percentage']
-                    : ['Goals', 'Assists', 'Shots on Target', 'Tackles Won', 'Fouls Committed'];
-            case 'football':
-                switch (normalizedPosition) {
-                    case 'quarterback':
-                        return ['Passing Yards', 'Passing TDs', 'Completions', 'Interceptions Thrown', 'Completion Percentage'];
-                    case 'running-back':
-                        return ['Rushing Yards', 'Rushing TDs', 'Fumbles Lost'];
-                    case 'wide-receiver':
-                        return ['Receiving Yards', 'Receiving TDs', 'Receptions'];
-                    case 'defensive-player':
-                        return ['Tackles', 'Sacks', 'Interceptions Caught'];
-                    default:
-                        return [];
-                }
-            case 'baseball':
-                return normalizedPosition === 'pitcher'
-                    ? [
-                        'Innings Pitched',
-                        'Strikeouts',
-                        'Walks Allowed',
-                        'Earned Runs',
-                        'ERA',
-                        'Hits Allowed',
-                        'Home Runs Allowed',
-                        'Wins',
-                        'Losses',
-                        'Saves'
-                    ]
-                    : [
-                        'At Bats',
-                        'Hits',
-                        'Runs',
-                        'RBIs',
-                        'Home Runs',
-                        'Doubles',
-                        'Triples',
-                        'Stolen Bases',
-                        'Strikeouts',
-                        'Walks',
-                        'Errors'
-                    ];
-            case 'icehockey':
-                return normalizedPosition === 'goalie'
-                    ? ['Saves', 'Goals Against', 'Save Percentage']
-                    : ['Goals', 'Assists', 'Shots on Goal', 'Plus/Minus Rating'];
-            case 'lacrosse':
-                return normalizedPosition === 'goalie'
-                    ? ['Saves', 'Goals Against']
-                    : ['Goals', 'Assists', 'Ground Balls', 'Faceoffs Won'];
-            case 'trackcrosscountry':
-                return ['Event Name', 'Time', 'Placement'];
-            case 'golf':
-                return ['Round Score', 'Pars', 'Birdies', 'Bogeys', 'Fairways Hit', 'Greens in Regulation'];
-            default:
-                return [];
-        }
-    })();
+    const resolveFieldGroups = () => {
+        const group = groupedStatFields[normalizedSport];
+        if (!group) return [];
+        if (Array.isArray(group)) return group;
+        return group[normalizedPosition] || group.default || [];
+    };
+
+    const fieldGroups = resolveFieldGroups();
 
     const handleChange = e => {
         const { name, value } = e.target;
@@ -117,7 +108,6 @@ function DynamicStatForm({ sport, position }) {
             date: new Date().toISOString()
         };
 
-        // Save to localStorage
         const localStats = JSON.parse(localStorage.getItem('gameStats') || '[]');
         localStats.push(statEntry);
         localStorage.setItem('gameStats', JSON.stringify(localStats));
@@ -149,22 +139,25 @@ function DynamicStatForm({ sport, position }) {
                     Log Stats for {sport} {position && `- ${position}`}
                 </h2>
 
-                {sportFields.length > 0 ? (
-                    sportFields.map(field => (
-                        <div key={field} className="flex flex-col">
-                            <label className="text-gray-700 dark:text-gray-300 font-medium mb-1">
-                                {field}
-                            </label>
-                            <input
-                                type="number"
-                                name={field}
-                                value={formData[field] || ''}
-                                onChange={handleChange}
-                                className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
-                                    bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white
-                                    placeholder-gray-400 dark:placeholder-gray-500"
-                                placeholder={field}
-                            />
+                {fieldGroups.length > 0 ? (
+                    fieldGroups.map(group => (
+                        <div key={group.label} className="mb-4">
+                            <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-2">{group.label}</h3>
+                            {group.fields.map(field => (
+                                <div key={field} className="flex flex-col mb-2">
+                                    <label className="text-gray-700 dark:text-gray-300 font-medium mb-1">{field}</label>
+                                    <input
+                                        type="number"
+                                        name={field}
+                                        value={formData[field] || ''}
+                                        onChange={handleChange}
+                                        className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
+                      bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white
+                      placeholder-gray-400 dark:placeholder-gray-500"
+                                        placeholder={field}
+                                    />
+                                </div>
+                            ))}
                         </div>
                     ))
                 ) : (
