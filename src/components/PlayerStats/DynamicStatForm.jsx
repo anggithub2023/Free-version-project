@@ -97,7 +97,9 @@ function DynamicStatForm({ sport, position }) {
                                 {group.label}
                             </button>
 
-                            {openGroup === group.label && (
+                            {/* openGroup === group.label && ( */}
+                            <div>...</div>
+                            {/* ) */}
                                 <div className="px-4 py-2 bg-white dark:bg-gray-700 transition-all">
                                     {group.fields.map(field => (
                                         <div key={field} className="flex flex-col mb-2">
@@ -114,7 +116,7 @@ function DynamicStatForm({ sport, position }) {
                                         </div>
                                     ))}
                                 </div>
-                            )}
+                            }
                         </div>
                     ))
                 ) : (
