@@ -9,7 +9,14 @@ const QUESTIONS = {
             "Did I keep proper spacing and timing in our offense?",
             "Did I stay patient and allow plays to develop before rushing?",
             "Did I handle the ball confidently under pressure?",
-            "Did I create good scoring opportunities for my teammates?"
+            "Did I create good scoring opportunities for my teammates?",
+            "Did I avoid early shot clock attempts unless wide open?",
+            "Did I keep my dribble alive when needed?",
+            "Did I use screens effectively and read the defense?",
+            "Did I drive with purpose and control?",
+            "Did I move without the ball to open up space?",
+            "Did I find balance between scoring and playmaking?",
+            "Did I follow my shot for possible second-chance points?"
         ],
         defense: [
             "Did I stay in a stance and contest every shot?",
@@ -19,7 +26,14 @@ const QUESTIONS = {
             "Did I close out under control and avoid fouling shooters?",
             "Did I maintain effort on every defensive possession?",
             "Did I apply ball pressure without fouling?",
-            "Did I force tough shots or turnovers by sticking to our defensive principles?"
+            "Did I force tough shots or turnovers by sticking to our defensive principles?",
+            "Did I stay in position to help on drives?",
+            "Did I rotate when needed to cover teammates?",
+            "Did I limit second chances by crashing the boards?",
+            "Did I play with energy even when off-ball?",
+            "Did I recover quickly when beat?",
+            "Did I stay disciplined and avoid risky reach-ins?",
+            "Did I recognize when to trap or double team?"
         ],
         teamIdentity: [
             "Was I a great teammate — vocal, positive, and unselfish?",
@@ -29,7 +43,14 @@ const QUESTIONS = {
             "Did I support my teammates on and off the court?",
             "Did I hold myself accountable to our team principles?",
             "Did I stay locked in and focused even when off the ball or on the bench?",
-            "Did I bring positive energy to the team throughout the session?"
+            "Did I bring positive energy to the team throughout the session?",
+            "Did I clap and lift up teammates after mistakes?",
+            "Did I celebrate others' success genuinely?",
+            "Did I encourage teammates during tough stretches?",
+            "Did I model great body language — win or lose?",
+            "Did I hustle to help teammates up when they hit the floor?",
+            "Did I play like someone others want on their team?",
+            "Did I represent our program with pride and respect?"
         ]
     },
 
@@ -270,7 +291,14 @@ const QUESTIONS = {
             "Did I use good baserunning instincts?",
             "Did I stay patient and disciplined at the plate?",
             "Did I execute bunts or situational hitting when called upon?",
-            "Did I stay aggressive but smart on the bases?"
+            "Did I stay aggressive but smart on the bases?",
+            "Did I swing at pitches in my hitting zone?",
+            "Did I track pitches from the pitcher’s hand?",
+            "Did I use the whole field when hitting?",
+            "Did I stay balanced during my swing?",
+            "Did I hustle out every ground ball or flyout?",
+            "Did I adjust to the pitcher’s rhythm or pitch sequence?",
+            "Did I look for ways to pressure the defense while running bases?"
         ],
         defense: [
             "Did I make routine plays on defense?",
@@ -280,7 +308,14 @@ const QUESTIONS = {
             "Did I support the pitcher with strong defense?",
             "Did I keep throws accurate and quick?",
             "Did I adjust my positioning based on the hitter and situation?",
-            "Did I anticipate plays instead of reacting late?"
+            "Did I anticipate plays instead of reacting late?",
+            "Did I keep my glove down on ground balls?",
+            "Did I get into ready position before every pitch?",
+            "Did I know where to throw before the ball was hit?",
+            "Did I charge slow rollers aggressively?",
+            "Did I take good angles to fly balls?",
+            "Did I stay composed after making a mistake?",
+            "Did I listen and respond to my teammates' communication on the field?"
         ],
         teamIdentity: [
             "Did I encourage teammates after plays?",
@@ -290,7 +325,13 @@ const QUESTIONS = {
             "Did I act as a leader through actions and words?",
             "Did I respect umpires, coaches, and opponents at all times?",
             "Did I lift teammates up after mistakes?",
-            "Did I show appreciation for teammates' efforts and successes?"
+            "Did I show appreciation for teammates' efforts and successes?",
+            "Did I bring energy from the dugout when not on the field?",
+            "Did I celebrate team achievements more than personal ones?",
+            "Did I keep my body language positive when things didn’t go well?",
+            "Did I support teammates vocally and with presence?",
+            "Did I take care of my gear and follow team routines?",
+            "Did I represent the team with pride today?"
         ]
     },
 
@@ -299,17 +340,32 @@ const QUESTIONS = {
         offense: [
             "Did I stay aggressive while pitching smart?",
             "Did I control pitch location and selection under pressure?",
-            "Did I attack hitters early in counts?"
+            "Did I attack hitters early in counts?",
+            "Did I mix up pitch speeds and types to keep batters off balance?",
+            "Did I follow the catcher’s lead when appropriate?",
+            "Did I adjust my strategy based on each batter?",
+            "Did I stay calm after a walk or hit?",
+            "Did I avoid giving up free bases (walks, hit batters)?"
         ],
         defense: [
             "Did I field my position cleanly (bunts, grounders)?",
             "Did I back up bases properly on throws?",
-            "Did I hold runners effectively to prevent steals?"
+            "Did I hold runners effectively to prevent steals?",
+            "Did I cover first base on grounders to the right side?",
+            "Did I throw strikes in pressure situations?",
+            "Did I respond quickly to line drives or comebackers?",
+            "Did I know the right defensive play in each situation?",
+            "Did I help manage the pace of the game when needed?"
         ],
         teamIdentity: [
             "Did I stay composed after giving up hits/runs?",
             "Did I communicate clearly with catchers and infielders?",
-            "Did I project positive energy to the team from the mound?"
+            "Did I project positive energy to the team from the mound?",
+            "Did I respond to coaching or signs with focus?",
+            "Did I support teammates vocally between innings?",
+            "Did I bounce back from tough innings with resilience?",
+            "Did I stay locked in during long innings on the bench?",
+            "Did I lead by example in effort and attitude today?"
         ]
     },
 
@@ -376,7 +432,11 @@ const QUESTIONS = {
             "Did I ride hard after turnovers?",
             "Did I dodge smartly without forcing plays?",
             "Did I maintain good field spacing?",
-            "Did I make the extra pass to create a better shot?"
+            "Did I make the extra pass to create a better shot?",
+            "Did I finish my shots with confidence and accuracy?",
+            "Did I stay aware of shot clock and possession time?",
+            "Did I draw defenders to open up opportunities for others?",
+            "Did I recover quickly after losing possession?"
         ],
         defense: [
             "Did I maintain good defensive positioning?",
@@ -386,7 +446,11 @@ const QUESTIONS = {
             "Did I check responsibly without overcommitting?",
             "Did I stay between my man and the goal?",
             "Did I support off-ball with smart help defense?",
-            "Did I clear the ball cleanly after turnovers?"
+            "Did I clear the ball cleanly after turnovers?",
+            "Did I recover quickly if beaten on a dodge?",
+            "Did I anticipate passes and get into passing lanes?",
+            "Did I keep pressure on the ball without fouling?",
+            "Did I recognize and call out man-down or EMO situations?"
         ],
         teamIdentity: [
             "Did I encourage and support teammates vocally?",
@@ -396,7 +460,11 @@ const QUESTIONS = {
             "Did I celebrate my teammates' successes?",
             "Did I respect the referees, coaches, and opponents?",
             "Did I stay mentally focused all game?",
-            "Did I contribute positively to our team culture?"
+            "Did I contribute positively to our team culture?",
+            "Did I help teammates stay focused during breaks or timeouts?",
+            "Did I model good sportsmanship regardless of the score?",
+            "Did I stay engaged when on the sideline?",
+            "Did I show pride in our team’s effort today?"
         ]
     },
 
@@ -405,19 +473,31 @@ const QUESTIONS = {
         offense: [
             "Did I start clears quickly and accurately?",
             "Did I communicate outlet options clearly to teammates?",
-            "Did I assist the offense with smart ball distribution?"
+            "Did I assist the offense with smart ball distribution?",
+            "Did I read the ride and make the best pass under pressure?",
+            "Did I avoid turnovers on clears and long passes?",
+            "Did I support my defense by moving into space for safe outlets?",
+            "Did I reset the clear when pressured instead of forcing a pass?"
         ],
         defense: [
             "Did I maintain proper stance and positioning?",
             "Did I make saves I was expected to make?",
             "Did I communicate the defensive setup vocally?",
-            "Did I react quickly on rebounds and loose balls?"
+            "Did I react quickly on rebounds and loose balls?",
+            "Did I track the ball into my stick on every shot?",
+            "Did I move my feet and adjust angle to the shooter's position?",
+            "Did I stay alert for skip passes and screens?",
+            "Did I lead the defense on man-down situations?"
         ],
         teamIdentity: [
             "Did I show leadership from the crease?",
             "Did I stay calm and composed after goals allowed?",
             "Did I encourage defenders during tough stretches?",
-            "Did I bring positive energy regardless of game situation?"
+            "Did I bring positive energy regardless of game situation?",
+            "Did I motivate the team after a big save?",
+            "Did I stay vocal and engaged even when not facing shots?",
+            "Did I show good sportsmanship with opponents and referees?",
+            "Did I take ownership of my performance and support the team mindset?"
         ]
     }
 };
@@ -432,7 +512,23 @@ export const BONUS_QUESTIONS = [
     "How supportive was I of others today?",
     "How resilient was I when challenged today?",
     "How much joy did I feel playing today?",
-    "How determined was I to finish strong today?"
+    "How determined was I to finish strong today?",
+    "Did I give my best effort regardless of the outcome?",
+    "Did I stay coachable and open to feedback?",
+    "Did I take responsibility for my actions today?",
+    "Did I encourage someone else who needed it?",
+    "Did I bounce back quickly from a tough moment?",
+    "Did I stay present instead of worrying about mistakes?",
+    "Did I show gratitude for the chance to play today?",
+    "Did I try to improve at least one skill today?",
+    "Did I treat opponents with respect?",
+    "Did I listen with attention and respect during team talks?",
+    "Did I represent my team in a way I’m proud of?",
+    "Did I manage my emotions in a mature way?",
+    "Did I make others around me better today?",
+    "Did I reflect on what I can do better next time?",
+    "Did I carry myself like a leader today?",
+    "Did I challenge myself to step outside my comfort zone?"
 ];
 
 export default QUESTIONS;
