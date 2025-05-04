@@ -62,8 +62,8 @@ export const saveReflection = async (reflectionEntry) => {
     if (error) throw error;
 };
 
-export const fetchReflectionStats = async () => {
-    const userId = getUserId();
+export const fetchReflections = async () => {
+    const userId = localStorage.getItem('userId');
     if (!userId) throw new Error('Missing user ID');
 
     const { data, error } = await supabase
@@ -74,7 +74,8 @@ export const fetchReflectionStats = async () => {
 
     if (error) throw error;
 
-    return data;
+    console.log('✅ Reflections fetched from DB:', data);
+    return data || [];
 };
 
 export const ensureUserExists = async (userId) => {
