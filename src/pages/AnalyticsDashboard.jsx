@@ -12,11 +12,15 @@ import {
     MdHistory,
     MdHome,
     MdFileDownload,
-    MdMenu
+    MdMenu,
 } from 'react-icons/md';
 import { GiAchievement } from 'react-icons/gi';
 
 import { fetchGameStats } from '../services/syncService';
+
+// 🔧 Utility for matching normalized values
+const normalize = (val) =>
+    val?.toLowerCase().replace(/\s+/g, '_').trim() || '';
 
 function AnalyticsDashboard() {
     const [gameStats, setGameStats] = useState([]);
@@ -44,14 +48,14 @@ function AnalyticsDashboard() {
             }
 
             if (stats.length > 0) {
-                const latest = stats[stats.length - 1];
-                setSelectedSport(latest.sport?.toLowerCase() || '');
-                setSelectedPosition(latest.position?.toLowerCase() || '');
+                const latest = stats[0];
+                setSelectedSport(normalize(latest.sport));
+                setSelectedPosition(normalize(latest.position));
             } else {
-                const storedSport = localStorage.getItem('selectedSport');
-                const storedPosition = localStorage.getItem('selectedPosition');
-                if (storedSport) setSelectedSport(storedSport.toLowerCase());
-                if (storedPosition) setSelectedPosition(storedPosition.toLowerCase());
+                const storedSport = normalize(localStorage.getItem('selectedSport'));
+                const storedPosition = normalize(localStorage.getItem('selectedPosition'));
+                if (storedSport) setSelectedSport(storedSport);
+                if (storedPosition) setSelectedPosition(storedPosition);
             }
         };
 
@@ -62,10 +66,10 @@ function AnalyticsDashboard() {
         const userId = localStorage.getItem('userId');
         if (selectedSport && selectedPosition && userId) {
             const filtered = gameStats.filter(
-                stat =>
+                (stat) =>
                     stat.user_id === userId &&
-                    stat.sport?.toLowerCase() === selectedSport &&
-                    stat.position?.toLowerCase() === selectedPosition
+                    normalize(stat.sport) === selectedSport &&
+                    normalize(stat.position) === selectedPosition
             );
             setFilteredStats(filtered);
         } else {
@@ -73,14 +77,19 @@ function AnalyticsDashboard() {
         }
     }, [selectedSport, selectedPosition, gameStats]);
 
-    const availableSports = Array.from(new Set(gameStats.map(stat => stat.sport?.toLowerCase())));
+    const availableSports = Array.from(
+        new Set(gameStats.map((stat) => normalize(stat.sport)))
+    );
     const availablePositions = Array.from(
         new Set(
             gameStats
-                .filter(stat => stat.sport?.toLowerCase() === selectedSport)
-                .map(stat => stat.position?.toLowerCase())
+                .filter((stat) => normalize(stat.sport) === selectedSport)
+                .map((stat) => normalize(stat.position))
         )
     );
+
+    const formatDisplay = (val) =>
+        val?.replace(/_/g, ' ')?.replace(/\b\w/g, (l) => l.toUpperCase());
 
     const handleGoHome = () => {
         localStorage.removeItem('selectedSport');
@@ -97,11 +106,11 @@ function AnalyticsDashboard() {
                     sport,
                     position,
                     statName,
-                    statValue
+                    statValue,
                 ])
-            )
+            ),
         ]
-            .map(e => e.join(','))
+            .map((e) => e.join(','))
             .join('\n');
 
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -131,41 +140,40 @@ function AnalyticsDashboard() {
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
                     <select
                         value={selectedSport}
-                        onChange={e => {
+                        onChange={(e) => {
                             const sport = e.target.value;
                             setSelectedSport(sport);
                             const firstAvailablePosition = gameStats.find(
-                                stat => stat.sport?.toLowerCase() === sport
-                            )?.position?.toLowerCase();
-                            setSelectedPosition(firstAvailablePosition || '');
+                                (stat) => normalize(stat.sport) === sport
+                            )?.position;
+                            setSelectedPosition(normalize(firstAvailablePosition || ''));
                         }}
                         className="w-full sm:w-64 p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
                     >
                         <option value="">Select Sport</option>
                         {availableSports.map((sport, idx) => (
                             <option key={idx} value={sport}>
-                                {sport.charAt(0).toUpperCase() + sport.slice(1)}
+                                {formatDisplay(sport)}
                             </option>
                         ))}
                     </select>
 
-                    {/* Position Selector (conditionally shown) */}
                     {availablePositions.length > 1 && (
                         <select
                             value={selectedPosition}
-                            onChange={e => setSelectedPosition(e.target.value)}
+                            onChange={(e) => setSelectedPosition(e.target.value)}
                             className="w-full sm:w-64 p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
                         >
                             {availablePositions.map((position, idx) => (
                                 <option key={idx} value={position}>
-                                    {position.charAt(0).toUpperCase() + position.slice(1)}
+                                    {formatDisplay(position)}
                                 </option>
                             ))}
                         </select>
                     )}
                 </div>
 
-                {/* Analytics Panels */}
+                {/* Panels */}
                 {selectedSport ? (
                     filteredStats.length > 0 ? (
                         <div className="space-y-10">
@@ -188,8 +196,8 @@ function AnalyticsDashboard() {
                         </div>
                     ) : (
                         <div className="text-center mt-12 text-gray-500 dark:text-gray-400">
-                            No stats found for <strong>{selectedSport}</strong>
-                            {selectedPosition && ` (${selectedPosition})`}
+                            No stats found for <strong>{formatDisplay(selectedSport)}</strong>
+                            {selectedPosition && ` (${formatDisplay(selectedPosition)})`}
                         </div>
                     )
                 ) : (
@@ -199,7 +207,7 @@ function AnalyticsDashboard() {
                 )}
             </div>
 
-            {/* Floating Action Button (FAB) */}
+            {/* FAB */}
             <div className="fixed bottom-6 right-6 flex flex-col items-end space-y-3 z-50">
                 {showFAB && (
                     <>
