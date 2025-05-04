@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function ResultsHistoryPage() {
+function ReflectionHistoryTable() {
     const [history, setHistory] = useState([]);
     const navigate = useNavigate();
 
@@ -115,4 +115,4 @@ function ResultsHistoryPage() {
     );
 }
 
-export default ResultsHistoryPage;
+export default ReflectionHistoryTable;
