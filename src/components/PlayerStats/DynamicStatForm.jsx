@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { saveGameStat } from '../../services/syncService';
 import StatsConfirmationModal from './StatsConfirmationModal';
 import { saveAs } from 'file-saver';
-import '@fontsource/roboto';
 
 const groupedStatFields = {
     basketball: [
@@ -12,7 +11,60 @@ const groupedStatFields = {
         { label: 'Ball Control', fields: ['Assists', 'Turnovers', 'Fouls'] },
         { label: 'Other', fields: ['Minutes Played'] }
     ],
-    // Extend other sports here if needed...
+    soccer: {
+        goalie: [
+            { label: 'Goalkeeping', fields: ['Saves', 'Goals Against', 'Clean Sheets', 'Save Percentage'] }
+        ],
+        default: [
+            { label: 'Offense', fields: ['Goals', 'Assists', 'Shots on Target'] },
+            { label: 'Defense', fields: ['Tackles Won', 'Fouls Committed'] }
+        ]
+    },
+    football: {
+        quarterback: [
+            { label: 'Passing', fields: ['Passing Yards', 'Passing TDs', 'Completions', 'Interceptions Thrown', 'Completion Percentage'] }
+        ],
+        'running-back': [
+            { label: 'Rushing', fields: ['Rushing Yards', 'Rushing TDs', 'Fumbles Lost'] }
+        ],
+        'wide-receiver': [
+            { label: 'Receiving', fields: ['Receiving Yards', 'Receiving TDs', 'Receptions'] }
+        ],
+        'defensive-player': [
+            { label: 'Defense', fields: ['Tackles', 'Sacks', 'Interceptions Caught'] }
+        ]
+    },
+    baseball: {
+        pitcher: [
+            { label: 'Pitching', fields: ['Innings Pitched', 'Strikeouts', 'Walks Allowed', 'Earned Runs', 'ERA', 'Hits Allowed', 'Home Runs Allowed', 'Wins', 'Losses', 'Saves'] }
+        ],
+        default: [
+            { label: 'Batting', fields: ['At Bats', 'Hits', 'Runs', 'RBIs', 'Home Runs', 'Doubles', 'Triples', 'Stolen Bases', 'Strikeouts', 'Walks'] },
+            { label: 'Defense', fields: ['Errors'] }
+        ]
+    },
+    icehockey: {
+        goalie: [
+            { label: 'Goalkeeping', fields: ['Saves', 'Goals Against', 'Save Percentage'] }
+        ],
+        default: [
+            { label: 'Performance', fields: ['Goals', 'Assists', 'Shots on Goal', 'Plus/Minus Rating'] }
+        ]
+    },
+    lacrosse: {
+        goalie: [
+            { label: 'Goalkeeping', fields: ['Saves', 'Goals Against'] }
+        ],
+        default: [
+            { label: 'Field Play', fields: ['Goals', 'Assists', 'Ground Balls', 'Faceoffs Won'] }
+        ]
+    },
+    trackcrosscountry: [
+        { label: 'Event Performance', fields: ['Event Name', 'Time', 'Placement'] }
+    ],
+    golf: [
+        { label: 'Round Stats', fields: ['Round Score', 'Pars', 'Birdies', 'Bogeys', 'Fairways Hit', 'Greens in Regulation'] }
+    ]
 };
 
 function DynamicStatForm({ sport, position }) {
@@ -42,6 +94,7 @@ function DynamicStatForm({ sport, position }) {
 
     const handleSubmit = async e => {
         if (e) e.preventDefault();
+
         const normalizedStats = Object.fromEntries(
             Object.entries(formData).map(([key, val]) => [normalizeKey(key), normalizeValue(val)])
         );
@@ -74,16 +127,19 @@ function DynamicStatForm({ sport, position }) {
 
     const handleDownload = () => {
         const stats = JSON.parse(localStorage.getItem('gameStats') || '[]');
-        if (!stats.length) return;
-        const headers = ['Sport', 'Position', 'Date', ...Object.keys(stats[0]?.stats || {})];
-        const rows = stats.map(stat => [
-            stat.sport,
-            stat.position,
-            new Date(stat.date).toLocaleDateString(),
-            ...headers.slice(3).map(h => stat.stats?.[h.toLowerCase().replace(/\s+/g, '_')] ?? '')
-        ]);
-        const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
-        saveAs(new Blob([csv], { type: 'text/csv;charset=utf-8;' }), 'game_stats.csv');
+        const csvHeader = ['Sport', 'Position', 'Date', ...Object.keys(stats[0]?.stats || {})];
+        const csvRows = stats.map(stat => {
+            const values = csvHeader.map(h => {
+                if (h === 'Sport') return stat.sport;
+                if (h === 'Position') return stat.position;
+                if (h === 'Date') return new Date(stat.date).toLocaleDateString();
+                return stat.stats?.[normalizeKey(h)] ?? '';
+            });
+            return values.join(',');
+        });
+        const csvContent = [csvHeader.join(','), ...csvRows].join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        saveAs(blob, 'game_stats.csv');
     };
 
     const handleHome = () => {
@@ -98,9 +154,9 @@ function DynamicStatForm({ sport, position }) {
 
     return (
         <>
-            <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto pb-32 font-['Roboto']">
-                <h2 className="text-2xl font-bold text-center mb-1">Log Stats for {sport}</h2>
-                {position && <p className="text-center text-sm text-gray-500 mb-4">Position: {position}</p>}
+            <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto pb-32">
+                <h2 className="text-2xl font-bold text-center mb-1 font-sans">Log Stats for {sport}</h2>
+                <p className="text-sm text-center text-gray-500 dark:text-gray-400 mb-4 font-sans">{position && `Position: ${position}`}</p>
 
                 {fieldGroups.length > 0 ? (
                     fieldGroups.map(group => (
@@ -122,8 +178,7 @@ function DynamicStatForm({ sport, position }) {
                                                 name={field}
                                                 value={formData[field] || ''}
                                                 onChange={handleChange}
-                                                className="mt-1 border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
-                          bg-white dark:bg-gray-800 dark:border-gray-500 dark:text-white"
+                                                className="mt-1 border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400 bg-white dark:bg-gray-800 dark:border-gray-500 dark:text-white"
                                                 placeholder={field}
                                             />
                                         </div>
