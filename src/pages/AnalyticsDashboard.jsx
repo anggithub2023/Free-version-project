@@ -181,6 +181,10 @@ function AnalyticsDashboard() {
                                 <PanelHeader icon={<MdHistory />} title="Stat History" subtitle="(Every stat you’ve logged)" />
                                 <StatsHistoryTable filteredStats={filteredStats} />
                             </div>
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
+                                <PanelHeader icon={<MdHistory />} title="Reflection History" subtitle="(Your mindset snapshots)" />
+                                <ReflectionHistoryTable />
+                            </div>
                         </div>
                     ) : (
                         <div className="text-center mt-12 text-gray-500 dark:text-gray-400">
