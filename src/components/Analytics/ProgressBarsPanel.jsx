@@ -9,20 +9,25 @@ function ProgressBarsPanel({ filteredStats }) {
         );
     }
 
-    // Aggregate totals for each stat
+    const normalizeKey = key => key.toLowerCase().replace(/\s+/g, '_');
+
     const totals = {};
     filteredStats.forEach(entry => {
         Object.entries(entry.stats || {}).forEach(([key, value]) => {
-            const normalizedKey = key.toLowerCase();
-            totals[normalizedKey] = (totals[normalizedKey] || 0) + Number(value || 0);
+            const normalizedKey = normalizeKey(key);
+            const numValue = Number(value);
+            if (!isNaN(numValue)) {
+                totals[normalizedKey] = (totals[normalizedKey] || 0) + numValue;
+            }
         });
     });
 
-    const max = Math.max(...Object.values(totals));
+    const sortedTotals = Object.entries(totals).sort((a, b) => b[1] - a[1]);
+    const max = Math.max(...sortedTotals.map(([_, v]) => v), 0);
 
     return (
         <div className="space-y-6">
-            {Object.entries(totals).map(([key, value], index) => {
+            {sortedTotals.map(([key, value], index) => {
                 const percentage = max > 0 ? Math.round((value / max) * 100) : 0;
 
                 return (
