@@ -72,7 +72,6 @@ function DynamicStatForm({ sport, position }) {
 
     const normalizeKey = key => key.trim().toLowerCase().replace(/\s+/g, '_');
     const normalizeValue = val => (isNaN(val) ? val : Number(val));
-
     const normalizeSport = sportId => sportId?.toLowerCase().replace(/[^a-z]/g, '');
     const normalizedSport = normalizeSport(sport);
     const normalizedPosition = position?.toLowerCase() || 'default';
@@ -135,9 +134,16 @@ function DynamicStatForm({ sport, position }) {
     return (
         <>
             <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto">
-                <h2 className="text-2xl font-bold text-center mb-4">
-                    Log Stats for {sport} {position && `- ${position}`}
-                </h2>
+                <div className="text-center mb-4">
+                    <h2 className="text-2xl font-bold">
+                        Log Stats for {sport}
+                    </h2>
+                    {position && (
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Position: {position}
+                        </p>
+                    )}
+                </div>
 
                 {fieldGroups.length > 0 ? (
                     fieldGroups.map(group => (
