@@ -15,10 +15,8 @@ import {
     MdMenu,
 } from 'react-icons/md';
 import { GiAchievement } from 'react-icons/gi';
-
 import { fetchGameStats } from '../services/syncService';
 
-// 🔧 Utility for matching normalized values
 const normalize = (val) =>
     val?.toLowerCase().replace(/\s+/g, '_').trim() || '';
 
@@ -34,17 +32,11 @@ function AnalyticsDashboard() {
             let stats = [];
             try {
                 stats = await fetchGameStats();
-                if (stats?.length > 0) {
-                    setGameStats(stats);
-                } else {
-                    const fallbackStats = JSON.parse(localStorage.getItem('gameStats') || '[]');
-                    setGameStats(fallbackStats);
-                }
+                setGameStats(stats?.length ? stats : JSON.parse(localStorage.getItem('gameStats') || '[]'));
             } catch (err) {
                 console.error('Supabase fetch failed:', err.message);
-                const localStats = JSON.parse(localStorage.getItem('gameStats') || '[]');
-                stats = localStats;
-                setGameStats(localStats);
+                stats = JSON.parse(localStorage.getItem('gameStats') || '[]');
+                setGameStats(stats);
             }
 
             if (stats.length > 0) {
@@ -77,9 +69,7 @@ function AnalyticsDashboard() {
         }
     }, [selectedSport, selectedPosition, gameStats]);
 
-    const availableSports = Array.from(
-        new Set(gameStats.map((stat) => normalize(stat.sport)))
-    );
+    const availableSports = Array.from(new Set(gameStats.map((stat) => normalize(stat.sport))));
     const availablePositions = Array.from(
         new Set(
             gameStats
@@ -136,7 +126,6 @@ function AnalyticsDashboard() {
                     </p>
                 </div>
 
-                {/* Sport Selector */}
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
                     <select
                         value={selectedSport}
@@ -173,7 +162,6 @@ function AnalyticsDashboard() {
                     )}
                 </div>
 
-                {/* Panels */}
                 {selectedSport ? (
                     filteredStats.length > 0 ? (
                         <div className="space-y-10">
@@ -207,24 +195,34 @@ function AnalyticsDashboard() {
                 )}
             </div>
 
-            {/* FAB */}
+            {/* FAB with visible button labels */}
             <div className="fixed bottom-6 right-6 flex flex-col items-end space-y-3 z-50">
                 {showFAB && (
                     <>
-                        <button
-                            onClick={handleDownloadStats}
-                            className="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-full shadow-lg"
-                            title="Download CSV"
-                        >
-                            <MdFileDownload size={24} />
-                        </button>
-                        <button
-                            onClick={handleGoHome}
-                            className="bg-gray-600 hover:bg-gray-500 text-white p-3 rounded-full shadow-lg"
-                            title="Back to Home"
-                        >
-                            <MdHome size={24} />
-                        </button>
+                        <div className="flex items-center space-x-2">
+                            <span className="bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-100 px-3 py-1 rounded shadow">
+                                Download CSV
+                            </span>
+                            <button
+                                onClick={handleDownloadStats}
+                                className="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-full shadow-lg"
+                                title="Download CSV"
+                            >
+                                <MdFileDownload size={24} />
+                            </button>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span className="bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-100 px-3 py-1 rounded shadow">
+                                Back to Home
+                            </span>
+                            <button
+                                onClick={handleGoHome}
+                                className="bg-gray-600 hover:bg-gray-500 text-white p-3 rounded-full shadow-lg"
+                                title="Back to Home"
+                            >
+                                <MdHome size={24} />
+                            </button>
+                        </div>
                     </>
                 )}
                 <button
