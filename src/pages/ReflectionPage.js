@@ -6,7 +6,7 @@ import ReflectionModal from '../features/reflection/ReflectionModal';
 import QUESTIONS from '../data/QUESTIONS';
 import answersReducer from '../reducers/answersReducer';
 import getRandomQuestionsReflection from '../helpers/getRandomQuestionsReflection';
-import { saveReflection } from '../services/syncService'; // ✅ Add this line
+import { saveReflection } from '../services/syncService';
 
 function ReflectionPage() {
     const [showStartFlow, setShowStartFlow] = useState(() => {
@@ -78,7 +78,7 @@ function ReflectionPage() {
         };
 
         try {
-            await saveReflection(reflectionData); // ✅ Send to Supabase
+            await saveReflection(reflectionData);
         } catch (err) {
             console.warn('📦 Queuing reflection due to sync error');
             const queue = JSON.parse(localStorage.getItem('unsyncedReflections') || '[]');
@@ -92,6 +92,9 @@ function ReflectionPage() {
         dispatch({ type: 'RESET' });
     };
 
+    const formatDisplay = (val) =>
+        val?.replace(/_/g, ' ')?.replace(/\b\w/g, l => l.toUpperCase());
+
     if (showStartFlow) {
         return <ReflectionStartFlow onComplete={handleStartFlowComplete} />;
     }
@@ -100,10 +103,19 @@ function ReflectionPage() {
         return <div className="text-center p-10">Loading questions... Please refresh.</div>;
     }
 
+    const selectedSport = localStorage.getItem('selectedSport');
+    const selectedPosition = localStorage.getItem('selectedPosition');
+
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white p-6">
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-3xl font-extrabold mb-8 text-center">Reflection</h1>
+                <h1 className="text-4xl sm:text-5xl font-extrabold font-poppins text-center">
+                    Reflection
+                </h1>
+                <p className="text-base sm:text-lg text-gray-500 dark:text-gray-400 italic font-light text-center mt-1">
+                    {formatDisplay(selectedSport)}
+                    {selectedPosition ? ` – ${formatDisplay(selectedPosition)}` : ''}
+                </p>
 
                 {Object.keys(randomizedQuestions).map(section =>
                         randomizedQuestions[section] && (
@@ -132,8 +144,8 @@ function ReflectionPage() {
                 {showModal && scoreSummary && (
                     <ReflectionModal
                         {...scoreSummary}
-                        sport={localStorage.getItem('selectedSport')}
-                        position={localStorage.getItem('selectedPosition')}
+                        sport={selectedSport}
+                        position={selectedPosition}
                     />
                 )}
             </div>
