@@ -11,9 +11,10 @@ function ReflectionHistoryTable() {
         const loadReflections = async () => {
             try {
                 const data = await fetchReflections();
+                console.log('✅ Loaded reflections into component:', data); // ADD THIS
                 setReflections(data || []);
             } catch (err) {
-                console.error('Failed to fetch reflections:', err.message);
+                console.error('❌ Failed to fetch reflections:', err.message);
                 setReflections([]);
             } finally {
                 setLoading(false);
