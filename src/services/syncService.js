@@ -28,7 +28,6 @@ export const saveGameStat = async (statEntry) => {
     };
 
     const { error } = await supabase.from('game_stats').insert([normalizedStatEntry]);
-
     if (error) throw error;
 };
 
@@ -61,6 +60,21 @@ export const saveReflection = async (reflectionEntry) => {
     ]);
 
     if (error) throw error;
+};
+
+export const fetchReflectionStats = async () => {
+    const userId = getUserId();
+    if (!userId) throw new Error('Missing user ID');
+
+    const { data, error } = await supabase
+        .from('reflections')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    return data;
 };
 
 export const ensureUserExists = async (userId) => {
