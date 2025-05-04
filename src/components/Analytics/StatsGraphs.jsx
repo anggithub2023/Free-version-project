@@ -1,12 +1,13 @@
 import React from 'react';
 import {
-    LineChart,
-    Line,
+    BarChart,
+    Bar,
     XAxis,
     YAxis,
     CartesianGrid,
     Tooltip,
-    ResponsiveContainer
+    ResponsiveContainer,
+    LabelList
 } from 'recharts';
 
 function StatsGraphs({ filteredStats }) {
@@ -18,16 +19,14 @@ function StatsGraphs({ filteredStats }) {
         );
     }
 
-    const normalizeKey = (key) => key.toLowerCase().replace(/\s+/g, '_');
+    const normalizeKey = key => key.toLowerCase().replace(/\s+/g, '_');
 
-    // Identify all stat keys across entries
     const statKeysSet = new Set();
     filteredStats.forEach(entry => {
         Object.keys(entry.stats || {}).forEach(key => statKeysSet.add(normalizeKey(key)));
     });
     const statKeys = Array.from(statKeysSet);
 
-    // Build graph-friendly data
     const graphData = filteredStats.map(entry => {
         const row = { date: new Date(entry.date).toLocaleDateString() };
         Object.entries(entry.stats || {}).forEach(([key, value]) => {
@@ -37,27 +36,22 @@ function StatsGraphs({ filteredStats }) {
     });
 
     return (
-        <div className="space-y-12">
+        <div className="space-y-10">
             {statKeys.map((key, index) => (
                 <div key={`${key}-${index}`}>
-                    <h3 className="text-lg font-semibold mb-2 text-gray-700 dark:text-gray-200">
+                    <h3 className="text-lg font-bold mb-2 text-gray-800 dark:text-white">
                         {key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
                     </h3>
-                    <ResponsiveContainer width="100%" height={250}>
-                        <LineChart data={graphData}>
+                    <ResponsiveContainer width="100%" height={220}>
+                        <BarChart data={graphData} margin={{ top: 10, right: 20, bottom: 20, left: 10 }}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="date" />
                             <YAxis allowDecimals={false} />
                             <Tooltip />
-                            <Line
-                                type="monotone"
-                                dataKey={key}
-                                stroke="#8884d8"
-                                strokeWidth={2}
-                                dot={{ r: 4 }}
-                                activeDot={{ r: 6 }}
-                            />
-                        </LineChart>
+                            <Bar dataKey={key} fill="#4F46E5">
+                                <LabelList dataKey={key} position="top" />
+                            </Bar>
+                        </BarChart>
                     </ResponsiveContainer>
                 </div>
             ))}
