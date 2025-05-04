@@ -16,7 +16,24 @@ function DynamicStatForm({ sport, position }) {
     const sportFields = (() => {
         switch (normalizedSport) {
             case 'basketball':
-                return ['Points', 'Assists', 'Rebounds', 'Steals', 'Blocks', 'Turnovers', 'Free Throws', 'Minutes Played'];
+                return [
+                    'Points',
+                    'Assists',
+                    'Rebounds',
+                    'Offensive Rebounds',
+                    'Defensive Rebounds',
+                    'Steals',
+                    'Blocks',
+                    'Turnovers',
+                    'Fouls',
+                    'Field Goals Made',
+                    'Field Goals Attempted',
+                    'Three-Pointers Made',
+                    'Three-Pointers Attempted',
+                    'Free Throws Made',
+                    'Free Throws Attempted',
+                    'Minutes Played'
+                ];
             case 'soccer':
                 return normalizedPosition === 'goalie'
                     ? ['Saves', 'Goals Against', 'Clean Sheets', 'Save Percentage']
@@ -36,8 +53,31 @@ function DynamicStatForm({ sport, position }) {
                 }
             case 'baseball':
                 return normalizedPosition === 'pitcher'
-                    ? ['Strikeouts', 'ERA', 'Walks Allowed', 'Innings Pitched']
-                    : ['Hits', 'Runs', 'RBIs', 'Home Runs', 'Errors'];
+                    ? [
+                        'Innings Pitched',
+                        'Strikeouts',
+                        'Walks Allowed',
+                        'Earned Runs',
+                        'ERA',
+                        'Hits Allowed',
+                        'Home Runs Allowed',
+                        'Wins',
+                        'Losses',
+                        'Saves'
+                    ]
+                    : [
+                        'At Bats',
+                        'Hits',
+                        'Runs',
+                        'RBIs',
+                        'Home Runs',
+                        'Doubles',
+                        'Triples',
+                        'Stolen Bases',
+                        'Strikeouts',
+                        'Walks',
+                        'Errors'
+                    ];
             case 'icehockey':
                 return normalizedPosition === 'goalie'
                     ? ['Saves', 'Goals Against', 'Save Percentage']
