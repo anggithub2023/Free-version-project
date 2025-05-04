@@ -1,42 +1,43 @@
+// src/components/Analytics/AveragesPanel.jsx
 import React from 'react';
 
 function AveragesPanel({ filteredStats }) {
     if (!filteredStats || filteredStats.length === 0) {
         return (
             <div className="text-center text-gray-500 dark:text-gray-400">
-                No stats to calculate averages.
+                No data available to calculate averages.
             </div>
         );
     }
 
-    const totalStats = {};
-    const statCounts = {};
-
-    // Sum all stats across games
+    // Aggregate stat sums and counts
+    const statTotals = {};
     filteredStats.forEach(entry => {
-        for (const [statName, statValue] of Object.entries(entry.stats)) {
-            if (!totalStats[statName]) {
-                totalStats[statName] = 0;
-                statCounts[statName] = 0;
+        const stats = entry.stats || {};
+        Object.entries(stats).forEach(([key, value]) => {
+            const normalizedKey = key.toLowerCase().replace(/\s+/g, '_');
+            const numValue = Number(value);
+            if (!isNaN(numValue)) {
+                if (!statTotals[normalizedKey]) {
+                    statTotals[normalizedKey] = { total: 0, count: 0 };
+                }
+                statTotals[normalizedKey].total += numValue;
+                statTotals[normalizedKey].count += 1;
             }
-            totalStats[statName] += Number(statValue);
-            statCounts[statName] += 1;
-        }
+        });
     });
 
-    // Calculate averages
-    const averages = Object.keys(totalStats).map(statName => ({
-        stat: statName,
-        average: (totalStats[statName] / statCounts[statName]).toFixed(1)
+    const averages = Object.entries(statTotals).map(([key, { total, count }]) => ({
+        stat: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+        average: (total / count).toFixed(2)
     }));
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {averages.map(({ stat, average }, idx) => (
-                <div key={idx} className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md flex flex-col items-center">
-                    <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-2">{stat}</h3>
-                    <p className="text-2xl font-bold text-green-600 dark:text-green-400">{average}</p>
-                    <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">Avg/Game</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {averages.map(({ stat, average }) => (
+                <div key={stat} className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow">
+                    <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{stat}</h4>
+                    <p className="text-2xl text-indigo-600 dark:text-indigo-300 font-bold">{average}</p>
                 </div>
             ))}
         </div>
