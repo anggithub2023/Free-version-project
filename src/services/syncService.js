@@ -6,10 +6,9 @@ const getUserId = () => {
     return localStorage.getItem('userId');
 };
 
-// 🔁 Normalize stat keys for consistency
+// 🔁 Normalize stat keys
 const normalizeStatKeys = (statsObj) => {
     if (!statsObj || typeof statsObj !== 'object') return {};
-
     return Object.fromEntries(
         Object.entries(statsObj).map(([key, val]) => [
             key.trim().toLowerCase().replace(/\s+/g, '_'),
@@ -18,7 +17,7 @@ const normalizeStatKeys = (statsObj) => {
     );
 };
 
-// ✅ Save a game stat entry
+// ✅ Save game stats
 export const saveGameStat = async (statEntry) => {
     const userId = getUserId();
     if (!userId) throw new Error('Missing user ID');
@@ -36,7 +35,7 @@ export const saveGameStat = async (statEntry) => {
     if (error) throw error;
 };
 
-// ✅ Fetch all game stats for current user
+// ✅ Fetch game stats
 export const fetchGameStats = async () => {
     const userId = getUserId();
     if (!userId) throw new Error('Missing user ID');
@@ -57,7 +56,7 @@ export const fetchGameStats = async () => {
     }));
 };
 
-// ✅ Save a reflection entry
+// ✅ Save reflection
 export const saveReflection = async (reflectionEntry) => {
     const userId = getUserId();
     if (!userId) throw new Error('Missing user ID');
@@ -74,24 +73,32 @@ export const saveReflection = async (reflectionEntry) => {
     if (error) throw error;
 };
 
-// ✅ Fetch reflections for current user
+// ✅ Fetch reflections
 export const fetchReflections = async () => {
     const userId = getUserId();
-    if (!userId) throw new Error('Missing user ID');
+    if (!userId) throw new Error('❌ Missing user ID from localStorage');
 
-    const { data, error } = await supabase
-        .from('reflections')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
+    try {
+        const { data, error } = await supabase
+            .from('reflections')
+            .select('*')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false });
 
-    if (error) throw error;
+        if (error) {
+            console.error('❌ Supabase error while fetching reflections:', error.message);
+            return [];
+        }
 
-    console.log('✅ Reflections fetched from DB:', data);
-    return data;
+        console.log(`✅ Reflections fetched from DB (${data.length} entries):`, data);
+        return data;
+    } catch (err) {
+        console.error('❌ Unexpected failure in fetchReflections():', err.message);
+        return [];
+    }
 };
 
-// ✅ Ensure the user exists in the DB (for analytics + sync)
+// ✅ Ensure user exists
 export const ensureUserExists = async (userId) => {
     const { data, error } = await supabase
         .from('users')
