@@ -1,5 +1,7 @@
+// src/components/Analytics/ReflectionHistoryTable.jsx
+
 import React, { useEffect, useState } from 'react';
-import { fetchReflectionStats } from '../../services/syncService';
+import { fetchReflections } from '../../services/syncService';
 
 function ReflectionHistoryTable() {
     const [reflections, setReflections] = useState([]);
@@ -8,7 +10,7 @@ function ReflectionHistoryTable() {
     useEffect(() => {
         const loadReflections = async () => {
             try {
-                const data = await fetchReflectionStats();
+                const data = await fetchReflections();
                 setReflections(data || []);
             } catch (err) {
                 console.error('Failed to fetch reflections:', err.message);
@@ -22,11 +24,19 @@ function ReflectionHistoryTable() {
     }, []);
 
     if (loading) {
-        return <div className="text-center text-gray-500 dark:text-gray-400 py-6">Loading reflection history...</div>;
+        return (
+            <div className="text-center text-gray-500 dark:text-gray-400 py-6">
+                Loading reflection history...
+            </div>
+        );
     }
 
     if (!reflections.length) {
-        return <div className="text-center text-gray-500 dark:text-gray-400 py-6">No reflections recorded yet.</div>;
+        return (
+            <div className="text-center text-gray-500 dark:text-gray-400 py-6">
+                No reflections recorded yet.
+            </div>
+        );
     }
 
     return (
@@ -35,6 +45,8 @@ function ReflectionHistoryTable() {
                 <thead className="bg-gray-100 dark:bg-gray-800">
                 <tr>
                     <th className="border px-4 py-2">Date</th>
+                    <th className="border px-4 py-2">Sport</th>
+                    <th className="border px-4 py-2">Position</th>
                     <th className="border px-4 py-2">Total</th>
                     <th className="border px-4 py-2">Offense</th>
                     <th className="border px-4 py-2">Defense</th>
@@ -49,10 +61,11 @@ function ReflectionHistoryTable() {
                 {reflections.map((entry, index) => {
                     const scores = entry.scores || {};
                     const created = new Date(entry.created_at || Date.now()).toLocaleDateString();
-
                     return (
-                        <tr key={index} className="text-center hover:bg-gray-50 dark:hover:bg-gray-700">
+                        <tr key={index} className="text-center hover:bg-gray-50 dark:hover:bg-gray-700 text-sm">
                             <td className="border px-4 py-2">{created}</td>
+                            <td className="border px-4 py-2">{entry.sport || '--'}</td>
+                            <td className="border px-4 py-2">{entry.position || '--'}</td>
                             <td className="border px-4 py-2">{scores.total ?? '--'}%</td>
                             <td className="border px-4 py-2">{scores.offense ?? '--'}%</td>
                             <td className="border px-4 py-2">{scores.defense ?? '--'}%</td>
