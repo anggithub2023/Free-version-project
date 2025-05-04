@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchReflections } from '../../services/syncService';
+import { fetchReflectionStats } from '../../services/syncService';
 
 function ReflectionHistoryTable() {
     const [reflections, setReflections] = useState([]);
@@ -8,7 +8,7 @@ function ReflectionHistoryTable() {
     useEffect(() => {
         const loadReflections = async () => {
             try {
-                const data = await fetchReflections();
+                const data = await fetchReflectionStats();
                 setReflections(data || []);
             } catch (err) {
                 console.error('Failed to fetch reflections:', err.message);
@@ -49,6 +49,7 @@ function ReflectionHistoryTable() {
                 {reflections.map((entry, index) => {
                     const scores = entry.scores || {};
                     const created = new Date(entry.created_at || Date.now()).toLocaleDateString();
+
                     return (
                         <tr key={index} className="text-center hover:bg-gray-50 dark:hover:bg-gray-700">
                             <td className="border px-4 py-2">{created}</td>
