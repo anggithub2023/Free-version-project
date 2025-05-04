@@ -1,8 +1,8 @@
-// src/components/DynamicStatForm.jsx
 import React, { useState } from 'react';
 import { saveGameStat } from '../../services/syncService';
 import StatsConfirmationModal from './StatsConfirmationModal';
 import { saveAs } from 'file-saver';
+import '@fontsource/roboto';
 
 const groupedStatFields = {
     basketball: [
@@ -12,7 +12,7 @@ const groupedStatFields = {
         { label: 'Ball Control', fields: ['Assists', 'Turnovers', 'Fouls'] },
         { label: 'Other', fields: ['Minutes Played'] }
     ],
-    // Extend with more sports/positions...
+    // Extend other sports here if needed...
 };
 
 function DynamicStatForm({ sport, position }) {
@@ -41,8 +41,7 @@ function DynamicStatForm({ sport, position }) {
     };
 
     const handleSubmit = async e => {
-        e.preventDefault();
-
+        if (e) e.preventDefault();
         const normalizedStats = Object.fromEntries(
             Object.entries(formData).map(([key, val]) => [normalizeKey(key), normalizeValue(val)])
         );
@@ -75,19 +74,16 @@ function DynamicStatForm({ sport, position }) {
 
     const handleDownload = () => {
         const stats = JSON.parse(localStorage.getItem('gameStats') || '[]');
-        const csvHeader = ['Sport', 'Position', 'Date', ...Object.keys(stats[0]?.stats || {})];
-        const csvRows = stats.map(stat => {
-            const values = csvHeader.map(h => {
-                if (h === 'Sport') return stat.sport;
-                if (h === 'Position') return stat.position;
-                if (h === 'Date') return new Date(stat.date).toLocaleDateString();
-                return stat.stats?.[h.toLowerCase().replace(/\s+/g, '_')] ?? '';
-            });
-            return values.join(',');
-        });
-        const csvContent = [csvHeader.join(','), ...csvRows].join('\n');
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        saveAs(blob, 'game_stats.csv');
+        if (!stats.length) return;
+        const headers = ['Sport', 'Position', 'Date', ...Object.keys(stats[0]?.stats || {})];
+        const rows = stats.map(stat => [
+            stat.sport,
+            stat.position,
+            new Date(stat.date).toLocaleDateString(),
+            ...headers.slice(3).map(h => stat.stats?.[h.toLowerCase().replace(/\s+/g, '_')] ?? '')
+        ]);
+        const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+        saveAs(new Blob([csv], { type: 'text/csv;charset=utf-8;' }), 'game_stats.csv');
     };
 
     const handleHome = () => {
@@ -102,11 +98,9 @@ function DynamicStatForm({ sport, position }) {
 
     return (
         <>
-            <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto pb-32 px-4">
-                <h2 className="text-2xl font-bold text-center mb-1" style={{ fontFamily: 'Roboto, sans-serif' }}>
-                    Log Stats for {sport}
-                </h2>
-                {position && <p className="text-sm text-center text-gray-600 mb-4">Position: {position}</p>}
+            <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto pb-32 font-['Roboto']">
+                <h2 className="text-2xl font-bold text-center mb-1">Log Stats for {sport}</h2>
+                {position && <p className="text-center text-sm text-gray-500 mb-4">Position: {position}</p>}
 
                 {fieldGroups.length > 0 ? (
                     fieldGroups.map(group => (
@@ -128,7 +122,8 @@ function DynamicStatForm({ sport, position }) {
                                                 name={field}
                                                 value={formData[field] || ''}
                                                 onChange={handleChange}
-                                                className="mt-1 border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400 bg-white dark:bg-gray-800 dark:border-gray-500 dark:text-white"
+                                                className="mt-1 border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
+                          bg-white dark:bg-gray-800 dark:border-gray-500 dark:text-white"
                                                 placeholder={field}
                                             />
                                         </div>
@@ -143,24 +138,13 @@ function DynamicStatForm({ sport, position }) {
             </form>
 
             <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 shadow-md px-4 py-3 flex justify-between items-center z-50 border-t dark:border-gray-700">
-                <button onClick={handleSubmit} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-semibold">
-                    Save
-                </button>
-                <button onClick={() => setFormData({})} className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded font-semibold">
-                    Clear
-                </button>
-                <button onClick={handleDownload} className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded font-semibold">
-                    Download CSV
-                </button>
-                <button onClick={handleHome} className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded font-semibold">
-                    Home
-                </button>
+                <button onClick={handleSubmit} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-semibold">Save</button>
+                <button onClick={() => setFormData({})} className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded font-semibold">Clear</button>
+                <button onClick={handleDownload} className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded font-semibold">Download CSV</button>
+                <button onClick={handleHome} className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded font-semibold">Home</button>
             </div>
 
-            <StatsConfirmationModal
-                visible={showStatsModal}
-                onClose={() => setShowStatsModal(false)}
-            />
+            <StatsConfirmationModal visible={showStatsModal} onClose={() => setShowStatsModal(false)} />
         </>
     );
 }
