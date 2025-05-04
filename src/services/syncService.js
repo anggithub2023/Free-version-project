@@ -3,7 +3,7 @@ import supabase from '../lib/supabaseClient';
 
 const getUserId = () => localStorage.getItem('userId');
 
-// Normalize stat keys consistently
+// 🔁 Normalize stat keys for consistency
 const normalizeStatKeys = (statsObj) => {
     if (!statsObj || typeof statsObj !== 'object') return {};
 
@@ -15,6 +15,7 @@ const normalizeStatKeys = (statsObj) => {
     );
 };
 
+// ✅ Save a game stat entry
 export const saveGameStat = async (statEntry) => {
     const userId = getUserId();
     if (!userId) throw new Error('Missing user ID');
@@ -31,6 +32,7 @@ export const saveGameStat = async (statEntry) => {
     if (error) throw error;
 };
 
+// ✅ Fetch all game stats for current user
 export const fetchGameStats = async () => {
     const userId = getUserId();
     if (!userId) throw new Error('Missing user ID');
@@ -51,19 +53,21 @@ export const fetchGameStats = async () => {
     }));
 };
 
+// ✅ Save a reflection entry
 export const saveReflection = async (reflectionEntry) => {
     const userId = getUserId();
     if (!userId) throw new Error('Missing user ID');
 
-    const { error } = await supabase.from('reflections').insert([
-        { ...reflectionEntry, user_id: userId }
-    ]);
+    const { error } = await supabase
+        .from('reflections')
+        .insert([{ ...reflectionEntry, user_id: userId }]);
 
     if (error) throw error;
 };
 
+// ✅ Fetch reflections for current user
 export const fetchReflections = async () => {
-    const userId = localStorage.getItem('userId');
+    const userId = getUserId();
     if (!userId) throw new Error('Missing user ID');
 
     const { data, error } = await supabase
@@ -75,9 +79,10 @@ export const fetchReflections = async () => {
     if (error) throw error;
 
     console.log('✅ Reflections fetched from DB:', data);
-    return data || [];
+    return data;
 };
 
+// ✅ Ensure the user exists in the DB (for analytics + sync)
 export const ensureUserExists = async (userId) => {
     const { data, error } = await supabase
         .from('users')
