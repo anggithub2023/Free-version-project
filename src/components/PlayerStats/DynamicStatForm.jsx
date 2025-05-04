@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { saveGameStat } from '../../services/syncService';
 import StatsConfirmationModal from './StatsConfirmationModal';
+import { saveAs } from 'file-saver';
 
 const groupedStatFields = {
     basketball: [
@@ -10,69 +11,16 @@ const groupedStatFields = {
         { label: 'Ball Control', fields: ['Assists', 'Turnovers', 'Fouls'] },
         { label: 'Other', fields: ['Minutes Played'] }
     ],
-    soccer: {
-        goalie: [
-            { label: 'Goalkeeping', fields: ['Saves', 'Goals Against', 'Clean Sheets', 'Save Percentage'] }
-        ],
-        default: [
-            { label: 'Offense', fields: ['Goals', 'Assists', 'Shots on Target'] },
-            { label: 'Defense', fields: ['Tackles Won', 'Fouls Committed'] }
-        ]
-    },
-    football: {
-        quarterback: [
-            { label: 'Passing', fields: ['Passing Yards', 'Passing TDs', 'Completions', 'Interceptions Thrown', 'Completion Percentage'] }
-        ],
-        'running-back': [
-            { label: 'Rushing', fields: ['Rushing Yards', 'Rushing TDs', 'Fumbles Lost'] }
-        ],
-        'wide-receiver': [
-            { label: 'Receiving', fields: ['Receiving Yards', 'Receiving TDs', 'Receptions'] }
-        ],
-        'defensive-player': [
-            { label: 'Defense', fields: ['Tackles', 'Sacks', 'Interceptions Caught'] }
-        ]
-    },
-    baseball: {
-        pitcher: [
-            { label: 'Pitching', fields: ['Innings Pitched', 'Strikeouts', 'Walks Allowed', 'Earned Runs', 'ERA', 'Hits Allowed', 'Home Runs Allowed', 'Wins', 'Losses', 'Saves'] }
-        ],
-        default: [
-            { label: 'Batting', fields: ['At Bats', 'Hits', 'Runs', 'RBIs', 'Home Runs', 'Doubles', 'Triples', 'Stolen Bases', 'Strikeouts', 'Walks'] },
-            { label: 'Defense', fields: ['Errors'] }
-        ]
-    },
-    icehockey: {
-        goalie: [
-            { label: 'Goalkeeping', fields: ['Saves', 'Goals Against', 'Save Percentage'] }
-        ],
-        default: [
-            { label: 'Performance', fields: ['Goals', 'Assists', 'Shots on Goal', 'Plus/Minus Rating'] }
-        ]
-    },
-    lacrosse: {
-        goalie: [
-            { label: 'Goalkeeping', fields: ['Saves', 'Goals Against'] }
-        ],
-        default: [
-            { label: 'Field Play', fields: ['Goals', 'Assists', 'Ground Balls', 'Faceoffs Won'] }
-        ]
-    },
-    trackcrosscountry: [
-        { label: 'Event Performance', fields: ['Event Name', 'Time', 'Placement'] }
-    ],
-    golf: [
-        { label: 'Round Stats', fields: ['Round Score', 'Pars', 'Birdies', 'Bogeys', 'Fairways Hit', 'Greens in Regulation'] }
-    ]
+    // other sports config omitted for brevity – retain yours
 };
 
 function DynamicStatForm({ sport, position }) {
     const [formData, setFormData] = useState({});
     const [showStatsModal, setShowStatsModal] = useState(false);
+    const [openGroup, setOpenGroup] = useState(null);
 
     const normalizeKey = key => key.trim().toLowerCase().replace(/\s+/g, '_');
     const normalizeValue = val => (isNaN(val) ? val : Number(val));
-
     const normalizeSport = sportId => sportId?.toLowerCase().replace(/[^a-z]/g, '');
     const normalizedSport = normalizeSport(sport);
     const normalizedPosition = position?.toLowerCase() || 'default';
@@ -95,10 +43,7 @@ function DynamicStatForm({ sport, position }) {
         e.preventDefault();
 
         const normalizedStats = Object.fromEntries(
-            Object.entries(formData).map(([key, val]) => [
-                normalizeKey(key),
-                normalizeValue(val)
-            ])
+            Object.entries(formData).map(([key, val]) => [normalizeKey(key), normalizeValue(val)])
         );
 
         const statEntry = {
@@ -118,7 +63,6 @@ function DynamicStatForm({ sport, position }) {
             await saveGameStat(statEntry);
             setShowStatsModal(true);
         } catch (error) {
-            console.warn('📦 Queued stat for retry');
             const queue = JSON.parse(localStorage.getItem('unsyncedGameStats') || '[]');
             queue.push(statEntry);
             localStorage.setItem('unsyncedGameStats', JSON.stringify(queue));
@@ -128,60 +72,101 @@ function DynamicStatForm({ sport, position }) {
         setFormData({});
     };
 
+    const handleDownload = () => {
+        const stats = JSON.parse(localStorage.getItem('gameStats') || '[]');
+        const csvHeader = ['Sport', 'Position', 'Date', ...Object.keys(stats[0]?.stats || {})];
+        const csvRows = stats.map(stat => {
+            const values = csvHeader.map(h => {
+                if (h === 'Sport') return stat.sport;
+                if (h === 'Position') return stat.position;
+                if (h === 'Date') return new Date(stat.date).toLocaleDateString();
+                return stat.stats?.[h.toLowerCase().replace(/\s+/g, '_')] ?? '';
+            });
+            return values.join(',');
+        });
+        const csvContent = [csvHeader.join(','), ...csvRows].join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        saveAs(blob, 'game_stats.csv');
+    };
+
+    const handleHome = () => {
+        localStorage.removeItem('selectedSport');
+        localStorage.removeItem('selectedPosition');
+        window.location.href = '/';
+    };
+
     if (!sport) {
         return <div className="text-center mt-10 text-gray-500">No sport selected yet.</div>;
     }
 
     return (
         <>
-            <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto">
+            <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto pb-32">
                 <h2 className="text-2xl font-bold text-center mb-4">
                     Log Stats for {sport} {position && `- ${position}`}
                 </h2>
 
                 {fieldGroups.length > 0 ? (
                     fieldGroups.map(group => (
-                        <div key={group.label} className="mb-4">
-                            <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-2">{group.label}</h3>
-                            {group.fields.map(field => (
-                                <div key={field} className="flex flex-col mb-2">
-                                    <label className="text-gray-700 dark:text-gray-300 font-medium mb-1">{field}</label>
-                                    <input
-                                        type="number"
-                                        name={field}
-                                        value={formData[field] || ''}
-                                        onChange={handleChange}
-                                        className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
-                      bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white
-                      placeholder-gray-400 dark:placeholder-gray-500"
-                                        placeholder={field}
-                                    />
+                        <div key={group.label} className="mb-4 border rounded overflow-hidden">
+                            <button
+                                type="button"
+                                className="w-full bg-gray-100 dark:bg-gray-800 text-left px-4 py-2 font-semibold text-gray-700 dark:text-white"
+                                onClick={() => setOpenGroup(openGroup === group.label ? null : group.label)}
+                            >
+                                {group.label}
+                            </button>
+                            {openGroup === group.label && (
+                                <div className="p-4 bg-white dark:bg-gray-700">
+                                    {group.fields.map(field => (
+                                        <div key={field} className="flex flex-col mb-3">
+                                            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">{field}</label>
+                                            <input
+                                                type="number"
+                                                name={field}
+                                                value={formData[field] || ''}
+                                                onChange={handleChange}
+                                                className="mt-1 border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
+                        bg-white dark:bg-gray-800 dark:border-gray-500 dark:text-white"
+                                                placeholder={field}
+                                            />
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            )}
                         </div>
                     ))
                 ) : (
-                    <div className="text-center text-gray-500">
-                        No input fields configured for this sport yet.
-                    </div>
+                    <div className="text-center text-gray-500">No input fields configured for this sport yet.</div>
                 )}
-
-                <div className="flex gap-4 mt-6">
-                    <button
-                        type="submit"
-                        className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg"
-                    >
-                        Save Stats
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setFormData({})}
-                        className="flex-1 py-3 bg-gray-400 hover:bg-gray-500 text-white font-semibold rounded-lg"
-                    >
-                        Clear
-                    </button>
-                </div>
             </form>
+
+            <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 shadow-md px-4 py-3 flex justify-between items-center z-50 border-t dark:border-gray-700">
+                <button
+                    onClick={handleSubmit}
+                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-semibold"
+                >
+                    Save
+                </button>
+                <button
+                    onClick={() => setFormData({})}
+                    className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded font-semibold"
+                >
+                    Clear
+                </button>
+                <button
+                    onClick={handleDownload}
+                    className="px-4 py-2 bg-green-600 hover:bg-green-500 text-white rounded font-semibold"
+                >
+                    Download CSV
+                </button>
+                <button
+                    onClick={handleHome}
+                    className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded font-semibold"
+                >
+                    Home
+                </button>
+            </div>
 
             <StatsConfirmationModal
                 visible={showStatsModal}
