@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { saveGameStat } from '../../services/syncService';
 import StatsConfirmationModal from './StatsConfirmationModal';
 
@@ -94,10 +94,7 @@ function DynamicStatForm({ sport, position }) {
         e.preventDefault();
 
         const normalizedStats = Object.fromEntries(
-            Object.entries(formData).map(([key, val]) => [
-                normalizeKey(key),
-                normalizeValue(val)
-            ])
+            Object.entries(formData).map(([key, val]) => [normalizeKey(key), normalizeValue(val)])
         );
 
         const statEntry = {
@@ -131,19 +128,24 @@ function DynamicStatForm({ sport, position }) {
         return <div className="text-center mt-10 text-gray-500">No sport selected yet.</div>;
     }
 
+    useEffect(() => {
+        const font = document.createElement('link');
+        font.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap';
+        font.rel = 'stylesheet';
+        document.head.appendChild(font);
+    }, []);
+
     return (
         <>
-            <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto">
-                <div className="text-center mb-4">
-                    <h2 className="text-2xl font-bold">
-                        Log Stats for {sport}
-                    </h2>
-                    {position && (
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Position: {position}
-                        </p>
-                    )}
-                </div>
+            <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto font-['Inter']">
+                <h2 className="text-2xl font-bold text-center mb-1">
+                    Track Your Performance
+                </h2>
+                {position && (
+                    <p className="text-center text-sm text-gray-500 mb-4">
+                        Position: {position}
+                    </p>
+                )}
 
                 {fieldGroups.length > 0 ? (
                     fieldGroups.map(group => (
