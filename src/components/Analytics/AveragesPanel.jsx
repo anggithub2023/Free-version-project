@@ -1,4 +1,3 @@
-// src/components/Analytics/AveragesPanel.jsx
 import React from 'react';
 
 function AveragesPanel({ filteredStats }) {
@@ -10,7 +9,6 @@ function AveragesPanel({ filteredStats }) {
         );
     }
 
-    // Aggregate stat sums and counts
     const statTotals = {};
     filteredStats.forEach(entry => {
         const stats = entry.stats || {};
@@ -34,8 +32,8 @@ function AveragesPanel({ filteredStats }) {
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {averages.map(({ stat, average }) => (
-                <div key={stat} className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow">
+            {averages.map(({ stat, average }, index) => (
+                <div key={`${stat}-${index}`} className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow">
                     <h4 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{stat}</h4>
                     <p className="text-2xl text-indigo-600 dark:text-indigo-300 font-bold">{average}</p>
                 </div>
