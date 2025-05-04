@@ -6,11 +6,11 @@ const getUserId = () => {
     return localStorage.getItem('userId');
 };
 
-// 🔁 Normalize stat keys
-const normalizeStatKeys = (statsObj) => {
-    if (!statsObj || typeof statsObj !== 'object') return {};
+// 🔁 Normalize keys consistently for stats and scores
+const normalizeStatKeys = (obj) => {
+    if (!obj || typeof obj !== 'object') return {};
     return Object.fromEntries(
-        Object.entries(statsObj).map(([key, val]) => [
+        Object.entries(obj).map(([key, val]) => [
             key.trim().toLowerCase().replace(/\s+/g, '_'),
             isNaN(val) ? String(val) : Number(val),
         ])
@@ -96,7 +96,7 @@ export const fetchReflections = async () => {
             ...entry,
             sport: entry.sport?.toLowerCase(),
             position: entry.position?.toLowerCase(),
-            scores: normalizeStatKeys(entry.scores), // ✅ FIXED
+            scores: normalizeStatKeys(entry.scores), // Important for reflection data parsing
         }));
     } catch (err) {
         console.error('❌ Unexpected failure in fetchReflections():', err.message);
