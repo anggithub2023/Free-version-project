@@ -16,6 +16,7 @@ import {
 } from 'react-icons/md';
 import { GiAchievement } from 'react-icons/gi';
 import { fetchGameStats } from '../services/syncService';
+import ReflectionHistoryTable from "../components/Analytics/ReflectionHistoryTable";
 
 const normalize = (val) =>
     val?.toLowerCase().replace(/\s+/g, '_').trim() || '';
