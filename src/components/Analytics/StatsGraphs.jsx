@@ -1,6 +1,12 @@
 import React from 'react';
 import {
-    LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer
 } from 'recharts';
 
 function StatsGraphs({ filteredStats }) {
@@ -12,11 +18,23 @@ function StatsGraphs({ filteredStats }) {
         );
     }
 
-    const statKeys = Object.keys(filteredStats[0]?.stats || {});
-    const graphData = filteredStats.map(entry => ({
-        ...entry.stats,
-        date: new Date(entry.date).toLocaleDateString()
-    }));
+    const normalizeKey = (key) => key.toLowerCase().replace(/\s+/g, '_');
+
+    // Identify all stat keys across entries
+    const statKeysSet = new Set();
+    filteredStats.forEach(entry => {
+        Object.keys(entry.stats || {}).forEach(key => statKeysSet.add(normalizeKey(key)));
+    });
+    const statKeys = Array.from(statKeysSet);
+
+    // Build graph-friendly data
+    const graphData = filteredStats.map(entry => {
+        const row = { date: new Date(entry.date).toLocaleDateString() };
+        Object.entries(entry.stats || {}).forEach(([key, value]) => {
+            row[normalizeKey(key)] = Number(value);
+        });
+        return row;
+    });
 
     return (
         <div className="space-y-12">
@@ -29,9 +47,16 @@ function StatsGraphs({ filteredStats }) {
                         <LineChart data={graphData}>
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="date" />
-                            <YAxis />
+                            <YAxis allowDecimals={false} />
                             <Tooltip />
-                            <Line type="monotone" dataKey={key} stroke="#8884d8" strokeWidth={2} dot={{ r: 4 }} />
+                            <Line
+                                type="monotone"
+                                dataKey={key}
+                                stroke="#8884d8"
+                                strokeWidth={2}
+                                dot={{ r: 4 }}
+                                activeDot={{ r: 6 }}
+                            />
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
