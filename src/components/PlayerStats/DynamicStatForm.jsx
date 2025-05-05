@@ -124,10 +124,6 @@ function DynamicStatForm({ sport, position }) {
         setFormData({});
     };
 
-    if (!sport) {
-        return <div className="text-center mt-10 text-gray-500">No sport selected yet.</div>;
-    }
-
     useEffect(() => {
         const font = document.createElement('link');
         font.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap';
@@ -135,14 +131,18 @@ function DynamicStatForm({ sport, position }) {
         document.head.appendChild(font);
     }, []);
 
+    if (!sport) {
+        return <div className="text-center mt-10 text-gray-500">No sport selected yet.</div>;
+    }
+
     return (
         <>
             <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto font-['Inter']">
-                <h2 className="text-2xl font-bold text-center mb-1">
-                    Track Your Performance
+                <h2 className="text-2xl font-bold text-center mb-1 capitalize">
+                    {normalizedSport}
                 </h2>
                 {position && (
-                    <p className="text-center text-sm text-gray-500 mb-4">
+                    <p className="text-center text-sm text-gray-500 mb-4 capitalize">
                         Position: {position}
                     </p>
                 )}
