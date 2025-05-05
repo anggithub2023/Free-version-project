@@ -50,10 +50,10 @@ export default function HomePage() {
                 <button
                     onClick={() => navigate('/reflect')}
                     className="bg-amber-500 text-white
-                     hover:bg-amber-400
-                     rounded-xl px-6 py-4 w-full font-bold text-lg max-w-xs
-                     shadow hover:scale-105 transition
-                     animate-pulse-slow"
+                        hover:bg-amber-400
+                        rounded-xl px-6 py-4 w-full font-bold text-lg max-w-xs
+                        shadow hover:scale-105 transition
+                        animate-pulse-slow"
                 >
                     Start Reflection
                 </button>
@@ -83,9 +83,17 @@ export default function HomePage() {
             </div>
 
             {/* Footer */}
-            <p className="text-[10px] text-gray-500 dark:text-gray-400 text-center">
-                © {new Date().getFullYear()} processwins.app
-            </p>
+            <div className="text-center text-[10px] text-gray-500 dark:text-gray-400">
+                <p>© {new Date().getFullYear()} processwins.app</p>
+                <a
+                    href="https://docs.google.com/forms/d/e/1FAIpQLSeopJAyVo6uA4CEKw0bVEbgTEDHwQr2S8Xev17D1KkUZcFDIQ/viewform?usp=dialog"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline text-xs hover:text-pink-600 transition block mt-1"
+                >
+                    Feedback
+                </a>
+            </div>
         </div>
     );
 }
