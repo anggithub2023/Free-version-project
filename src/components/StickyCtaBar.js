@@ -14,7 +14,7 @@ export default function StickyCtaBar({
                                          onClear,
                                          onInsights,
                                          onHome,
-                                         onFeedback,
+                                         onFeedback
                                      }) {
     return (
         <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t dark:border-gray-700 shadow-md px-4 py-3 flex justify-around items-center z-50">
