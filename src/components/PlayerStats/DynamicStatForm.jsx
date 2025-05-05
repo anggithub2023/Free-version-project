@@ -66,7 +66,7 @@ const groupedStatFields = {
     ]
 };
 
-function DynamicStatForm({ sport, position }) {
+function DynamicStatForm({ sport, position, registerActions }) {
     const [formData, setFormData] = useState({});
     const [showStatsModal, setShowStatsModal] = useState(false);
 
@@ -90,9 +90,7 @@ function DynamicStatForm({ sport, position }) {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = async e => {
-        e.preventDefault();
-
+    const handleSubmit = async () => {
         const normalizedStats = Object.fromEntries(
             Object.entries(formData).map(([key, val]) => [normalizeKey(key), normalizeValue(val)])
         );
@@ -123,6 +121,17 @@ function DynamicStatForm({ sport, position }) {
         setFormData({});
     };
 
+    const handleClearForm = () => {
+        setFormData({});
+    };
+
+    // Register actions with parent (e.g., StickyCtaBar)
+    useEffect(() => {
+        if (typeof registerActions === 'function') {
+            registerActions({ handleSubmit, handleClearForm });
+        }
+    }, [formData]);
+
     useEffect(() => {
         const font = document.createElement('link');
         font.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap';
@@ -136,7 +145,7 @@ function DynamicStatForm({ sport, position }) {
 
     return (
         <>
-            <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto font-['Inter']">
+            <form className="space-y-4 max-w-xl mx-auto font-['Inter']">
                 {(sport || position) && (
                     <p className="text-center text-sm text-gray-500 mb-4">
                         {[sport, position].filter(Boolean).map(str =>
@@ -169,22 +178,6 @@ function DynamicStatForm({ sport, position }) {
                         No input fields configured for this sport yet.
                     </div>
                 )}
-
-                <div className="flex gap-4 mt-6">
-                    <button
-                        type="submit"
-                        className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg"
-                    >
-                        Save Stats
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setFormData({})}
-                        className="flex-1 py-3 bg-gray-400 hover:bg-gray-500 text-white font-semibold rounded-lg"
-                    >
-                        Clear
-                    </button>
-                </div>
             </form>
 
             <StatsConfirmationModal
