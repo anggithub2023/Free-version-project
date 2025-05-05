@@ -130,7 +130,7 @@ function DynamicStatForm({ sport, position, registerActions }) {
         if (typeof registerActions === 'function') {
             registerActions({ handleSubmit, handleClearForm });
         }
-    }, [formData]);
+    }, []); // only once
 
     useEffect(() => {
         const font = document.createElement('link');
