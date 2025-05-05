@@ -4,17 +4,11 @@ import ProgressBarsPanel from '../components/Analytics/ProgressBarsPanel';
 import StatsGraphs from '../components/Analytics/StatsGraphs';
 import StatsHistoryTable from '../components/Analytics/StatsHistoryTable';
 import PanelHeader from '../components/Analytics/PanelHeader';
-import ReflectionHistoryTable from '../components/Analytics/ReflectionHistoryTable';
-import StickyCtaBar from '../components/StickyCtaBar'; // ✅ Add this
-
-import {
-    MdBarChart,
-    MdTimeline,
-    MdShowChart,
-    MdHistory,
-} from 'react-icons/md';
+import StickyCtaBar from '../components/StickyCtaBar';
+import { MdBarChart, MdTimeline, MdShowChart, MdHistory } from 'react-icons/md';
 import { GiAchievement } from 'react-icons/gi';
 import { fetchGameStats } from '../services/syncService';
+import ReflectionHistoryTable from '../components/Analytics/ReflectionHistoryTable';
 
 const normalize = (val) => val?.toLowerCase().replace(/\s+/g, '_').trim() || '';
 
@@ -75,8 +69,7 @@ function AnalyticsDashboard() {
         )
     );
 
-    const formatDisplay = (val) =>
-        val?.replace(/_/g, ' ')?.replace(/\b\w/g, (l) => l.toUpperCase());
+    const formatDisplay = (val) => val?.replace(/_/g, ' ')?.replace(/\b\w/g, (l) => l.toUpperCase());
 
     const handleGoHome = () => {
         localStorage.removeItem('selectedSport');
@@ -111,7 +104,7 @@ function AnalyticsDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-950 dark:to-gray-900 p-6 pb-32">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-950 dark:to-gray-900 p-6 transition-colors duration-300">
             <div className="max-w-6xl mx-auto">
                 <div className="mb-10 text-center">
                     <div className="flex justify-center items-center gap-3 text-gray-800 dark:text-gray-100">
@@ -162,23 +155,23 @@ function AnalyticsDashboard() {
                 {selectedSport ? (
                     filteredStats.length > 0 ? (
                         <div className="space-y-10">
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
                                 <PanelHeader icon={<MdBarChart />} title="Averages" subtitle="(Your per-game performance)" />
                                 <AveragesPanel filteredStats={filteredStats} />
                             </div>
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
                                 <PanelHeader icon={<MdTimeline />} title="Progress Bars" subtitle="(How close you are to your goals)" />
                                 <ProgressBarsPanel filteredStats={filteredStats} />
                             </div>
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
                                 <PanelHeader icon={<MdShowChart />} title="Stat Trends" subtitle="(Visualize changes over time)" />
                                 <StatsGraphs filteredStats={filteredStats} />
                             </div>
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
                                 <PanelHeader icon={<MdHistory />} title="Stat History" subtitle="(Every stat you’ve logged)" />
                                 <StatsHistoryTable filteredStats={filteredStats} />
                             </div>
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
                                 <PanelHeader icon={<MdHistory />} title="Reflection History" subtitle="(Your mindset snapshots)" />
                                 <ReflectionHistoryTable />
                             </div>
@@ -196,11 +189,9 @@ function AnalyticsDashboard() {
                 )}
             </div>
 
-            {/* ✅ Sticky CTA Bar */}
             <StickyCtaBar
                 onDownload={handleDownloadStats}
                 onHome={handleGoHome}
-                onInsights={null} // Not needed here
             />
         </div>
     );
