@@ -5,7 +5,8 @@ import {
     MdHome,
     MdInsights,
     MdSave,
-    MdFeedback
+    MdFeedback,
+    MdLeaderboard
 } from 'react-icons/md';
 
 export default function StickyCtaBar({
@@ -13,6 +14,7 @@ export default function StickyCtaBar({
                                          onDownload,
                                          onClear,
                                          onInsights,
+                                         onStats,
                                          onHome,
                                          onFeedback
                                      }) {
@@ -62,14 +64,14 @@ export default function StickyCtaBar({
                 </button>
             )}
 
-            {onFeedback && (
+            {onStats && (
                 <button
-                    onClick={onFeedback}
-                    className="flex flex-col items-center text-xs text-gray-700 dark:text-gray-200 hover:text-pink-600"
-                    aria-label="Submit Feedback"
+                    onClick={onStats}
+                    className="flex flex-col items-center text-xs text-gray-700 dark:text-gray-200 hover:text-blue-600"
+                    aria-label="Back to Stats"
                 >
-                    <MdFeedback size={24} />
-                    <span>Feedback</span>
+                    <MdLeaderboard size={24} />
+                    <span>Stats</span>
                 </button>
             )}
 
@@ -81,6 +83,17 @@ export default function StickyCtaBar({
                 >
                     <MdHome size={24} />
                     <span>Home</span>
+                </button>
+            )}
+
+            {onFeedback && (
+                <button
+                    onClick={onFeedback}
+                    className="flex flex-col items-center text-xs text-gray-700 dark:text-gray-200 hover:text-pink-600"
+                    aria-label="Submit Feedback"
+                >
+                    <MdFeedback size={24} />
+                    <span>Feedback</span>
                 </button>
             )}
         </div>
