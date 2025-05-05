@@ -10,6 +10,7 @@ function PlayerStatsPage() {
     const [selectedPosition, setSelectedPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
     const [gameStats, setGameStats] = useState([]);
     const [showClearModal, setShowClearModal] = useState(false);
+    const [formActions, setFormActions] = useState({ submit: null, clear: null });
 
     const sportsWithPositions = ['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'];
 
@@ -56,18 +57,28 @@ function PlayerStatsPage() {
     };
 
     if (!selectedSport) {
-        return <ReflectionStartFlow onSelect={(sport) => {
-            setSelectedSport(sport);
-            localStorage.setItem('selectedSport', sport);
-        }} buttonLabel="Start Stats" />;
+        return (
+            <ReflectionStartFlow
+                onSelect={(sport) => {
+                    setSelectedSport(sport);
+                    localStorage.setItem('selectedSport', sport);
+                }}
+                buttonLabel="Start Stats"
+            />
+        );
     }
 
     if (sportsWithPositions.includes(selectedSport) && !selectedPosition) {
-        return <PositionSelectionModal onSelect={(position) => {
-            const normalizedPosition = position.toLowerCase().replace(/\s+/g, '-');
-            setSelectedPosition(normalizedPosition);
-            localStorage.setItem('selectedPosition', normalizedPosition);
-        }} sport={selectedSport} />;
+        return (
+            <PositionSelectionModal
+                onSelect={(position) => {
+                    const normalizedPosition = position.toLowerCase().replace(/\s+/g, '-');
+                    setSelectedPosition(normalizedPosition);
+                    localStorage.setItem('selectedPosition', normalizedPosition);
+                }}
+                sport={selectedSport}
+            />
+        );
     }
 
     return (
@@ -82,12 +93,18 @@ function PlayerStatsPage() {
             <DynamicStatForm
                 sport={selectedSport}
                 position={selectedPosition}
+                registerActions={({ handleSubmit, handleClearForm }) =>
+                    setFormActions({ submit: handleSubmit, clear: handleClearForm })
+                }
             />
 
             {showClearModal && (
                 <ConfirmModal
                     message="Are you sure you want to clear all player stats?"
-                    onConfirm={handleClearStats}
+                    onConfirm={() => {
+                        handleClearStats();
+                        formActions.clear?.();
+                    }}
                     onCancel={() => setShowClearModal(false)}
                 />
             )}
@@ -95,6 +112,7 @@ function PlayerStatsPage() {
             <StickyCtaBar
                 onDownload={handleDownloadStats}
                 onClear={() => setShowClearModal(true)}
+                onSubmit={() => formActions.submit?.()}
                 onInsights={() => window.location.href = '/analytics'}
                 onHome={handleGoHome}
             />
