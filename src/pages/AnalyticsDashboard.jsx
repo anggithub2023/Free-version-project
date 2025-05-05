@@ -4,29 +4,25 @@ import ProgressBarsPanel from '../components/Analytics/ProgressBarsPanel';
 import StatsGraphs from '../components/Analytics/StatsGraphs';
 import StatsHistoryTable from '../components/Analytics/StatsHistoryTable';
 import PanelHeader from '../components/Analytics/PanelHeader';
+import ReflectionHistoryTable from '../components/Analytics/ReflectionHistoryTable';
+import StickyCtaBar from '../components/StickyCtaBar'; // ✅ Add this
 
 import {
     MdBarChart,
     MdTimeline,
     MdShowChart,
     MdHistory,
-    MdHome,
-    MdFileDownload,
-    MdMenu,
 } from 'react-icons/md';
 import { GiAchievement } from 'react-icons/gi';
 import { fetchGameStats } from '../services/syncService';
-import ReflectionHistoryTable from "../components/Analytics/ReflectionHistoryTable";
 
-const normalize = (val) =>
-    val?.toLowerCase().replace(/\s+/g, '_').trim() || '';
+const normalize = (val) => val?.toLowerCase().replace(/\s+/g, '_').trim() || '';
 
 function AnalyticsDashboard() {
     const [gameStats, setGameStats] = useState([]);
     const [selectedSport, setSelectedSport] = useState('');
     const [selectedPosition, setSelectedPosition] = useState('');
     const [filteredStats, setFilteredStats] = useState([]);
-    const [showFAB, setShowFAB] = useState(false);
 
     useEffect(() => {
         const loadStats = async () => {
@@ -115,7 +111,7 @@ function AnalyticsDashboard() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-950 dark:to-gray-900 p-6 transition-colors duration-300">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-950 dark:to-gray-900 p-6 pb-32">
             <div className="max-w-6xl mx-auto">
                 <div className="mb-10 text-center">
                     <div className="flex justify-center items-center gap-3 text-gray-800 dark:text-gray-100">
@@ -166,23 +162,23 @@ function AnalyticsDashboard() {
                 {selectedSport ? (
                     filteredStats.length > 0 ? (
                         <div className="space-y-10">
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
                                 <PanelHeader icon={<MdBarChart />} title="Averages" subtitle="(Your per-game performance)" />
                                 <AveragesPanel filteredStats={filteredStats} />
                             </div>
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
                                 <PanelHeader icon={<MdTimeline />} title="Progress Bars" subtitle="(How close you are to your goals)" />
                                 <ProgressBarsPanel filteredStats={filteredStats} />
                             </div>
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
                                 <PanelHeader icon={<MdShowChart />} title="Stat Trends" subtitle="(Visualize changes over time)" />
                                 <StatsGraphs filteredStats={filteredStats} />
                             </div>
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
                                 <PanelHeader icon={<MdHistory />} title="Stat History" subtitle="(Every stat you’ve logged)" />
                                 <StatsHistoryTable filteredStats={filteredStats} />
                             </div>
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg transition-colors">
+                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg">
                                 <PanelHeader icon={<MdHistory />} title="Reflection History" subtitle="(Your mindset snapshots)" />
                                 <ReflectionHistoryTable />
                             </div>
@@ -200,44 +196,12 @@ function AnalyticsDashboard() {
                 )}
             </div>
 
-            {/* FAB with visible button labels */}
-            <div className="fixed bottom-6 right-6 flex flex-col items-end space-y-3 z-50">
-                {showFAB && (
-                    <>
-                        <div className="flex items-center space-x-2">
-                            <span className="bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-100 px-3 py-1 rounded shadow">
-                                Download CSV
-                            </span>
-                            <button
-                                onClick={handleDownloadStats}
-                                className="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-full shadow-lg"
-                                title="Download CSV"
-                            >
-                                <MdFileDownload size={24} />
-                            </button>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <span className="bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-gray-100 px-3 py-1 rounded shadow">
-                                Back to Home
-                            </span>
-                            <button
-                                onClick={handleGoHome}
-                                className="bg-gray-600 hover:bg-gray-500 text-white p-3 rounded-full shadow-lg"
-                                title="Back to Home"
-                            >
-                                <MdHome size={24} />
-                            </button>
-                        </div>
-                    </>
-                )}
-                <button
-                    onClick={() => setShowFAB(!showFAB)}
-                    className="bg-green-600 hover:bg-green-500 text-white p-4 rounded-full shadow-xl"
-                    title="Menu"
-                >
-                    <MdMenu size={28} />
-                </button>
-            </div>
+            {/* ✅ Sticky CTA Bar */}
+            <StickyCtaBar
+                onDownload={handleDownloadStats}
+                onHome={handleGoHome}
+                onInsights={null} // Not needed here
+            />
         </div>
     );
 }
