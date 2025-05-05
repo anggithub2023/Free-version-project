@@ -73,6 +73,7 @@ function DynamicStatForm({ sport, position, registerActions }) {
     const normalizeKey = key => key.trim().toLowerCase().replace(/\s+/g, '_');
     const normalizeValue = val => (isNaN(val) ? val : Number(val));
     const normalizeSport = sportId => sportId?.toLowerCase().replace(/[^a-z]/g, '');
+
     const normalizedSport = normalizeSport(sport);
     const normalizedPosition = position?.toLowerCase() || 'default';
 
@@ -125,7 +126,6 @@ function DynamicStatForm({ sport, position, registerActions }) {
         setFormData({});
     };
 
-    // Register actions with parent (e.g., StickyCtaBar)
     useEffect(() => {
         if (typeof registerActions === 'function') {
             registerActions({ handleSubmit, handleClearForm });
