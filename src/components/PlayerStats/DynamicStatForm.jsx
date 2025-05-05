@@ -114,7 +114,6 @@ function DynamicStatForm({ sport, position }) {
             await saveGameStat(statEntry);
             setShowStatsModal(true);
         } catch (error) {
-            console.warn('📦 Queued stat for retry');
             const queue = JSON.parse(localStorage.getItem('unsyncedGameStats') || '[]');
             queue.push(statEntry);
             localStorage.setItem('unsyncedGameStats', JSON.stringify(queue));
@@ -138,12 +137,11 @@ function DynamicStatForm({ sport, position }) {
     return (
         <>
             <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto font-['Inter']">
-                <h2 className="text-2xl font-bold text-center mb-1 capitalize">
-                    {normalizedSport}
-                </h2>
-                {position && (
-                    <p className="text-center text-sm text-gray-500 mb-4 capitalize">
-                        Position: {position}
+                {(sport || position) && (
+                    <p className="text-center text-sm text-gray-500 mb-4">
+                        {[sport, position].filter(Boolean).map(str =>
+                            str.replace(/\b\w/g, char => char.toUpperCase())
+                        ).join(' – ')}
                     </p>
                 )}
 
@@ -159,9 +157,7 @@ function DynamicStatForm({ sport, position }) {
                                         name={field}
                                         value={formData[field] || ''}
                                         onChange={handleChange}
-                                        className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400
-                      bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white
-                      placeholder-gray-400 dark:placeholder-gray-500"
+                                        className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400 bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
                                         placeholder={field}
                                     />
                                 </div>
