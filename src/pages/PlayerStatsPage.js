@@ -1,58 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import ReflectionStartFlow from '../components/PlayerStats/ReflectionStartFlow';
 import PositionSelectionModal from '../components/PlayerStats/PositionSelectionModal';
 import DynamicStatForm from '../components/PlayerStats/DynamicStatForm';
 import ClearConfirmModal from '../components/PlayerStats/ClearConfirmModal';
-import StickyCtaBar from '../components/StickyCtaBar';
 
 function PlayerStatsPage() {
     const [selectedSport, setSelectedSport] = useState(() => localStorage.getItem('selectedSport') || '');
     const [selectedPosition, setSelectedPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
-    const [gameStats, setGameStats] = useState([]);
-    const [showClearModal, setShowClearModal] = useState(false);
 
     const sportsWithPositions = ['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'];
-
-    useEffect(() => {
-        const savedStats = JSON.parse(localStorage.getItem('gameStats')) || [];
-        setGameStats(savedStats);
-    }, []);
 
     const handleClearStats = () => {
         setGameStats([]);
         localStorage.removeItem('gameStats');
         setShowClearModal(false);
-    };
-
-    const handleDownloadStats = () => {
-        const csvContent = [
-            ['Date', 'Sport', 'Position', 'Stat', 'Value'],
-            ...gameStats.flatMap(({ date, sport, position, stats }) =>
-                Object.entries(stats).map(([statName, statValue]) => [
-                    new Date(date).toLocaleDateString(),
-                    sport,
-                    position,
-                    statName,
-                    statValue
-                ])
-            )
-        ].map(e => e.join(',')).join('\n');
-
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'player_stats.csv');
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
-    const handleGoHome = () => {
-        localStorage.removeItem('selectedSport');
-        localStorage.removeItem('selectedPosition');
-        localStorage.removeItem('gameStats');
-        window.location.href = '/';
     };
 
     if (!selectedSport) {
@@ -92,6 +53,7 @@ function PlayerStatsPage() {
             <DynamicStatForm
                 sport={selectedSport}
                 position={selectedPosition}
+                onRequestClear={() => setShowClearModal(true)}
             />
 
             {showClearModal && (
@@ -101,13 +63,6 @@ function PlayerStatsPage() {
                     onCancel={() => setShowClearModal(false)}
                 />
             )}
-
-            <StickyCtaBar
-                onDownload={handleDownloadStats}
-                onClear={() => setShowClearModal(true)}
-                onInsights={() => window.location.href = '/analytics'}
-                onHome={handleGoHome}
-            />
         </div>
     );
 }
