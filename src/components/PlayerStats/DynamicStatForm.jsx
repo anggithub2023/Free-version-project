@@ -1,4 +1,3 @@
-// ✅ File: src/components/PlayerStats/DynamicStatForm.jsx
 import React, { useState, useEffect } from 'react';
 import { saveGameStat } from '../../services/syncService';
 import StatsConfirmationModal from './StatsConfirmationModal';
@@ -67,7 +66,7 @@ const groupedStatFields = {
     ]
 };
 
-function DynamicStatForm({ sport, position, registerActions }) {
+function DynamicStatForm({ sport, position }) {
     const [formData, setFormData] = useState({});
     const [showStatsModal, setShowStatsModal] = useState(false);
 
@@ -92,7 +91,9 @@ function DynamicStatForm({ sport, position, registerActions }) {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async e => {
+        e.preventDefault();
+
         const normalizedStats = Object.fromEntries(
             Object.entries(formData).map(([key, val]) => [normalizeKey(key), normalizeValue(val)])
         );
@@ -128,12 +129,6 @@ function DynamicStatForm({ sport, position, registerActions }) {
     };
 
     useEffect(() => {
-        if (typeof registerActions === 'function') {
-            registerActions({ handleSubmit, handleClearForm });
-        }
-    }, []);
-
-    useEffect(() => {
         const font = document.createElement('link');
         font.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap';
         font.rel = 'stylesheet';
@@ -146,7 +141,7 @@ function DynamicStatForm({ sport, position, registerActions }) {
 
     return (
         <>
-            <form className="space-y-4 max-w-xl mx-auto font-['Inter']">
+            <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto font-['Inter']">
                 {(sport || position) && (
                     <p className="text-center text-sm text-gray-500 mb-4">
                         {[sport, position].filter(Boolean).map(str =>
@@ -179,6 +174,21 @@ function DynamicStatForm({ sport, position, registerActions }) {
                         No input fields configured for this sport yet.
                     </div>
                 )}
+                <div className="flex gap-4 mt-6">
+                    <button
+                        type="submit"
+                        className="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg"
+                    >
+                        Save Stats
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleClearForm}
+                        className="flex-1 py-3 bg-gray-400 hover:bg-gray-500 text-white font-semibold rounded-lg"
+                    >
+                        Clear
+                    </button>
+                </div>
             </form>
 
             <StatsConfirmationModal
