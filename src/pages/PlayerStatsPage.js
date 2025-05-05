@@ -7,13 +7,20 @@ import ClearConfirmModal from '../components/PlayerStats/ClearConfirmModal';
 function PlayerStatsPage() {
     const [selectedSport, setSelectedSport] = useState(() => localStorage.getItem('selectedSport') || '');
     const [selectedPosition, setSelectedPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
+    const [showClearModal, setShowClearModal] = useState(false);
 
     const sportsWithPositions = ['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'];
 
     const handleClearStats = () => {
-        setGameStats([]);
         localStorage.removeItem('gameStats');
         setShowClearModal(false);
+    };
+
+    const handleGoHome = () => {
+        localStorage.removeItem('selectedSport');
+        localStorage.removeItem('selectedPosition');
+        localStorage.removeItem('gameStats');
+        window.location.href = '/';
     };
 
     if (!selectedSport) {
@@ -54,6 +61,7 @@ function PlayerStatsPage() {
                 sport={selectedSport}
                 position={selectedPosition}
                 onRequestClear={() => setShowClearModal(true)}
+                onGoHome={handleGoHome}
             />
 
             {showClearModal && (
