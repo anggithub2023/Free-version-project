@@ -13,35 +13,59 @@ const groupedStatFields = {
         { label: 'Other', fields: ['Minutes Played'] }
     ],
     soccer: {
-        goalie: [{ label: 'Goalkeeping', fields: ['Saves', 'Goals Against', 'Clean Sheets', 'Save Percentage'] }],
+        goalie: [
+            { label: 'Goalkeeping', fields: ['Saves', 'Goals Against', 'Clean Sheets', 'Save Percentage'] }
+        ],
         default: [
             { label: 'Offense', fields: ['Goals', 'Assists', 'Shots on Target'] },
             { label: 'Defense', fields: ['Tackles Won', 'Fouls Committed'] }
         ]
     },
     football: {
-        quarterback: [{ label: 'Passing', fields: ['Passing Yards', 'Passing TDs', 'Completions', 'Interceptions Thrown', 'Completion Percentage'] }],
-        'running-back': [{ label: 'Rushing', fields: ['Rushing Yards', 'Rushing TDs', 'Fumbles Lost'] }],
-        'wide-receiver': [{ label: 'Receiving', fields: ['Receiving Yards', 'Receiving TDs', 'Receptions'] }],
-        'defensive-player': [{ label: 'Defense', fields: ['Tackles', 'Sacks', 'Interceptions Caught'] }]
+        quarterback: [
+            { label: 'Passing', fields: ['Passing Yards', 'Passing TDs', 'Completions', 'Interceptions Thrown', 'Completion Percentage'] }
+        ],
+        'running-back': [
+            { label: 'Rushing', fields: ['Rushing Yards', 'Rushing TDs', 'Fumbles Lost'] }
+        ],
+        'wide-receiver': [
+            { label: 'Receiving', fields: ['Receiving Yards', 'Receiving TDs', 'Receptions'] }
+        ],
+        'defensive-player': [
+            { label: 'Defense', fields: ['Tackles', 'Sacks', 'Interceptions Caught'] }
+        ]
     },
     baseball: {
-        pitcher: [{ label: 'Pitching', fields: ['Innings Pitched', 'Strikeouts', 'Walks Allowed', 'Earned Runs', 'ERA', 'Hits Allowed', 'Home Runs Allowed', 'Wins', 'Losses', 'Saves'] }],
+        pitcher: [
+            { label: 'Pitching', fields: ['Innings Pitched', 'Strikeouts', 'Walks Allowed', 'Earned Runs', 'ERA', 'Hits Allowed', 'Home Runs Allowed', 'Wins', 'Losses', 'Saves'] }
+        ],
         default: [
             { label: 'Batting', fields: ['At Bats', 'Hits', 'Runs', 'RBIs', 'Home Runs', 'Doubles', 'Triples', 'Stolen Bases', 'Strikeouts', 'Walks'] },
             { label: 'Defense', fields: ['Errors'] }
         ]
     },
     icehockey: {
-        goalie: [{ label: 'Goalkeeping', fields: ['Saves', 'Goals Against', 'Save Percentage'] }],
-        default: [{ label: 'Performance', fields: ['Goals', 'Assists', 'Shots on Goal', 'Plus/Minus Rating'] }]
+        goalie: [
+            { label: 'Goalkeeping', fields: ['Saves', 'Goals Against', 'Save Percentage'] }
+        ],
+        default: [
+            { label: 'Performance', fields: ['Goals', 'Assists', 'Shots on Goal', 'Plus/Minus Rating'] }
+        ]
     },
     lacrosse: {
-        goalie: [{ label: 'Goalkeeping', fields: ['Saves', 'Goals Against'] }],
-        default: [{ label: 'Field Play', fields: ['Goals', 'Assists', 'Ground Balls', 'Faceoffs Won'] }]
+        goalie: [
+            { label: 'Goalkeeping', fields: ['Saves', 'Goals Against'] }
+        ],
+        default: [
+            { label: 'Field Play', fields: ['Goals', 'Assists', 'Ground Balls', 'Faceoffs Won'] }
+        ]
     },
-    trackcrosscountry: [{ label: 'Event Performance', fields: ['Event Name', 'Time', 'Placement'] }],
-    golf: [{ label: 'Round Stats', fields: ['Round Score', 'Pars', 'Birdies', 'Bogeys', 'Fairways Hit', 'Greens in Regulation'] }]
+    trackcrosscountry: [
+        { label: 'Event Performance', fields: ['Event Name', 'Time', 'Placement'] }
+    ],
+    golf: [
+        { label: 'Round Stats', fields: ['Round Score', 'Pars', 'Birdies', 'Bogeys', 'Fairways Hit', 'Greens in Regulation'] }
+    ]
 };
 
 function DynamicStatForm({ sport, position }) {
@@ -66,13 +90,10 @@ function DynamicStatForm({ sport, position }) {
     const fieldGroups = resolveFieldGroups();
 
     const toggleSection = (label) => {
-        setExpandedSections((prev) => ({
-            ...prev,
-            [label]: !prev[label]
-        }));
+        setExpandedSections(prev => ({ ...prev, [label]: !prev[label] }));
     };
 
-    const handleChange = (e) => {
+    const handleChange = e => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
@@ -148,37 +169,38 @@ function DynamicStatForm({ sport, position }) {
 
                 {fieldGroups.length > 0 ? (
                     fieldGroups.map(group => (
-                        <div key={group.label} className="mb-4 border rounded-md p-3 bg-white dark:bg-gray-800">
+                        <div key={group.label} className="mb-4">
                             <button
                                 type="button"
                                 onClick={() => toggleSection(group.label)}
-                                className="w-full text-left font-semibold text-lg text-gray-700 dark:text-gray-300"
+                                className="w-full text-left font-semibold text-lg text-gray-700 dark:text-gray-300 flex items-center justify-between"
                             >
-                                {group.label}
+                                <span>{group.label}</span>
+                                <span className="text-sm ml-2">
+                                    {expandedSections[group.label] ? '▼' : '▲'}
+                                </span>
                             </button>
-                            {expandedSections[group.label] && (
-                                <div className="mt-2">
-                                    {group.fields.map(field => (
-                                        <div key={field} className="flex flex-col mb-2">
-                                            <label className="text-sm text-gray-700 dark:text-gray-300 mb-1">{field}</label>
-                                            <input
-                                                type="number"
-                                                inputMode="numeric"
-                                                pattern="[0-9]*"
-                                                name={field}
-                                                value={formData[field] || ''}
-                                                onChange={handleChange}
-                                                className="border rounded-md p-2 bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white"
-                                                placeholder={field}
-                                            />
-                                        </div>
-                                    ))}
+
+                            {expandedSections[group.label] && group.fields.map(field => (
+                                <div key={field} className="flex flex-col mt-2">
+                                    <label className="text-gray-700 dark:text-gray-300 font-medium mb-1">{field}</label>
+                                    <input
+                                        type="number"
+                                        inputMode="numeric"
+                                        name={field}
+                                        value={formData[field] || ''}
+                                        onChange={handleChange}
+                                        className="border rounded-md p-2 focus:outline-none focus:ring focus:border-indigo-400 bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
+                                        placeholder={field}
+                                    />
                                 </div>
-                            )}
+                            ))}
                         </div>
                     ))
                 ) : (
-                    <div className="text-center text-gray-500">No input fields configured for this sport yet.</div>
+                    <div className="text-center text-gray-500">
+                        No input fields configured for this sport yet.
+                    </div>
                 )}
             </form>
 
