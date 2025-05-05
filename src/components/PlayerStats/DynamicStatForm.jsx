@@ -1,24 +1,58 @@
-// ✅ QA Mode: Collapsible groups + mobile numeric keypad
-
 import React, { useState, useEffect } from 'react';
 import { saveGameStat } from '../../services/syncService';
 import StatsConfirmationModal from './StatsConfirmationModal';
 import ClearConfirmModal from './ClearConfirmModal';
 import StickyCtaBar from '../StickyCtaBar';
 
-// (Grouped stat fields: same structure, unchanged)
-const groupedStatFields = { /* ... same as before ... */ };
+const groupedStatFields = {
+    basketball: [
+        { label: 'Scoring', fields: ['Points', 'Free Throws Made', 'Free Throws Attempted', 'Field Goals Made', 'Field Goals Attempted', 'Three-Pointers Made', 'Three-Pointers Attempted'] },
+        { label: 'Rebounding', fields: ['Rebounds', 'Offensive Rebounds', 'Defensive Rebounds'] },
+        { label: 'Defense', fields: ['Steals', 'Blocks'] },
+        { label: 'Ball Control', fields: ['Assists', 'Turnovers', 'Fouls'] },
+        { label: 'Other', fields: ['Minutes Played'] }
+    ],
+    soccer: {
+        goalie: [{ label: 'Goalkeeping', fields: ['Saves', 'Goals Against', 'Clean Sheets', 'Save Percentage'] }],
+        default: [
+            { label: 'Offense', fields: ['Goals', 'Assists', 'Shots on Target'] },
+            { label: 'Defense', fields: ['Tackles Won', 'Fouls Committed'] }
+        ]
+    },
+    football: {
+        quarterback: [{ label: 'Passing', fields: ['Passing Yards', 'Passing TDs', 'Completions', 'Interceptions Thrown', 'Completion Percentage'] }],
+        'running-back': [{ label: 'Rushing', fields: ['Rushing Yards', 'Rushing TDs', 'Fumbles Lost'] }],
+        'wide-receiver': [{ label: 'Receiving', fields: ['Receiving Yards', 'Receiving TDs', 'Receptions'] }],
+        'defensive-player': [{ label: 'Defense', fields: ['Tackles', 'Sacks', 'Interceptions Caught'] }]
+    },
+    baseball: {
+        pitcher: [{ label: 'Pitching', fields: ['Innings Pitched', 'Strikeouts', 'Walks Allowed', 'Earned Runs', 'ERA', 'Hits Allowed', 'Home Runs Allowed', 'Wins', 'Losses', 'Saves'] }],
+        default: [
+            { label: 'Batting', fields: ['At Bats', 'Hits', 'Runs', 'RBIs', 'Home Runs', 'Doubles', 'Triples', 'Stolen Bases', 'Strikeouts', 'Walks'] },
+            { label: 'Defense', fields: ['Errors'] }
+        ]
+    },
+    icehockey: {
+        goalie: [{ label: 'Goalkeeping', fields: ['Saves', 'Goals Against', 'Save Percentage'] }],
+        default: [{ label: 'Performance', fields: ['Goals', 'Assists', 'Shots on Goal', 'Plus/Minus Rating'] }]
+    },
+    lacrosse: {
+        goalie: [{ label: 'Goalkeeping', fields: ['Saves', 'Goals Against'] }],
+        default: [{ label: 'Field Play', fields: ['Goals', 'Assists', 'Ground Balls', 'Faceoffs Won'] }]
+    },
+    trackcrosscountry: [{ label: 'Event Performance', fields: ['Event Name', 'Time', 'Placement'] }],
+    golf: [{ label: 'Round Stats', fields: ['Round Score', 'Pars', 'Birdies', 'Bogeys', 'Fairways Hit', 'Greens in Regulation'] }]
+};
 
 function DynamicStatForm({ sport, position }) {
     const [formData, setFormData] = useState({});
     const [showStatsModal, setShowStatsModal] = useState(false);
     const [showClearModal, setShowClearModal] = useState(false);
-    const [expandedGroups, setExpandedGroups] = useState({});
+    const [expandedSections, setExpandedSections] = useState({});
 
     const normalizeKey = key => key.trim().toLowerCase().replace(/\s+/g, '_');
     const normalizeValue = val => (isNaN(val) ? val : Number(val));
     const normalizeSport = sportId => sportId?.toLowerCase().replace(/[^a-z]/g, '');
-
     const normalizedSport = normalizeSport(sport);
     const normalizedPosition = position?.toLowerCase() || 'default';
 
@@ -31,7 +65,14 @@ function DynamicStatForm({ sport, position }) {
 
     const fieldGroups = resolveFieldGroups();
 
-    const handleChange = e => {
+    const toggleSection = (label) => {
+        setExpandedSections((prev) => ({
+            ...prev,
+            [label]: !prev[label]
+        }));
+    };
+
+    const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
@@ -77,10 +118,6 @@ function DynamicStatForm({ sport, position }) {
         setFormData({});
     };
 
-    const toggleGroup = (label) => {
-        setExpandedGroups(prev => ({ ...prev, [label]: !prev[label] }));
-    };
-
     const handleGoHome = () => {
         localStorage.removeItem('selectedSport');
         localStorage.removeItem('selectedPosition');
@@ -94,7 +131,9 @@ function DynamicStatForm({ sport, position }) {
         document.head.appendChild(font);
     }, []);
 
-    if (!sport) return <div className="text-center mt-10 text-gray-500">No sport selected yet.</div>;
+    if (!sport) {
+        return <div className="text-center mt-10 text-gray-500">No sport selected yet.</div>;
+    }
 
     return (
         <>
@@ -109,20 +148,19 @@ function DynamicStatForm({ sport, position }) {
 
                 {fieldGroups.length > 0 ? (
                     fieldGroups.map(group => (
-                        <div key={group.label} className="mb-4 border rounded">
+                        <div key={group.label} className="mb-4 border rounded-md p-3 bg-white dark:bg-gray-800">
                             <button
                                 type="button"
-                                onClick={() => toggleGroup(group.label)}
-                                className="w-full text-left p-3 bg-gray-100 dark:bg-gray-700 font-semibold text-gray-700 dark:text-white"
+                                onClick={() => toggleSection(group.label)}
+                                className="w-full text-left font-semibold text-lg text-gray-700 dark:text-gray-300"
                             >
                                 {group.label}
                             </button>
-
-                            {expandedGroups[group.label] && (
-                                <div className="p-4 bg-white dark:bg-gray-800">
+                            {expandedSections[group.label] && (
+                                <div className="mt-2">
                                     {group.fields.map(field => (
                                         <div key={field} className="flex flex-col mb-2">
-                                            <label className="text-gray-700 dark:text-gray-300 font-medium mb-1">{field}</label>
+                                            <label className="text-sm text-gray-700 dark:text-gray-300 mb-1">{field}</label>
                                             <input
                                                 type="number"
                                                 inputMode="numeric"
@@ -130,7 +168,7 @@ function DynamicStatForm({ sport, position }) {
                                                 name={field}
                                                 value={formData[field] || ''}
                                                 onChange={handleChange}
-                                                className="border rounded-md p-2 focus:outline-none focus:ring bg-white dark:bg-gray-700 dark:text-white"
+                                                className="border rounded-md p-2 bg-white dark:bg-gray-700 dark:border-gray-400 dark:text-white"
                                                 placeholder={field}
                                             />
                                         </div>
