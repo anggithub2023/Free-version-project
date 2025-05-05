@@ -6,7 +6,7 @@ import {
     MdInsights,
     MdSave,
     MdFeedback,
-    MdLeaderboard
+    MdBarChart,
 } from 'react-icons/md';
 
 export default function StickyCtaBar({
@@ -68,9 +68,9 @@ export default function StickyCtaBar({
                 <button
                     onClick={onStats}
                     className="flex flex-col items-center text-xs text-gray-700 dark:text-gray-200 hover:text-blue-600"
-                    aria-label="Back to Stats"
+                    aria-label="View Stats"
                 >
-                    <MdLeaderboard size={24} />
+                    <MdBarChart size={24} />
                     <span>Stats</span>
                 </button>
             )}
@@ -88,7 +88,12 @@ export default function StickyCtaBar({
 
             {onFeedback && (
                 <button
-                    onClick={onFeedback}
+                    onClick={() =>
+                        window.open(
+                            'https://docs.google.com/forms/d/e/1FAIpQLScOxoJ31gN56kaCq2ROr1Js7-7HZhghEMG3Dl0kiiNj1GvmVA/viewform?usp=sharing',
+                            '_blank'
+                        )
+                    }
                     className="flex flex-col items-center text-xs text-gray-700 dark:text-gray-200 hover:text-pink-600"
                     aria-label="Submit Feedback"
                 >
