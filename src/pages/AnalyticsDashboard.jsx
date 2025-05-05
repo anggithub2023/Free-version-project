@@ -192,6 +192,7 @@ function AnalyticsDashboard() {
             <StickyCtaBar
                 onDownload={handleDownloadStats}
                 onHome={handleGoHome}
+                onFeedback={() => window.location.href = '/feedback'}
             />
         </div>
     );
