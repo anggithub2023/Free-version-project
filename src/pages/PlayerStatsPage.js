@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ReflectionStartFlow from '../components/PlayerStats/ReflectionStartFlow';
 import PositionSelectionModal from '../components/PlayerStats/PositionSelectionModal';
 import DynamicStatForm from '../components/PlayerStats/DynamicStatForm';
-import ConfirmModal from '../components/ConfirmModal';
+import ClearConfirmModal from '../components/PlayerStats/ClearConfirmModal';
 import StickyCtaBar from '../components/StickyCtaBar';
 
 function PlayerStatsPage() {
@@ -99,7 +99,7 @@ function PlayerStatsPage() {
             />
 
             {showClearModal && (
-                <ConfirmModal
+                <ClearConfirmModal
                     message="Are you sure you want to clear all player stats?"
                     onConfirm={() => {
                         handleClearStats();
