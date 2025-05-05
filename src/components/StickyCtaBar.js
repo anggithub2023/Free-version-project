@@ -4,7 +4,8 @@ import {
     MdDeleteForever,
     MdHome,
     MdInsights,
-    MdSave
+    MdSave,
+    MdFeedback
 } from 'react-icons/md';
 
 export default function StickyCtaBar({
@@ -12,6 +13,7 @@ export default function StickyCtaBar({
                                          onDownload,
                                          onClear,
                                          onInsights,
+                                         onFeedback,
                                          onHome
                                      }) {
     return (
@@ -57,6 +59,17 @@ export default function StickyCtaBar({
                 >
                     <MdInsights size={24} />
                     <span>Analytics</span>
+                </button>
+            )}
+
+            {onFeedback && (
+                <button
+                    onClick={onFeedback}
+                    className="flex flex-col items-center text-xs text-gray-700 dark:text-gray-200 hover:text-pink-600"
+                    aria-label="Submit Feedback"
+                >
+                    <MdFeedback size={24} />
+                    <span>Feedback</span>
                 </button>
             )}
 
