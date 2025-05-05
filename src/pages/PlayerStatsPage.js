@@ -1,9 +1,18 @@
+// ✅ File: src/pages/PlayerStatsPage.jsx
 import React, { useState, useEffect } from 'react';
 import ReflectionStartFlow from '../components/PlayerStats/ReflectionStartFlow';
 import PositionSelectionModal from '../components/PlayerStats/PositionSelectionModal';
 import DynamicStatForm from '../components/PlayerStats/DynamicStatForm';
 import ClearConfirmModal from '../components/PlayerStats/ClearConfirmModal';
 import StickyCtaBar from '../components/StickyCtaBar';
+
+const loadStatsFromStorage = () => {
+    try {
+        return JSON.parse(localStorage.getItem('gameStats')) || [];
+    } catch {
+        return [];
+    }
+};
 
 function PlayerStatsPage() {
     const [selectedSport, setSelectedSport] = useState(() => localStorage.getItem('selectedSport') || '');
@@ -15,8 +24,7 @@ function PlayerStatsPage() {
     const sportsWithPositions = ['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'];
 
     useEffect(() => {
-        const savedStats = JSON.parse(localStorage.getItem('gameStats')) || [];
-        setGameStats(savedStats);
+        setGameStats(loadStatsFromStorage());
     }, []);
 
     const handleClearStats = () => {
@@ -57,28 +65,18 @@ function PlayerStatsPage() {
     };
 
     if (!selectedSport) {
-        return (
-            <ReflectionStartFlow
-                onSelect={(sport) => {
-                    setSelectedSport(sport);
-                    localStorage.setItem('selectedSport', sport);
-                }}
-                buttonLabel="Start Stats"
-            />
-        );
+        return <ReflectionStartFlow onSelect={(sport) => {
+            setSelectedSport(sport);
+            localStorage.setItem('selectedSport', sport);
+        }} buttonLabel="Start Stats" />;
     }
 
     if (sportsWithPositions.includes(selectedSport) && !selectedPosition) {
-        return (
-            <PositionSelectionModal
-                onSelect={(position) => {
-                    const normalizedPosition = position.toLowerCase().replace(/\s+/g, '-');
-                    setSelectedPosition(normalizedPosition);
-                    localStorage.setItem('selectedPosition', normalizedPosition);
-                }}
-                sport={selectedSport}
-            />
-        );
+        return <PositionSelectionModal onSelect={(position) => {
+            const normalizedPosition = position.toLowerCase().replace(/\s+/g, '-');
+            setSelectedPosition(normalizedPosition);
+            localStorage.setItem('selectedPosition', normalizedPosition);
+        }} sport={selectedSport} />;
     }
 
     return (
@@ -103,6 +101,7 @@ function PlayerStatsPage() {
                     message="Are you sure you want to clear all player stats?"
                     onConfirm={() => {
                         handleClearStats();
+                        if (!formActions.clear) console.warn('Clear function not registered');
                         formActions.clear?.();
                     }}
                     onCancel={() => setShowClearModal(false)}
