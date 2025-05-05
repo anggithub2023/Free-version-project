@@ -7,7 +7,6 @@ import {
     MdFileDownload,
     MdDeleteForever,
     MdHome,
-    MdMenu,
     MdInsights
 } from 'react-icons/md';
 
@@ -16,7 +15,6 @@ function PlayerStatsPage() {
     const [selectedPosition, setSelectedPosition] = useState(() => localStorage.getItem('selectedPosition') || '');
     const [gameStats, setGameStats] = useState([]);
     const [showClearModal, setShowClearModal] = useState(false);
-    const [showFAB, setShowFAB] = useState(false);
 
     const sportsWithPositions = ['soccer', 'football', 'baseball', 'iceHockey', 'lacrosse'];
 
@@ -78,7 +76,7 @@ function PlayerStatsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 p-4 pb-24 font-sans">
+        <div className="min-h-screen bg-gradient-to-br from-green-50 to-white dark:from-gray-900 dark:to-gray-800 p-4 pb-32 font-sans">
             <h1 className="text-3xl sm:text-4xl font-bold text-center mb-2 text-green-700 dark:text-green-300">
                 Track Your Performance
             </h1>
@@ -91,59 +89,6 @@ function PlayerStatsPage() {
                 position={selectedPosition}
             />
 
-            <div className="flex justify-center mt-6">
-                <button
-                    onClick={() => window.location.href = '/analytics'}
-                    className="bg-purple-600 hover:bg-purple-500 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition"
-                >
-                    <MdInsights className="inline-block mr-2" size={20} />
-                    View Analytics
-                </button>
-            </div>
-
-            {/* Floating FAB group */}
-            <div className="fixed bottom-6 right-6 flex flex-col items-end space-y-3 z-50">
-                {showFAB && (
-                    <>
-                        <button
-                            onClick={() => window.location.href = '/analytics'}
-                            className="bg-purple-600 hover:bg-purple-500 text-white p-3 rounded-full shadow-lg"
-                            title="View Analytics"
-                        >
-                            <MdInsights size={24} />
-                        </button>
-                        <button
-                            onClick={handleDownloadStats}
-                            className="bg-blue-600 hover:bg-blue-500 text-white p-3 rounded-full shadow-lg"
-                            title="Download CSV"
-                        >
-                            <MdFileDownload size={24} />
-                        </button>
-                        <button
-                            onClick={() => setShowClearModal(true)}
-                            className="bg-yellow-600 hover:bg-yellow-500 text-white p-3 rounded-full shadow-lg"
-                            title="Clear Stats"
-                        >
-                            <MdDeleteForever size={24} />
-                        </button>
-                        <button
-                            onClick={handleGoHome}
-                            className="bg-gray-600 hover:bg-gray-500 text-white p-3 rounded-full shadow-lg"
-                            title="Back to Home"
-                        >
-                            <MdHome size={24} />
-                        </button>
-                    </>
-                )}
-                <button
-                    onClick={() => setShowFAB(!showFAB)}
-                    className="bg-green-600 hover:bg-green-500 text-white p-4 rounded-full shadow-xl"
-                    title="Menu"
-                >
-                    <MdMenu size={28} />
-                </button>
-            </div>
-
             {showClearModal && (
                 <ConfirmModal
                     message="Are you sure you want to clear all player stats?"
@@ -151,6 +96,38 @@ function PlayerStatsPage() {
                     onCancel={() => setShowClearModal(false)}
                 />
             )}
+
+            {/* Sticky CTA bar */}
+            <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t dark:border-gray-700 shadow-md px-4 py-3 flex justify-around items-center z-50">
+                <button
+                    onClick={handleDownloadStats}
+                    className="flex flex-col items-center text-xs text-gray-700 dark:text-gray-200"
+                >
+                    <MdFileDownload size={24} />
+                    <span>Download</span>
+                </button>
+                <button
+                    onClick={() => setShowClearModal(true)}
+                    className="flex flex-col items-center text-xs text-gray-700 dark:text-gray-200"
+                >
+                    <MdDeleteForever size={24} />
+                    <span>Clear</span>
+                </button>
+                <button
+                    onClick={() => window.location.href = '/analytics'}
+                    className="flex flex-col items-center text-xs text-gray-700 dark:text-gray-200"
+                >
+                    <MdInsights size={24} />
+                    <span>Insights</span>
+                </button>
+                <button
+                    onClick={handleGoHome}
+                    className="flex flex-col items-center text-xs text-gray-700 dark:text-gray-200"
+                >
+                    <MdHome size={24} />
+                    <span>Home</span>
+                </button>
+            </div>
         </div>
     );
 }
