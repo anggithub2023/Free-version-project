@@ -1,5 +1,5 @@
 // src/services/schedulingService.js
-import { supabase } from '../lib/supabaseClient';
+import { schedulingSupabase as supabase } from '../lib/schedulingClient';
 
 /**
  * Create a new event
