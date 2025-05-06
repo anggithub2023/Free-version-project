@@ -11,7 +11,7 @@ import WorkoutsPage from './pages/WorkoutsPage';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import DashboardPage from './pages/DashboardPage';
 import SchedulingDashboard from './pages/SchedulingDashboard';
-import CreateEventPage from './components/Scheduling/CreateEventPage';
+import CreateEventPage from './pages/CreateEventPage';
 import RSVPEventsPage from './components/Scheduling/RSVPEventsPage';
 import CoachEventDashboard from './components/Scheduling/CoachEventDashboard';
 
