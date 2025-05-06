@@ -1,5 +1,5 @@
 // src/components/Scheduling/eventService.js
-import { supabase } from '../../lib/supabaseClient';
+import { supabase } from '/src/lib/supabaseClient';
 
 export async function createEvent(eventData) {
     const { data, error } = await supabase.from('events').insert([eventData]);
