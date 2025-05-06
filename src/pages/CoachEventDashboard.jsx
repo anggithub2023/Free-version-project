@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getAllEventsWithRSVPs } from '../components/Scheduling/eventService';
+import { getAllEventsWithRSVPs } from '../services/schedulingService';
 import EventCard from '../components/Scheduling/EventCard';
 import EventResponseChart from '../components/Scheduling/EventResponseChart';
 import StickyCtaBar from '../components/StickyCtaBar';
