@@ -41,6 +41,19 @@ export async function rsvpToEvent(eventId, userId, status) {
 }
 
 /**
+ * Fetch RSVPs for a specific event with player name
+ * @param {string} eventId
+ */
+export async function fetchRsvpsByEvent(eventId) {
+    const { data, error } = await supabase
+        .from('rsvps')
+        .select('status, user_id, profiles(name)')
+        .eq('event_id', eventId);
+    if (error) throw new Error(`Failed to fetch RSVPs: ${error.message}`);
+    return data;
+}
+
+/**
  * Fetch all upcoming events from today forward
  */
 export async function getUpcomingEvents() {
@@ -64,3 +77,6 @@ export async function getAllEventsWithRSVPs() {
     if (error) throw new Error(`Failed to fetch event RSVPs: ${error.message}`);
     return data;
 }
+
+// Alias
+export const submitRSVP = rsvpToEvent;
