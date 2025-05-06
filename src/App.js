@@ -9,11 +9,16 @@ import PlayerStatsPage from './pages/PlayerStatsPage';
 import VideosPage from './pages/VideosPage';
 import WorkoutsPage from './pages/WorkoutsPage';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
-import DashboardPage from './pages/DashboardPage'; // ✅ FIXED
-import useAnonymousUser from './hooks/useAnonymousUser'; // ✅ Hook for generating anonymous user ID
+import DashboardPage from './pages/DashboardPage';
+import SchedulingDashboard from './components/Scheduling/SchedulingDashboard';
+import CreateEventPage from './components/Scheduling/CreateEventPage';
+import RSVPEventsPage from './components/Scheduling/RSVPEventsPage';
+import CoachEventDashboard from './components/Scheduling/CoachEventDashboard';
+
+import useAnonymousUser from './hooks/useAnonymousUser';
 
 function App() {
-    useAnonymousUser(); // ✅ Ensures userId is set once when the app loads
+    useAnonymousUser(); // Ensures userId is set once when the app loads
 
     return (
         <Routes>
@@ -26,6 +31,12 @@ function App() {
             <Route path="/workouts" element={<WorkoutsPage />} />
             <Route path="/analytics" element={<AnalyticsDashboard />} />
             <Route path="/dashboard" element={<DashboardPage />} />
+
+            {/* Scheduling Feature */}
+            <Route path="/scheduling" element={<SchedulingDashboard />} />
+            <Route path="/scheduling/create" element={<CreateEventPage />} />
+            <Route path="/scheduling/events" element={<RSVPEventsPage />} />
+            <Route path="/scheduling/coach" element={<CoachEventDashboard />} />
         </Routes>
     );
 }
