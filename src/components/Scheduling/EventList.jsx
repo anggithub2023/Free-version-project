@@ -1,5 +1,5 @@
 import React from 'react';
-import EventCard from '../components/Scheduling/EventCard';
+import EventCard from './EventCard';
 
 export default function EventList({ events }) {
     if (!events || events.length === 0) {
