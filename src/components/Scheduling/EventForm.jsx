@@ -1,17 +1,39 @@
 import React, { useState } from 'react';
+import { supabase } from 'src/lib/schedulingClient.js'
 
 export default function EventForm({ onSave }) {
     const [title, setTitle] = useState('');
-    const [date, setDate] = useState('');
+    const [datetime, setDatetime] = useState('');
     const [location, setLocation] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!title || !date) return alert('Title and Date are required');
-        onSave({ title, date, location });
-        setTitle('');
-        setDate('');
-        setLocation('');
+        if (!title || !datetime) return alert('Title and date/time are required');
+
+        const [datePart, timePart] = datetime.split('T');
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+        if (sessionError || !session) return alert('User not authenticated');
+
+        const event = {
+            title,
+            event_date: datePart,
+            event_time: timePart || null,
+            location,
+            created_by: session.user.id,
+        };
+
+        setLoading(true);
+        try {
+            await onSave(event); // call createEvent
+            setTitle('');
+            setDatetime('');
+            setLocation('');
+        } catch (err) {
+            alert(err.message || 'Failed to create event');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -32,8 +54,8 @@ export default function EventForm({ onSave }) {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Date & Time</label>
                 <input
                     type="datetime-local"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
+                    value={datetime}
+                    onChange={(e) => setDatetime(e.target.value)}
                     className="w-full mt-1 p-2 border rounded-lg dark:bg-gray-800 dark:text-white"
                     required
                 />
@@ -52,9 +74,10 @@ export default function EventForm({ onSave }) {
 
             <button
                 type="submit"
+                disabled={loading}
                 className="w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-2 rounded-lg transition"
             >
-                Add Event
+                {loading ? 'Saving...' : 'Add Event'}
             </button>
         </form>
     );
