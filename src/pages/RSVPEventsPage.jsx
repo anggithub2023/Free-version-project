@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { getUpcomingEvents, submitRSVP } from './eventService';
-import EventCard from './EventCard';
-import StickyCtaBar from '../StickyCtaBar';
+import { getUpcomingEvents, submitRSVP } from '../components/Scheduling/eventService';
+import EventCard from '../components/Scheduling/EventCard';
+import StickyCtaBar from '../components/StickyCtaBar';
 
 export default function RSVPEventsPage() {
     const [events, setEvents] = useState([]);

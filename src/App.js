@@ -12,8 +12,8 @@ import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import DashboardPage from './pages/DashboardPage';
 import SchedulingDashboard from './pages/SchedulingDashboard';
 import CreateEventPage from './pages/CreateEventPage';
-import RSVPEventsPage from './components/Scheduling/RSVPEventsPage';
-import CoachEventDashboard from './components/Scheduling/CoachEventDashboard';
+import RSVPEventsPage from './pages/RSVPEventsPage';
+import CoachEventDashboard from './pages/CoachEventDashboard';
 
 import useAnonymousUser from './hooks/useAnonymousUser';
 

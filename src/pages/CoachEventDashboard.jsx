@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { getAllEventsWithRSVPs } from './eventService';
-import EventCard from './EventCard';
-import EventResponseChart from './EventResponseChart';
-import StickyCtaBar from '../StickyCtaBar';
+import { getAllEventsWithRSVPs } from '../components/Scheduling/eventService';
+import EventCard from '../components/Scheduling/EventCard';
+import EventResponseChart from '../components/Scheduling/EventResponseChart';
+import StickyCtaBar from '../components/StickyCtaBar';
 
 export default function CoachEventDashboard() {
     const [events, setEvents] = useState([]);
