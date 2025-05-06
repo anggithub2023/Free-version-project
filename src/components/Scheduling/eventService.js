@@ -3,7 +3,7 @@ import { schedulingSupabase as supabase } from '../../lib/schedulingClient';
 
 export async function createEvent(eventData) {
     const { data, error } = await supabase.from('events').insert([eventData]);
-    if (error) throw error;
+    if (error) throw new Error(`Failed to create event: ${error.message}`);
     return data;
 }
 
