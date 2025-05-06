@@ -1,5 +1,5 @@
-// src/components/Scheduling/events/eventService.js
-import { supabase } from '../../../supabaseClient';
+// src/components/Scheduling/eventService.js
+import { supabase } from '../../lib/supabaseClient';
 
 export async function createEvent(eventData) {
     const { data, error } = await supabase.from('events').insert([eventData]);
@@ -8,7 +8,10 @@ export async function createEvent(eventData) {
 }
 
 export async function fetchEvents() {
-    const { data, error } = await supabase.from('events').select('*').order('date', { ascending: true });
+    const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .order('date', { ascending: true });
     if (error) throw error;
     return data;
 }
