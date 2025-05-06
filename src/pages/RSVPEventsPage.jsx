@@ -16,7 +16,13 @@ export default function RSVPEventsPage() {
     }, []);
 
     const handleRSVP = async (eventId, status) => {
-        await submitRSVP(eventId, status);
+        const userId = localStorage.getItem('userId'); // Get the userId from localStorage
+        if (!userId) {
+            alert('User ID not found.');
+            return;
+        }
+
+        await submitRSVP({ eventId, userId, status });
         setRsvpStatus((prev) => ({ ...prev, [eventId]: status }));
     };
 
