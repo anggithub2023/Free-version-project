@@ -1,80 +1,95 @@
 // src/services/schedulingService.js
 import { schedulingSupabase as supabase } from '../lib/schedulingClient';
+import { v4 as uuidv4 } from 'uuid';
 
-/**
- * Create a new event
- * @param {Object} eventData - Fields: title, description, date, location, created_by
- */
+// Helper to get current user or generate anonymous ID
+async function getUserContext() {
+    const session = await supabase.auth.getSession();
+    const user = session?.data?.session?.user;
+
+    if (user) {
+        return { userId: user.id, anonymousId: null };
+    }
+
+    let anonymousId = localStorage.getItem('anonymous_id');
+    if (!anonymousId) {
+        anonymousId = uuidv4();
+        localStorage.setItem('anonymous_id', anonymousId);
+    }
+
+    return { userId: null, anonymousId };
+}
+
+// 📌 Create a new event
 export async function createEvent(eventData) {
     const { data, error } = await supabase.from('events').insert([eventData]);
-    if (error) throw new Error(`Failed to create event: ${error.message}`);
+    if (error) throw new Error(`❌ Failed to create event: ${error.message}`);
     return data;
 }
 
-/**
- * Fetch all events, ordered by date
- */
+// 📌 Fetch all events (ascending by date)
 export async function fetchEvents() {
     const { data, error } = await supabase
         .from('events')
         .select('*')
-        .order('date', { ascending: true });
-    if (error) throw new Error(`Failed to fetch events: ${error.message}`);
+        .order('event_date', { ascending: true });
+    if (error) throw new Error(`❌ Failed to fetch events: ${error.message}`);
     return data;
 }
 
-/**
- * RSVP to an event
- * @param {string} eventId
- * @param {string} userId
- * @param {string} status - 'yes', 'no', 'maybe'
- */
-export async function rsvpToEvent(eventId, userId, status) {
+// 📌 RSVP to an event (supporting both user and anonymous)
+export async function rsvpToEvent(eventId, status) {
+    const { userId, anonymousId } = await getUserContext();
+
+    const payload = {
+        event_id: eventId,
+        status,
+        user_id: userId,
+        anonymous_id: anonymousId,
+    };
+
+    const conflictKeys = userId
+        ? ['event_id', 'user_id']
+        : ['event_id', 'anonymous_id'];
+
     const { data, error } = await supabase
         .from('rsvps')
-        .upsert(
-            { event_id: eventId, user_id: userId, status },
-            { onConflict: ['event_id', 'user_id'] }
-        );
-    if (error) throw new Error(`Failed to RSVP: ${error.message}`);
+        .upsert(payload, { onConflict: conflictKeys });
+
+    if (error) throw new Error(`❌ Failed to RSVP: ${error.message}`);
     return data;
 }
 
-/**
- * Fetch RSVPs for a specific event with player name
- * @param {string} eventId
- */
+// 📌 Get RSVPs for one event (for chart or display)
 export async function fetchRsvpsByEvent(eventId) {
     const { data, error } = await supabase
         .from('rsvps')
-        .select('status, user_id, profiles(name)')
+        .select('status, user_id, anonymous_id')
         .eq('event_id', eventId);
-    if (error) throw new Error(`Failed to fetch RSVPs: ${error.message}`);
+    if (error) throw new Error(`❌ Failed to fetch RSVPs: ${error.message}`);
     return data;
 }
 
-/**
- * Fetch all upcoming events from today forward
- */
+// 📌 Get only upcoming events (from today onward)
 export async function getUpcomingEvents() {
-    const now = new Date().toISOString();
+    const today = new Date().toISOString().split('T')[0];
     const { data, error } = await supabase
         .from('events')
         .select('*')
-        .gte('date', now)
-        .order('date', { ascending: true });
-    if (error) throw new Error(`Failed to fetch upcoming events: ${error.message}`);
+        .gte('event_date', today)
+        .order('event_date', { ascending: true });
+
+    if (error) throw new Error(`❌ Failed to fetch upcoming events: ${error.message}`);
     return data;
 }
 
-/**
- * Fetch all events with their RSVP records (for coaches)
- */
+// 📌 Coach: Fetch all events with RSVPs (admin view)
 export async function getAllEventsWithRSVPs() {
     const { data, error } = await supabase
         .from('events')
         .select('*, rsvps(*)');
-    if (error) throw new Error(`Failed to fetch event RSVPs: ${error.message}`);
+
+    if (error) throw new Error(`❌ Failed to fetch event RSVPs: ${error.message}`);
     return data;
 }
 
