@@ -9,8 +9,13 @@ export default function CoachEventDashboard() {
 
     useEffect(() => {
         const fetchRSVPs = async () => {
-            const all = await getAllEventsWithRSVPs();
-            setEvents(all);
+            try {
+                const all = await getAllEventsWithRSVPs();
+                setEvents(all);
+            } catch (err) {
+                console.error("Failed to load events:", err);
+                // You could also show a toast or UI message here
+            }
         };
         fetchRSVPs();
     }, []);
