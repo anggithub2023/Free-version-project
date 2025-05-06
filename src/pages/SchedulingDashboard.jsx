@@ -1,4 +1,3 @@
-// src/pages/SchedulingDashboard.jsx
 import React, { useEffect, useState } from 'react';
 import { fetchEvents } from '../services/schedulingService';
 import EventList from '../components/Scheduling/EventList';
@@ -24,6 +23,8 @@ export default function SchedulingDashboard() {
         font.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap';
         font.rel = 'stylesheet';
         document.head.appendChild(font);
+
+        return () => document.head.removeChild(font);
     }, []);
 
     return (
