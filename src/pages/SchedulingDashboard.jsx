@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { fetchEvents } from '../services/schedulingService';
-import EventList from '../components/Scheduling/EventList';
+import EventList from './EventList';
 import StickyCtaBar from '../components/StickyCtaBar';
 import { useNavigate } from 'react-router-dom';
 
