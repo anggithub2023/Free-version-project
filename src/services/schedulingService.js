@@ -41,14 +41,26 @@ export async function rsvpToEvent(eventId, userId, status) {
 }
 
 /**
- * Fetch all events with their RSVP records (for coach dashboard)
+ * Fetch all upcoming events from today forward
+ */
+export async function getUpcomingEvents() {
+    const now = new Date().toISOString();
+    const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .gte('date', now)
+        .order('date', { ascending: true });
+    if (error) throw new Error(`Failed to fetch upcoming events: ${error.message}`);
+    return data;
+}
+
+/**
+ * Fetch all events with their RSVP records (for coaches)
  */
 export async function getAllEventsWithRSVPs() {
     const { data, error } = await supabase
         .from('events')
-        .select('*, rsvps(*)')
-        .order('date', { ascending: true });
-
+        .select('*, rsvps(*)');
     if (error) throw new Error(`Failed to fetch event RSVPs: ${error.message}`);
     return data;
 }
