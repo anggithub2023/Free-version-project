@@ -41,14 +41,14 @@ export async function rsvpToEvent(eventId, userId, status) {
 }
 
 /**
- * Fetch RSVPs for a specific event with player name
- * @param {string} eventId
+ * Fetch all events with their RSVP records (for coach dashboard)
  */
-export async function fetchRsvpsByEvent(eventId) {
+export async function getAllEventsWithRSVPs() {
     const { data, error } = await supabase
-        .from('rsvps')
-        .select('status, user_id, profiles(name)')
-        .eq('event_id', eventId);
-    if (error) throw new Error(`Failed to fetch RSVPs: ${error.message}`);
+        .from('events')
+        .select('*, rsvps(*)')
+        .order('date', { ascending: true });
+
+    if (error) throw new Error(`Failed to fetch event RSVPs: ${error.message}`);
     return data;
 }
