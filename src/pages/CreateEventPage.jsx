@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createEvent } from './eventService';
+import { createEvent } from '../components/Scheduling/eventService';
 import { useNavigate } from 'react-router-dom';
 
 export default function CreateEventPage() {
