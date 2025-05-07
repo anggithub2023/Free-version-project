@@ -2,7 +2,7 @@
 import React from 'react';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
-import { supabase } from '../lib/supabaseClient';
+import supabase from '../lib/supabaseClient'; // ✅ RELATIVE
 import useAuthRedirect from '../hooks/useAuthRedirect'; // ✅ Add this hook
 
 export default function LoginPage() {
