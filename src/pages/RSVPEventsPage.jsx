@@ -15,34 +15,48 @@ export default function RSVPEventsPage() {
                 setEvents(fetched);
             } catch (error) {
                 console.error('Error fetching events:', error);
+                alert('❌ Failed to load events. Try again later.');
             }
         };
         fetchEvents();
     }, []);
 
     const handleRSVP = async (eventId, status) => {
-        const userId = localStorage.getItem('userId');
-        if (!userId) {
-            alert('User ID not found.');
-            return;
+        let userId = localStorage.getItem('userId');
+        let anonymousId = localStorage.getItem('anonId');
+
+        if (!userId && !anonymousId) {
+            anonymousId = crypto.randomUUID();
+            localStorage.setItem('anonId', anonymousId);
         }
 
         try {
-            await submitRSVP({ eventId, userId, status });
+            await submitRSVP({
+                eventId,
+                userId: userId || null,
+                anonymousId: anonymousId || null,
+                status,
+            });
+
             setRsvpStatus((prev) => ({ ...prev, [eventId]: status }));
         } catch (err) {
-            alert('Failed to submit RSVP.');
-            console.error(err);
+            console.error('❌ Failed to submit RSVP:', err.message);
+            alert('Error submitting RSVP. Please try again.');
         }
     };
 
     return (
         <div className="min-h-screen p-4 bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-white font-['Inter']">
-            <h1 className="text-3xl font-bold text-center mb-6">Upcoming Events</h1>
+            <h1 className="text-3xl font-bold text-center mb-6 text-blue-800 dark:text-blue-200">
+                Upcoming Events
+            </h1>
 
             <div className="space-y-4">
                 {events.length === 0 ? (
-                    <p className="text-center text-gray-500 dark:text-gray-400">No upcoming events.</p>
+                    <p className="text-center text-gray-500 dark:text-gray-400">
+                        No upcoming events.<br />
+                        <a href="/create-event" className="text-blue-600 dark:text-blue-300 underline">Create one?</a>
+                    </p>
                 ) : (
                     events.map((event) => (
                         <EventCard
