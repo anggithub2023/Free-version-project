@@ -1,5 +1,5 @@
 // src/services/schedulingService.js
-import { schedulingSupabase as supabase } from '../lib/schedulingClient';
+import { supabase } from '../lib/supabaseClient'; // ✅ Unified client
 
 // ✅ Authenticated: Get user + team
 async function getCurrentUserWithTeam() {
