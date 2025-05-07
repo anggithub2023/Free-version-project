@@ -1,9 +1,10 @@
-// src/pages/JoinTeamPage.jsx
 import React, { useState } from 'react';
-import supabase from '../lib/supabaseClient'; // ✅ Default import from unified client
 import { useNavigate } from 'react-router-dom';
+import supabase from '../lib/supabaseClient';
+import useCurrentUserProfile from '../hooks/useCurrentUserProfile';
 
 export default function JoinTeamPage() {
+    const { profile, loading: profileLoading, error: profileError } = useCurrentUserProfile();
     const [code, setCode] = useState('');
     const [team, setTeam] = useState(null);
     const [error, setError] = useState('');
@@ -33,7 +34,7 @@ export default function JoinTeamPage() {
         if (!user) return alert('You must be logged in to join a team.');
 
         const { error } = await supabase
-            .from('users')
+            .from('users_auth') // 👈 Updated table name if using auth version
             .update({ team_id: team.id })
             .eq('id', user.id);
 
@@ -45,6 +46,16 @@ export default function JoinTeamPage() {
         }
     };
 
+    // ⏳ Loading or ❌ Error state
+    if (profileLoading) return <p className="text-center mt-10">Loading...</p>;
+    if (profileError) return <p className="text-red-500 text-center">Error: {profileError.message}</p>;
+
+    // ❌ Already on a team
+    if (profile?.team_id) {
+        return <p className="text-center mt-10 text-gray-500">You're already on a team.</p>;
+    }
+
+    // ✅ Join flow
     return (
         <div className="min-h-screen bg-white dark:bg-gray-900 p-6 text-gray-800 dark:text-white">
             <h1 className="text-2xl font-bold text-center mb-6">Join a Team</h1>
