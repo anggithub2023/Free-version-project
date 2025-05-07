@@ -41,6 +41,7 @@ function App() {
                 <Route path="/scheduling/events" element={<RSVPEventsPage />} />
                 <Route path="/scheduling/coach" element={<CoachEventDashboard />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/join-team" element={<JoinTeamPage />} />
             </Routes>
         </AppShell>
     );
