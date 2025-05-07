@@ -3,8 +3,11 @@ import React from 'react';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '../lib/supabaseClient';
+import useAuthRedirect from '../hooks/useAuthRedirect'; // ✅ Add this hook
 
 export default function LoginPage() {
+    useAuthRedirect(); // ✅ Automatically redirects on successful login
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
             <div className="w-full max-w-md">
