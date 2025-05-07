@@ -47,7 +47,7 @@ export async function fetchEvents() {
 }
 
 // ✅ RSVP (supports both auth + anonymous)
-export async function rsvpToEvent(eventId, status) {
+export async function rsvpToEvent(eventId, status, anonymousName = '') {
     const {
         data: { user },
     } = await supabase.auth.getUser();
@@ -65,13 +65,13 @@ export async function rsvpToEvent(eventId, status) {
         return data;
     } else {
         // Anonymous RSVP
-        const anonymous_id = localStorage.getItem('userId');
+        const anonymous_id = localStorage.getItem('anonId');
         if (!anonymous_id) throw new Error("Anonymous user ID not found");
 
         const { data, error } = await supabase
             .from('rsvps')
             .upsert(
-                { event_id: eventId, anonymous_id, response: status },
+                { event_id: eventId, anonymous_id, anonymous_name: anonymousName, response: status },
                 { onConflict: ['event_id', 'anonymous_id'] }
             );
         if (error) throw new Error(`Failed to RSVP: ${error.message}`);
@@ -83,7 +83,7 @@ export async function rsvpToEvent(eventId, status) {
 export async function fetchRsvpsByEvent(eventId) {
     const { data, error } = await supabase
         .from('rsvps')
-        .select('response, user_id, anonymous_id, users(full_name)')
+        .select('response, user_id, anonymous_id, anonymous_name, users(full_name)')
         .eq('event_id', eventId);
 
     if (error) throw new Error(`Failed to fetch RSVPs: ${error.message}`);
