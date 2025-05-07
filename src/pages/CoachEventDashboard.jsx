@@ -1,3 +1,4 @@
+// src/pages/CoachEventDashboard.jsx
 import React, { useEffect, useState } from 'react';
 import { getAllEventsWithRSVPs } from '../services/schedulingService';
 import EventCard from '../components/Scheduling/EventCard';
@@ -13,8 +14,8 @@ export default function CoachEventDashboard() {
                 const all = await getAllEventsWithRSVPs();
                 setEvents(all);
             } catch (err) {
-                console.error("Failed to load events:", err);
-                // You could also show a toast or UI message here
+                console.error("❌ Failed to load events:", err.message);
+                alert("Error loading events. Please try again later.");
             }
         };
         fetchRSVPs();
