@@ -1,3 +1,4 @@
+// src/pages/CoachEventDashboard.jsx
 import React, { useEffect, useState } from 'react';
 import { getAllEventsWithRSVPs } from '../services/schedulingService';
 import EventCard from '../components/Scheduling/EventCard';
@@ -8,12 +9,17 @@ export default function CoachEventDashboard() {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
+    const [teamName, setTeamName] = useState(''); // Optional: fetch if available
 
     useEffect(() => {
         const fetchRSVPs = async () => {
             try {
                 const all = await getAllEventsWithRSVPs();
                 setEvents(all);
+                // Optional: if you want to show teamName from one of the events
+                if (all.length > 0) {
+                    setTeamName(all[0].team_name || ''); // Adjust if available
+                }
             } catch (err) {
                 console.error("❌ Failed to load events:", err.message);
                 setErrorMsg('Error loading events. Please try again later.');
@@ -26,19 +32,35 @@ export default function CoachEventDashboard() {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 p-4 pb-32 font-sans">
+            {teamName && (
+                <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-2">
+                    Team: {teamName}
+                </p>
+            )}
             <h1 className="text-3xl font-bold text-center mb-4 text-blue-700 dark:text-blue-300">
                 RSVP Overview
             </h1>
 
             {loading ? (
-                <p className="text-center text-gray-600 dark:text-gray-400 mt-20 animate-pulse">Loading events...</p>
+                <div className="animate-pulse space-y-2">
+                    <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-2/3 mx-auto" />
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3 mx-auto" />
+                </div>
             ) : errorMsg ? (
                 <p className="text-center text-red-600 dark:text-red-400 mt-20">{errorMsg}</p>
             ) : events.length > 0 ? (
                 events.map((event) => (
                     <div key={event.id} className="mb-8">
                         <EventCard event={event} showDetails={false} />
-                        <EventResponseChart responses={event.rsvps} />
+                        <EventResponseChart
+                            responses={event.rsvps?.map((rsvp) => ({
+                                ...rsvp,
+                                label:
+                                    rsvp.users?.full_name ||
+                                    rsvp.anonymous_name ||
+                                    'Anonymous',
+                            }))}
+                        />
                     </div>
                 ))
             ) : (
