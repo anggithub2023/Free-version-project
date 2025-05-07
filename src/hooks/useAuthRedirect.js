@@ -10,15 +10,17 @@ export default function useAuthRedirect() {
             data: { subscription },
         } = supabase.auth.onAuthStateChange(async (event, session) => {
             if (event === 'SIGNED_IN' && session?.user) {
-                const userId = session.user.id;
-                const userEmail = session.user.email;
+                const user = session.user;
+                const userId = user.id;
+                const email = user.email;
+                const fullName = user.user_metadata?.full_name || email || 'Anonymous';
 
-                // ✅ Upsert user row
-                const { error: insertError } = await supabase.from('users').upsert({
+                // ✅ Upsert into users_auth
+                const { error: insertError } = await supabase.from('users_auth').upsert({
                     id: userId,
-                    email: userEmail,
-                    is_coach: true,
-                    created_at: new Date().toISOString(),
+                    full_name: fullName,
+                    is_coach: true, // or false if you want to toggle later
+                    created_at: new Date().toISOString()
                 });
 
                 if (insertError) {
@@ -26,23 +28,32 @@ export default function useAuthRedirect() {
                     return;
                 }
 
-                // ✅ Get team_id
+                // ✅ Fetch profile (with team_id + is_coach)
                 const { data: profile, error: fetchError } = await supabase
-                    .from('users')
-                    .select('team_id')
+                    .from('users_auth')
+                    .select('team_id, is_coach')
                     .eq('id', userId)
                     .single();
 
                 if (fetchError) {
-                    console.error('Failed to fetch team info:', fetchError.message);
+                    console.error('Failed to fetch user profile:', fetchError.message);
                     return;
                 }
 
                 if (profile?.team_id) {
                     localStorage.setItem('team_id', profile.team_id);
+                } else {
+                    console.warn('No team_id found for user — redirecting to /join-team');
+                    navigate('/join-team');
+                    return;
                 }
 
-                navigate('/scheduling/coach');
+                // ✅ Redirect based on role
+                if (profile.is_coach) {
+                    navigate('/scheduling/coach');
+                } else {
+                    navigate('/scheduling/events');
+                }
             }
         });
 
