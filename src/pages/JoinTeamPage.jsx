@@ -1,6 +1,6 @@
 // src/pages/JoinTeamPage.jsx
 import React, { useState } from 'react';
-import supabase from 'src/lib/supabaseClient.js'; // ✅ Default import from unified client
+import supabase from '../lib/supabaseClient'; // ✅ Default import from unified client
 import { useNavigate } from 'react-router-dom';
 
 export default function JoinTeamPage() {
