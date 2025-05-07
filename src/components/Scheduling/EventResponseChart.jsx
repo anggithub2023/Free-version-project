@@ -36,6 +36,13 @@ export default function EventResponseChart({ rsvps = [] }) {
         },
     };
 
+    // ✅ Sorted list
+    const sortedRsvps = [...rsvps].sort((a, b) => {
+        const nameA = a.users?.full_name || a.anonymous_name || '';
+        const nameB = b.users?.full_name || b.anonymous_name || '';
+        return nameA.localeCompare(nameB);
+    });
+
     return (
         <div className="w-full max-w-xs mx-auto space-y-6">
             <div>
@@ -50,11 +57,12 @@ export default function EventResponseChart({ rsvps = [] }) {
                     Participants
                 </h4>
                 <ul className="text-sm text-center space-y-1">
-                    {rsvps.map((r, i) => {
-                        const name = r.users?.full_name || r.anonymous_name || 'Anonymous';
+                    {sortedRsvps.map((r, i) => {
+                        const name = r.users?.full_name || r.anonymous_name || '🙈 Anonymous';
+                        const response = r.response?.charAt(0).toUpperCase() + r.response?.slice(1);
                         return (
                             <li key={i} className="text-gray-700 dark:text-gray-300">
-                                {name} — {r.response}
+                                {name} — {response}
                             </li>
                         );
                     })}
