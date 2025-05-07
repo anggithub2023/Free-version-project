@@ -47,31 +47,26 @@ export async function fetchEvents() {
 }
 
 // ✅ RSVP (supports both auth + anonymous)
-export async function rsvpToEvent(eventId, status, anonymousName = '') {
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
-
-    if (user) {
+export async function rsvpToEvent({ eventId, userId, anonymousId, anonymousName, status }) {
+    if (userId) {
         // Authenticated RSVP
         const { team_id } = await getCurrentUserWithTeam();
         const { data, error } = await supabase
             .from('rsvps')
             .upsert(
-                { event_id: eventId, user_id: user.id, team_id, response: status },
+                { event_id: eventId, user_id: userId, team_id, response: status },
                 { onConflict: ['event_id', 'user_id'] }
             );
         if (error) throw new Error(`Failed to RSVP: ${error.message}`);
         return data;
     } else {
         // Anonymous RSVP
-        const anonymous_id = localStorage.getItem('anonId');
-        if (!anonymous_id) throw new Error("Anonymous user ID not found");
+        if (!anonymousId || !anonymousName) throw new Error("Anonymous ID and name required");
 
         const { data, error } = await supabase
             .from('rsvps')
             .upsert(
-                { event_id: eventId, anonymous_id, anonymous_name: anonymousName, response: status },
+                { event_id: eventId, anonymous_id: anonymousId, anonymous_name: anonymousName, response: status },
                 { onConflict: ['event_id', 'anonymous_id'] }
             );
         if (error) throw new Error(`Failed to RSVP: ${error.message}`);
@@ -93,9 +88,7 @@ export async function fetchRsvpsByEvent(eventId) {
 // ✅ Upcoming events (team filtered)
 export async function getUpcomingEvents() {
     const now = new Date().toISOString();
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+    const { data: { user } } = await supabase.auth.getUser();
 
     if (user) {
         const { team_id } = await getCurrentUserWithTeam();
@@ -109,19 +102,19 @@ export async function getUpcomingEvents() {
         if (error) throw new Error(`Failed to fetch upcoming events: ${error.message}`);
         return data;
     } else {
-        // Anonymous users see ALL events (or filter if we add token logic)
+        // Anonymous users see all public events (or all until filtering is added)
         const { data, error } = await supabase
             .from('events')
             .select('*')
             .gte('event_date', now)
             .order('event_date', { ascending: true });
 
-        if (error) throw new Error(`Failed to fetch public events: ${error.message}`);
+        if (error) throw new Error(`Failed to fetch events: ${error.message}`);
         return data;
     }
 }
 
-// ✅ Coach dashboard view
+// ✅ Coach dashboard view (all events with RSVPs)
 export async function getAllEventsWithRSVPs() {
     const { team_id } = await getCurrentUserWithTeam();
     const { data, error } = await supabase
