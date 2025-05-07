@@ -18,6 +18,8 @@ import SchedulingDashboard from './pages/SchedulingDashboard';
 import CreateEventPage from './pages/CreateEventPage';
 import RSVPEventsPage from './pages/RSVPEventsPage';
 import CoachEventDashboard from './pages/CoachEventDashboard';
+import JoinTeamPage from './pages/JoinTeamPage';
+import TeamManagementPage from './pages/TeamManagementPage'; // ✅ Add this
 
 import useAnonymousUser from './hooks/useAnonymousUser';
 
@@ -36,12 +38,17 @@ function App() {
                 <Route path="/workouts" element={<WorkoutsPage />} />
                 <Route path="/analytics" element={<AnalyticsDashboard />} />
                 <Route path="/dashboard" element={<DashboardPage />} />
+
+                {/* Scheduling */}
                 <Route path="/scheduling" element={<SchedulingDashboard />} />
                 <Route path="/scheduling/create" element={<CreateEventPage />} />
                 <Route path="/scheduling/events" element={<RSVPEventsPage />} />
                 <Route path="/scheduling/coach" element={<CoachEventDashboard />} />
+
+                {/* Auth + Teams */}
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/join-team" element={<JoinTeamPage />} />
+                <Route path="/team-management" element={<TeamManagementPage />} /> {/* ✅ New Route */}
             </Routes>
         </AppShell>
     );
