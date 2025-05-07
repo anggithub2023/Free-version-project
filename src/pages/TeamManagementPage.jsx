@@ -1,6 +1,6 @@
 // src/pages/TeamManagementPage.jsx
 import React, { useEffect, useState } from 'react';
-import { schedulingSupabase as supabase } from '../lib/schedulingClient';
+import supabase from 'src/lib/supabaseClient.js'; // ✅ Default import from unified client
 
 export default function TeamManagementPage() {
     const [team, setTeam] = useState(null);
