@@ -7,6 +7,7 @@ import StickyCtaBar from '../components/StickyCtaBar';
 export default function RSVPEventsPage() {
     const [events, setEvents] = useState([]);
     const [rsvpStatus, setRsvpStatus] = useState({});
+    const [anonName, setAnonName] = useState(localStorage.getItem('anonName') || '');
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -25,9 +26,18 @@ export default function RSVPEventsPage() {
         let userId = localStorage.getItem('userId');
         let anonymousId = localStorage.getItem('anonId');
 
-        if (!userId && !anonymousId) {
-            anonymousId = crypto.randomUUID();
-            localStorage.setItem('anonId', anonymousId);
+        if (!userId) {
+            if (!anonymousId) {
+                anonymousId = crypto.randomUUID();
+                localStorage.setItem('anonId', anonymousId);
+            }
+
+            if (!anonName.trim()) {
+                const name = prompt("Please enter your name or nickname:");
+                if (!name) return alert("RSVP requires a name.");
+                localStorage.setItem('anonName', name);
+                setAnonName(name);
+            }
         }
 
         try {
@@ -35,6 +45,7 @@ export default function RSVPEventsPage() {
                 eventId,
                 userId: userId || null,
                 anonymousId: anonymousId || null,
+                anonymousName: anonName || localStorage.getItem('anonName') || '',
                 status,
             });
 
