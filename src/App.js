@@ -14,6 +14,7 @@ import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import DashboardPage from './pages/DashboardPage';
 
 import SchedulingDashboard from './pages/SchedulingDashboard';
+import LoginPage from './pages/LoginPage'; // ✅ Import it
 import CreateEventPage from './pages/CreateEventPage';
 import RSVPEventsPage from './pages/RSVPEventsPage';
 import CoachEventDashboard from './pages/CoachEventDashboard';
@@ -39,12 +40,14 @@ function App() {
                 <Route path="/dashboard" element={<DashboardPage />} />
 
                 {/* Scheduling */}
+                <Route path="/login" element={<LoginPage />} /> // ✅ Add this line
                 <Route path="/scheduling" element={<SchedulingDashboard />} />
                 <Route path="/scheduling/create" element={<CreateEventPage />} />
                 <Route path="/scheduling/events" element={<RSVPEventsPage />} />
                 <Route path="/scheduling/coach" element={<CoachEventDashboard />} />
 
                 {/* Auth + Teams */}
+
                 <Route path="/join-team" element={<JoinTeamPage />} />
                 <Route path="/team-management" element={<TeamManagementPage />} /> {/* ✅ New Route */}
             </Routes>
