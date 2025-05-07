@@ -1,4 +1,3 @@
-// src/pages/CoachEventDashboard.jsx
 import React, { useEffect, useState } from 'react';
 import { getAllEventsWithRSVPs } from '../services/schedulingService';
 import EventCard from '../components/Scheduling/EventCard';
@@ -7,6 +6,8 @@ import StickyCtaBar from '../components/StickyCtaBar';
 
 export default function CoachEventDashboard() {
     const [events, setEvents] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [errorMsg, setErrorMsg] = useState('');
 
     useEffect(() => {
         const fetchRSVPs = async () => {
@@ -15,7 +16,9 @@ export default function CoachEventDashboard() {
                 setEvents(all);
             } catch (err) {
                 console.error("❌ Failed to load events:", err.message);
-                alert("Error loading events. Please try again later.");
+                setErrorMsg('Error loading events. Please try again later.');
+            } finally {
+                setLoading(false);
             }
         };
         fetchRSVPs();
@@ -27,7 +30,11 @@ export default function CoachEventDashboard() {
                 RSVP Overview
             </h1>
 
-            {events.length > 0 ? (
+            {loading ? (
+                <p className="text-center text-gray-600 dark:text-gray-400 mt-20 animate-pulse">Loading events...</p>
+            ) : errorMsg ? (
+                <p className="text-center text-red-600 dark:text-red-400 mt-20">{errorMsg}</p>
+            ) : events.length > 0 ? (
                 events.map((event) => (
                     <div key={event.id} className="mb-8">
                         <EventCard event={event} showDetails={false} />
@@ -35,9 +42,17 @@ export default function CoachEventDashboard() {
                     </div>
                 ))
             ) : (
-                <p className="text-center text-gray-500 dark:text-gray-400 mt-20">
-                    No upcoming events with RSVPs found.
-                </p>
+                <div className="text-center mt-20">
+                    <p className="text-gray-600 dark:text-gray-400 mb-4">
+                        No upcoming events with RSVPs found.
+                    </p>
+                    <button
+                        onClick={() => (window.location.href = '/create-event')}
+                        className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg transition"
+                    >
+                        ➕ Create New Event
+                    </button>
+                </div>
             )}
 
             <StickyCtaBar
