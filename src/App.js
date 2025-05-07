@@ -20,7 +20,7 @@ import RSVPEventsPage from './pages/RSVPEventsPage';
 import CoachEventDashboard from './pages/CoachEventDashboard';
 import JoinTeamPage from './pages/JoinTeamPage';
 import TeamManagementPage from './pages/TeamManagementPage'; // ✅ Add this
-
+import CreateTeamPage from './pages/CreateTeamPage';
 import useAnonymousUser from './hooks/useAnonymousUser';
 
 function App() {
@@ -47,7 +47,7 @@ function App() {
                 <Route path="/scheduling/coach" element={<CoachEventDashboard />} />
 
                 {/* Auth + Teams */}
-
+                <Route path="/create-team" element={<CreateTeamPage />} />
                 <Route path="/join-team" element={<JoinTeamPage />} />
                 <Route path="/team-management" element={<TeamManagementPage />} /> {/* ✅ New Route */}
             </Routes>
