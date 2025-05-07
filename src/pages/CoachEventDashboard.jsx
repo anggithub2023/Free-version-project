@@ -9,16 +9,15 @@ export default function CoachEventDashboard() {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
-    const [teamName, setTeamName] = useState(''); // Optional: fetch if available
+    const [teamName, setTeamName] = useState('');
 
     useEffect(() => {
         const fetchRSVPs = async () => {
             try {
                 const all = await getAllEventsWithRSVPs();
                 setEvents(all);
-                // Optional: if you want to show teamName from one of the events
                 if (all.length > 0) {
-                    setTeamName(all[0].team_name || ''); // Adjust if available
+                    setTeamName(all[0].team_name || '');
                 }
             } catch (err) {
                 console.error("❌ Failed to load events:", err.message);
