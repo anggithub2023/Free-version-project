@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import supabase from 'src/lib/supabaseClient.js'; // ✅ Default import from unified client
+import supabase from '../../lib/supabaseClient'; // ✅ Default import from unified client
 
 export default function EventForm({ onSave }) {
     const [title, setTitle] = useState('');
