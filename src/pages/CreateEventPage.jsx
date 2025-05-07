@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { createEvent } from '../services/schedulingService';
 import { useNavigate } from 'react-router-dom';
+import useCurrentUserProfile from '../hooks/useCurrentUserProfile'; // 🔥 Add this
 
 export default function CreateEventPage() {
+    const { profile, loading: profileLoading, error } = useCurrentUserProfile(); // ✅ Get user info
     const [formData, setFormData] = useState({
         title: '',
         date: '',
@@ -37,6 +39,10 @@ export default function CreateEventPage() {
             setLoading(false);
         }
     };
+
+    if (profileLoading) return <p className="text-center mt-10">Loading profile...</p>;
+    if (error) return <p className="text-center mt-10 text-red-500">Error loading profile</p>;
+    if (!profile?.is_coach) return <p className="text-center mt-10 text-gray-500">Only coaches can create events.</p>;
 
     return (
         <div className="max-w-xl mx-auto p-6 font-['Inter'] text-gray-800 dark:text-white">
