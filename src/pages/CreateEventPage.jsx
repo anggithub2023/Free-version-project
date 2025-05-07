@@ -1,4 +1,3 @@
-// src/pages/CreateEventPage.jsx
 import React, { useState } from 'react';
 import { createEvent } from '../services/schedulingService';
 import { useNavigate } from 'react-router-dom';
@@ -23,7 +22,13 @@ export default function CreateEventPage() {
         e.preventDefault();
         setLoading(true);
         try {
-            await createEvent(formData);
+            const event_date = new Date(`${formData.date}T${formData.time}`);
+            await createEvent({
+                title: formData.title,
+                event_date,
+                location: formData.location,
+                notes: formData.notes
+            });
             navigate('/scheduling');
         } catch (err) {
             alert('❌ Failed to create event');
@@ -41,7 +46,7 @@ export default function CreateEventPage() {
                     name="title"
                     value={formData.title}
                     onChange={handleChange}
-                    placeholder="Title"
+                    placeholder="Event Title"
                     className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
                     required
                 />
@@ -65,14 +70,14 @@ export default function CreateEventPage() {
                     name="location"
                     value={formData.location}
                     onChange={handleChange}
-                    placeholder="Location"
+                    placeholder="Location (Optional)"
                     className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
                 />
                 <textarea
                     name="notes"
                     value={formData.notes}
                     onChange={handleChange}
-                    placeholder="Notes"
+                    placeholder="Additional Notes"
                     className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 min-h-[100px]"
                 />
                 <button
