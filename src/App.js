@@ -13,6 +13,7 @@ import WorkoutsPage from './pages/WorkoutsPage';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import DashboardPage from './pages/DashboardPage';
 
+import LoginPage from './pages/LoginPage';
 import SchedulingDashboard from './pages/SchedulingDashboard';
 import CreateEventPage from './pages/CreateEventPage';
 import RSVPEventsPage from './pages/RSVPEventsPage';
@@ -39,6 +40,7 @@ function App() {
                 <Route path="/scheduling/create" element={<CreateEventPage />} />
                 <Route path="/scheduling/events" element={<RSVPEventsPage />} />
                 <Route path="/scheduling/coach" element={<CoachEventDashboard />} />
+                <Route path="/login" element={<LoginPage />} />
             </Routes>
         </AppShell>
     );
