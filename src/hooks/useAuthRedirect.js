@@ -26,21 +26,47 @@ export default function useAuthRedirect() {
         );
 
         return () => {
-            listener?.unsubscribe(); // ✅ FIXED
+            listener?.unsubscribe();
         };
     }, [navigate]);
 
     async function handleRedirect(user) {
-        const { data: profile, error } = await supabase
+        const userId = user.id;
+        const fullName = user.user_metadata?.full_name || user.email || 'Anonymous';
+
+        // Check if user already exists
+        const { data: existingUser, error: fetchError } = await supabase
             .from('users_auth')
             .select('team_id, is_coach')
-            .eq('id', user.id)
+            .eq('id', userId)
             .single();
 
-        if (error || !profile) {
-            console.error('❌ Failed to fetch profile:', error?.message);
+        if (fetchError && fetchError.code !== 'PGRST116') {
+            console.error('❌ Failed to fetch profile:', fetchError.message);
             return;
         }
+
+        const isNewUser = !existingUser;
+
+        // ⛑️ Only upsert if brand new user
+        if (isNewUser) {
+            const { error: insertError } = await supabase.from('users_auth').upsert({
+                id: userId,
+                full_name: fullName,
+                is_coach: false,
+                created_at: new Date().toISOString(),
+            });
+
+            if (insertError) {
+                console.error('🛑 Upsert error:', insertError.message);
+                return;
+            }
+        }
+
+        const profile = existingUser || {
+            team_id: null,
+            is_coach: false,
+        };
 
         localStorage.setItem('team_id', profile.team_id);
 
@@ -51,6 +77,6 @@ export default function useAuthRedirect() {
                 : '/scheduling/events';
 
         console.log('🎯 Redirecting to:', destination);
-        setTimeout(() => navigate(destination), 0); // ✅ fallback-safe
+        setTimeout(() => navigate(destination), 0);
     }
 }
