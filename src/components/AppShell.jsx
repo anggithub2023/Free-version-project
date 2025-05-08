@@ -1,69 +1,35 @@
-import React, { useState, useEffect } from 'react';
+// src/components/AppShell.jsx
+import React, { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from './Navbar';
-import Footer from './Footer';
+import DebugPanel from './DebugPanel';
 
-export default function AppShell() {
+export default function AppShell({ children }) {
     const [showDebug, setShowDebug] = useState(false);
 
     useEffect(() => {
-        const toggleDebug = (e) => {
-            if (e.key === '`' || e.key === '~') {
+        // Check URL param
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('debug') === 'true') {
+            setShowDebug(true);
+        }
+
+        // Keyboard shortcut: Shift + ~
+        const handleKeyDown = (e) => {
+            if (e.shiftKey && e.key === '~') {
                 setShowDebug(prev => !prev);
             }
         };
-        window.addEventListener('keydown', toggleDebug);
-        return () => window.removeEventListener('keydown', toggleDebug);
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
     }, []);
 
     return (
-        <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-white font-sans">
-            <Navbar />
-            <main className="flex-1 px-4 md:px-8 py-4">
-                <Outlet />
-            </main>
-            <Footer />
-
-            {import.meta.env.MODE === 'development' && showDebug && (
-                <div
-                    style={{
-                        position: 'fixed',
-                        bottom: '1rem',
-                        right: '1rem',
-                        backgroundColor: 'rgba(0,0,0,0.8)',
-                        color: '#fff',
-                        padding: '1rem',
-                        borderRadius: '0.5rem',
-                        maxWidth: '400px',
-                        fontSize: '0.85rem',
-                        zIndex: 9999,
-                        overflowY: 'auto',
-                        maxHeight: '50vh',
-                    }}
-                >
-                    <h2 style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>🛠 Debug Panel</h2>
-                    <button
-                        onClick={async () => {
-                            const { data: { user }, error } = await window.supabase.auth.getUser();
-                            console.log("👤 Supabase User:", user);
-                        }}
-                        style={{
-                            background: '#2563eb',
-                            border: 'none',
-                            padding: '0.5rem 1rem',
-                            color: '#fff',
-                            borderRadius: '0.25rem',
-                            marginBottom: '0.5rem',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Log Supabase User
-                    </button>
-                    <pre style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-{`📌 team_id: ${localStorage.getItem('team_id') || 'null'}
-🗂️ user_profile: ${localStorage.getItem('user_profile') || 'null'}
-`}
-                    </pre>
+        <div className="relative min-h-screen font-sans bg-white dark:bg-gray-900">
+            <main className="min-h-screen">{children || <Outlet />}</main>
+            {showDebug && (
+                <div className="fixed bottom-0 left-0 right-0 z-50">
+                    <DebugPanel />
                 </div>
             )}
         </div>
