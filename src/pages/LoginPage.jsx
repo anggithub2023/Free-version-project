@@ -1,12 +1,24 @@
-// src/pages/LoginPage.jsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
-import supabase from '../lib/supabaseClient'; // ✅ RELATIVE
-import useAuthRedirect from '../hooks/useAuthRedirect'; // ✅ Add this hook
+import supabase from '../lib/supabaseClient';
+import useAuthRedirect from '../hooks/useAuthRedirect';
 
 export default function LoginPage() {
-    useAuthRedirect(); // ✅ Automatically redirects on successful login
+    useAuthRedirect();
+
+    // 🔍 Debug current auth session on component mount
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data, error }) => {
+            if (error) {
+                console.error('Session error:', error.message);
+            } else if (data?.session) {
+                console.log('✅ Session active:', data.session);
+            } else {
+                console.log('ℹ️ No active session.');
+            }
+        });
+    }, []);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
