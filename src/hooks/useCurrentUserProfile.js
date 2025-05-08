@@ -7,7 +7,34 @@ export default function useCurrentUserProfile() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // ✅ Fetch profile from DB
+    useEffect(() => {
+        const cached = localStorage.getItem('user_profile');
+        if (cached) {
+            try {
+                setProfile(JSON.parse(cached));
+                setLoading(false);
+            } catch (e) {
+                console.error("❌ Failed to parse cached profile:", e);
+            }
+        }
+
+        fetchProfile(); // Always revalidate
+    }, []);
+
+    useEffect(() => {
+        const { data: listener } = supabase.auth.onAuthStateChange((event, _session) => {
+            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+                fetchProfile();
+            }
+            if (event === 'SIGNED_OUT') {
+                setProfile(null);
+                localStorage.removeItem('user_profile');
+            }
+        });
+
+        return () => listener.subscription?.unsubscribe(); // ✅ Prevent crash
+    }, []);
+
     const fetchProfile = async () => {
         setLoading(true);
 
@@ -24,51 +51,22 @@ export default function useCurrentUserProfile() {
 
         const { data, error: fetchError } = await supabase
             .from('users_auth')
-            .select('id, full_name, is_coach, team_id')
+            .select('id, full_name, is_coach, team_id, created_at')
             .eq('id', user.id)
             .single();
 
         if (fetchError) {
             setError(fetchError);
         } else {
-            setProfile(data);
-            localStorage.setItem('user_profile', JSON.stringify(data)); // ✅ Always update
-            localStorage.setItem('team_id', data.team_id); // ⬅️ Optional but ensures consistency
+            // 🔧 Normalize: strip volatile fields before caching
+            const { created_at, ...profileToCache } = data;
+
+            setProfile(profileToCache);
+            localStorage.setItem('user_profile', JSON.stringify(profileToCache));
         }
 
         setLoading(false);
     };
-
-    // ✅ Initial load from cache, then revalidate
-    useEffect(() => {
-        const cached = localStorage.getItem('user_profile');
-        if (cached) {
-            setProfile(JSON.parse(cached));
-            setLoading(false);
-        }
-
-        fetchProfile(); // 🔁 Always revalidate from Supabase
-    }, []);
-
-    // ✅ Sync on login/logout/session changes
-    useEffect(() => {
-        const { data: listener } = supabase.auth.onAuthStateChange((event, _session) => {
-            console.log('🔁 Auth event, forcing profile refresh:', event);
-
-            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-                localStorage.removeItem('user_profile'); // ✅ clear stale
-                fetchProfile(); // 🔁 re-fetch
-            }
-
-            if (event === 'SIGNED_OUT') {
-                setProfile(null);
-                localStorage.removeItem('user_profile');
-                localStorage.removeItem('team_id');
-            }
-        });
-
-        return () => listener.subscription?.unsubscribe(); // ✅ safe unsubscribe
-    }, []);
 
     return { profile, loading, error };
 }
