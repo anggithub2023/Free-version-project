@@ -11,35 +11,41 @@ export default function DebugPanel() {
         const loadDebugData = async () => {
             const {
                 data: { user },
-                error,
             } = await supabase.auth.getUser();
             if (user) {
                 setAuthUser(user);
-
-                const { data, error: profileErr } = await supabase
+                const { data } = await supabase
                     .from('users_auth')
                     .select('*')
                     .eq('id', user.id)
                     .single();
-
-                if (!profileErr) {
-                    setDbProfile(data);
-                }
+                if (data) setDbProfile(data);
             }
 
+            updateCacheProfile(); // Initial load
+        };
+
+        const updateCacheProfile = () => {
             const cached = localStorage.getItem('user_profile');
-            if (cached) setCacheProfile(JSON.parse(cached));
+            setCacheProfile(cached ? JSON.parse(cached) : null);
         };
 
         loadDebugData();
+
+        // Listen for localStorage changes
+        window.addEventListener('storage', updateCacheProfile);
+
+        return () => {
+            window.removeEventListener('storage', updateCacheProfile);
+        };
     }, []);
 
-    const compareProfiles = () => {
-        if (!dbProfile || !cacheProfile) return false;
-
-        const { created_at, ...restDbProfile } = dbProfile;
-        return JSON.stringify(restDbProfile) === JSON.stringify(cacheProfile);
-    };
+    const matchStatus =
+        dbProfile && cacheProfile
+            ? JSON.stringify(dbProfile) === JSON.stringify(cacheProfile)
+                ? '✅ Match'
+                : '⚠️ Mismatch'
+            : 'N/A';
 
     return (
         <div className="fixed bottom-0 left-0 w-full bg-black text-green-300 text-xs p-4 font-mono z-50 border-t border-green-500">
@@ -48,14 +54,7 @@ export default function DebugPanel() {
                 <div>🧾 <strong>User ID:</strong> {authUser?.id || 'N/A'}</div>
                 <div>📂 <strong>Cached Profile:</strong> {cacheProfile ? JSON.stringify(cacheProfile) : 'None'}</div>
                 <div>📡 <strong>DB Profile:</strong> {dbProfile ? JSON.stringify(dbProfile) : 'None'}</div>
-                <div>
-                    🧪 <strong>Match:</strong>{' '}
-                    {dbProfile && cacheProfile
-                        ? compareProfiles()
-                            ? <span className="text-green-400">✅ Match</span>
-                            : <span className="text-yellow-400">⚠️ Mismatch</span>
-                        : 'N/A'}
-                </div>
+                <div>🧪 <strong>Match:</strong> {matchStatus}</div>
             </div>
         </div>
     );
