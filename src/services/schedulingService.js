@@ -1,13 +1,13 @@
 // src/services/schedulingService.js
 import supabase from '../lib/supabaseClient';
 
-// ✅ Authenticated: Get user + team (FIXED to use users_auth)
+// ✅ Authenticated: Get user + team
 async function getCurrentUserWithTeam() {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) throw new Error("User not authenticated");
 
     const { data: profile, error: profileError } = await supabase
-        .from('users_auth') // 🔥 FIXED
+        .from('users_auth') // ✅ Fix: use correct table 'users_auth'
         .select('team_id')
         .eq('id', user.id)
         .single();
@@ -28,7 +28,11 @@ export async function createEvent(eventData) {
         team_id,
     };
 
-    const { data, error } = await supabase.from('events').insert([payload]);
+    console.log('📦 Submitting new event:', payload);
+
+    const { data, error } = await supabase
+        .from('events')
+        .insert([payload]); // ❌ No ?columns or options
     if (error) throw new Error(`Failed to create event: ${error.message}`);
     return data;
 }
