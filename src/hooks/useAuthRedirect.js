@@ -19,7 +19,7 @@ export default function useAuthRedirect() {
                 const { error: insertError } = await supabase.from('users_auth').upsert({
                     id: userId,
                     full_name: fullName,
-                    is_coach: true, // or false if you want to toggle later
+                    is_coach: false, // or false if you want to toggle later
                     created_at: new Date().toISOString()
                 });
 
