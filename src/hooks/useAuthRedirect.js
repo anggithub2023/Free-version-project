@@ -1,4 +1,3 @@
-// src/hooks/useAuthRedirect.js
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
@@ -9,69 +8,72 @@ export default function useAuthRedirect() {
     useEffect(() => {
         console.log('🔁 useAuthRedirect hook running...');
 
-        // 1️⃣ Check session immediately on mount
-        supabase.auth.getSession().then(({ data, error }) => {
-            if (error) {
-                console.error('❌ getSession error:', error.message);
-                return;
-            }
-            const user = data?.session?.user;
-            if (user) {
-                console.log('✅ Found existing session:', user);
-                handleRedirect(user);
-            }
-        });
+        const run = async () => {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (error || !session?.user) return;
 
-        // 2️⃣ Subscribe to future login events
-        const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+            await handleRedirect(session.user);
+        };
+
+        run();
+
+        const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
             if (event === 'SIGNED_IN' && session?.user) {
                 console.log('📦 Auth state changed:', event);
-                handleRedirect(session.user);
+                await handleRedirect(session.user);
             }
         });
 
         return () => {
-            authListener?.subscription?.unsubscribe?.();
+            listener?.subscription?.unsubscribe?.();
         };
     }, [navigate]);
 
     async function handleRedirect(user) {
         const userId = user.id;
-        const email = user.email;
-        const fullName = user.user_metadata?.full_name || email || 'Anonymous';
+        const fullName = user.user_metadata?.full_name || user.email || 'Anonymous';
 
-        console.log('⬇️ Upserting user record:', userId, email);
+        // Check for existing role
+        const { data: existingUser } = await supabase
+            .from('users_auth')
+            .select('is_coach')
+            .eq('id', userId)
+            .single();
+
+        const isCoach = existingUser?.is_coach ?? false;
 
         const { error: upsertError } = await supabase.from('users_auth').upsert({
             id: userId,
             full_name: fullName,
-            is_coach: false,
-            created_at: new Date().toISOString()
+            is_coach: isCoach,
+            created_at: new Date().toISOString(),
         });
 
         if (upsertError) {
-            console.error('🛑 Upsert failed:', upsertError.message);
+            console.error('🛑 Upsert error:', upsertError.message);
             return;
         }
 
-        const { data: profile, error: fetchError } = await supabase
+        const { data: profile, error: profileError } = await supabase
             .from('users_auth')
             .select('team_id, is_coach')
             .eq('id', userId)
             .single();
 
-        if (fetchError || !profile) {
-            console.error('❌ Failed to fetch profile:', fetchError?.message);
+        if (profileError || !profile) {
+            console.error('❌ Failed to fetch profile:', profileError?.message);
             return;
         }
 
         localStorage.setItem('team_id', profile.team_id);
-        console.log('🎯 Redirecting to:', profile.is_coach ? '/scheduling/coach' : '/scheduling/events');
 
         if (!profile.team_id) {
+            console.warn('⚠️ No team — go to /get-started');
             navigate('/get-started');
         } else {
-            navigate(profile.is_coach ? '/scheduling/coach' : '/scheduling/events');
+            const destination = profile.is_coach ? '/scheduling/coach' : '/scheduling/events';
+            console.log('🎯 Redirecting to:', destination);
+            navigate(destination);
         }
     }
 }
