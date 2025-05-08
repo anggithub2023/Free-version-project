@@ -6,22 +6,20 @@ export default function useCurrentUserProfile() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // 🔁 Load from localStorage (if available) immediately
     useEffect(() => {
         const cached = localStorage.getItem('user_profile');
         if (cached) {
             setProfile(JSON.parse(cached));
-            setLoading(false); // Show cached instantly
+            setLoading(false);
         }
 
         fetchProfile(); // Always revalidate
     }, []);
 
-    // 🔄 Watch for auth changes and react
     useEffect(() => {
-        supabase.auth.onAuthStateChange((event, _session) => {
+        const { data: listener } = supabase.auth.onAuthStateChange((event, _session) => {
             if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-                fetchProfile(); // revalidate on sign-in or refresh
+                fetchProfile();
             }
             if (event === 'SIGNED_OUT') {
                 setProfile(null);
@@ -29,7 +27,7 @@ export default function useCurrentUserProfile() {
             }
         });
 
-        return () => listener?.unsubscribe();
+        return () => listener.subscription?.unsubscribe(); // ✅ Prevent crash
     }, []);
 
     const fetchProfile = async () => {
