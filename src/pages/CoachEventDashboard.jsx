@@ -1,9 +1,9 @@
-// src/pages/CoachEventDashboard.jsx
 import React, { useEffect, useState } from 'react';
 import { getAllEventsWithRSVPs } from '../services/schedulingService';
 import EventCard from '../components/Scheduling/EventCard';
 import EventResponseChart from '../components/Scheduling/EventResponseChart';
 import StickyCtaBar from '../components/StickyCtaBar';
+import useCurrentUserProfile from '../hooks/useCurrentUserProfile';
 
 export default function CoachEventDashboard() {
     const [events, setEvents] = useState([]);
@@ -11,23 +11,35 @@ export default function CoachEventDashboard() {
     const [errorMsg, setErrorMsg] = useState('');
     const [teamName, setTeamName] = useState('');
 
+    const {
+        profile,
+        loading: profileLoading,
+        error: profileError,
+    } = useCurrentUserProfile();
+
     useEffect(() => {
-        const fetchRSVPs = async () => {
-            try {
-                const all = await getAllEventsWithRSVPs();
-                setEvents(all);
-                if (all.length > 0) {
-                    setTeamName(all[0].team_name || '');
+        if (profile && profile.is_coach) {
+            const fetchRSVPs = async () => {
+                try {
+                    const all = await getAllEventsWithRSVPs();
+                    setEvents(all);
+                    if (all.length > 0) {
+                        setTeamName(all[0].team_name || '');
+                    }
+                } catch (err) {
+                    console.error('❌ Failed to load events:', err.message);
+                    setErrorMsg('Error loading events. Please try again later.');
+                } finally {
+                    setLoading(false);
                 }
-            } catch (err) {
-                console.error("❌ Failed to load events:", err.message);
-                setErrorMsg('Error loading events. Please try again later.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchRSVPs();
-    }, []);
+            };
+            fetchRSVPs();
+        }
+    }, [profile]);
+
+    if (profileLoading) return <p className="text-center mt-10">Loading profile...</p>;
+    if (profileError) return <p className="text-center mt-10 text-red-500">Error loading profile</p>;
+    if (!profile?.is_coach) return <p className="text-center mt-10 text-gray-500">Access restricted to coaches only.</p>;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 p-4 pb-32 font-sans">
@@ -68,7 +80,7 @@ export default function CoachEventDashboard() {
                         No upcoming events with RSVPs found.
                     </p>
                     <button
-                        onClick={() => (window.location.href = '/create-event')}
+                        onClick={() => (window.location.href = '/scheduling/events/create')}
                         className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg transition"
                     >
                         ➕ Create New Event
