@@ -1,4 +1,3 @@
-// src/hooks/useAuthRedirect.js
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
@@ -7,79 +6,57 @@ export default function useAuthRedirect() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log('🔁 useAuthRedirect hook running...');
+        const run = async () => {
+            console.log('🔁 useAuthRedirect running');
 
-        const checkSession = async () => {
-            const { data: { session }, error } = await supabase.auth.getSession();
-            if (error || !session?.user) return;
-            await handleRedirect(session.user);
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.user) {
+                await resolveRedirect(session.user);
+            }
         };
 
-        checkSession();
+        run();
 
-        const { data: listener } = supabase.auth.onAuthStateChange(
-            async (event, session) => {
-                if (event === 'SIGNED_IN' && session?.user) {
-                    console.log('📦 Auth state changed:', event);
-                    await handleRedirect(session.user);
-                }
+        const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
+            if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user) {
+                console.log('📦 Auth event, forcing redirect');
+                await resolveRedirect(session.user);
             }
-        );
+        });
 
         return () => {
-            listener?.unsubscribe(); // ✅ safe unsubscribe
+            listener?.subscription?.unsubscribe();
         };
     }, [navigate]);
 
-    async function handleRedirect(user) {
-        const userId = user.id;
-        const fullName = user.user_metadata?.full_name || user.email || 'Anonymous';
+    async function resolveRedirect(user) {
+        localStorage.removeItem('user_profile');
+        localStorage.removeItem('team_id');
 
-        const { data: existing, error: fetchError } = await supabase
+        const { data: profile, error } = await supabase
             .from('users_auth')
-            .select('team_id, is_coach')
-            .eq('id', userId)
+            .select('id, full_name, team_id, is_coach')
+            .eq('id', user.id)
             .single();
 
-        if (fetchError && fetchError.code !== 'PGRST116') {
-            console.error('❌ Failed to fetch user:', fetchError.message);
+        if (error || !profile) {
+            console.error('❌ Redirect failed to fetch profile:', error?.message);
             return;
         }
 
-        const isNewUser = !existing;
+        console.log('🧭 Auth redirect: user role:', profile.is_coach ? 'Coach' : 'Player');
 
-        const upsertPayload = {
-            id: userId,
-            full_name: fullName,
-            created_at: new Date().toISOString()
-        };
-
-        if (isNewUser) {
-            upsertPayload.is_coach = false; // Default new users to player
-        }
-
-        const { error: upsertError } = await supabase
-            .from('users_auth')
-            .upsert(upsertPayload);
-
-        if (upsertError) {
-            console.error('🛑 Upsert failed:', upsertError.message);
-            return;
-        }
-
-        const profile = existing || { ...upsertPayload, team_id: null, is_coach: false };
-
-        // ✅ Clear cached stale role data
-        localStorage.removeItem('user_profile');
+        // Save for use elsewhere
+        localStorage.setItem('user_profile', JSON.stringify(profile));
         localStorage.setItem('team_id', profile.team_id);
 
-        const destination = !profile.team_id
+        const dest = !profile.team_id
             ? '/get-started'
             : profile.is_coach
                 ? '/scheduling/coach'
                 : '/scheduling/events';
 
-        console.log('🎯 Redirecting to:', destination);
-        navigate(destination);
+        console.log('🎯 Redirecting to:', dest);
+        navigate(dest);
     }
 }
