@@ -1,3 +1,4 @@
+// src/hooks/useCurrentUserProfile.js
 import { useEffect, useState } from 'react';
 import supabase from '../lib/supabaseClient';
 
@@ -13,24 +14,22 @@ export default function useCurrentUserProfile() {
             setLoading(false);
         }
 
-        fetchProfile(); // Always revalidate
+        fetchProfile(); // Always revalidate on mount
     }, []);
 
     useEffect(() => {
         const { data: listener } = supabase.auth.onAuthStateChange((event, _session) => {
             if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
                 console.log('🔁 Auth event, forcing profile refresh');
-                localStorage.removeItem('user_profile'); // 🧹 Remove stale profile
-                fetchProfile(); // ✅ Always re-fetch
+                fetchProfile();
             }
             if (event === 'SIGNED_OUT') {
-                console.log('🚪 Signed out, clearing profile');
                 setProfile(null);
                 localStorage.removeItem('user_profile');
             }
         });
 
-        return () => listener.subscription?.unsubscribe(); // Prevent memory leak
+        return () => listener.subscription?.unsubscribe();
     }, []);
 
     const fetchProfile = async () => {
