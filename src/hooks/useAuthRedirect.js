@@ -1,3 +1,4 @@
+// src/hooks/useAuthRedirect.js
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
@@ -9,7 +10,9 @@ export default function useAuthRedirect() {
         const run = async () => {
             console.log('🔁 useAuthRedirect running');
 
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (error) return console.error('❌ Failed to get session:', error.message);
+
             if (session?.user) {
                 await resolveRedirect(session.user);
             }
@@ -17,25 +20,26 @@ export default function useAuthRedirect() {
 
         run();
 
-        const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
-            if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user) {
-                console.log('📦 Auth event, forcing redirect');
-                await resolveRedirect(session.user);
+        const { data: listener } = supabase.auth.onAuthStateChange(
+            async (event, session) => {
+                if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session?.user) {
+                    console.log('📦 Auth event, forcing redirect');
+                    await resolveRedirect(session.user);
+                }
             }
-        });
+        );
 
-        return () => {
-            listener?.subscription?.unsubscribe();
-        };
+        return () => listener?.subscription?.unsubscribe();
     }, [navigate]);
 
     async function resolveRedirect(user) {
+        // Wipe stale values before fetch
         localStorage.removeItem('user_profile');
         localStorage.removeItem('team_id');
 
         const { data: profile, error } = await supabase
             .from('users_auth')
-            .select('id, full_name, team_id, is_coach')
+            .select('id, full_name, team_id, is_coach, created_at')
             .eq('id', user.id)
             .single();
 
@@ -44,19 +48,20 @@ export default function useAuthRedirect() {
             return;
         }
 
-        console.log('🧭 Auth redirect: user role:', profile.is_coach ? 'Coach' : 'Player');
+        const { created_at, ...cacheSafeProfile } = profile;
 
-        // Save for use elsewhere
-        localStorage.setItem('user_profile', JSON.stringify(profile));
+        // ✅ Update cache
+        localStorage.setItem('user_profile', JSON.stringify(cacheSafeProfile));
         localStorage.setItem('team_id', profile.team_id);
 
-        const dest = !profile.team_id
+        const destination = !profile.team_id
             ? '/get-started'
             : profile.is_coach
                 ? '/scheduling/coach'
                 : '/scheduling/events';
 
-        console.log('🎯 Redirecting to:', dest);
-        navigate(dest);
+        console.log('🧭 Role:', profile.is_coach ? 'Coach' : 'Player');
+        console.log('🎯 Redirecting to:', destination);
+        navigate(destination);
     }
 }
