@@ -44,7 +44,7 @@ function App() {
                 {/* Scheduling */}
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/scheduling" element={<SchedulingDashboard />} />
-                <Route path="/scheduling/create" element={<CreateEventPage />} />
+                <Route path="/scheduling/events/create" element={<CreateEventPage />} />
                 <Route path="/scheduling/events" element={<RSVPEventsPage />} />
                 <Route path="/scheduling/coach" element={<CoachEventDashboard />} />
 
