@@ -13,7 +13,6 @@ export default function DebugPanel() {
                 data: { user },
                 error,
             } = await supabase.auth.getUser();
-
             if (user) {
                 setAuthUser(user);
 
@@ -35,6 +34,13 @@ export default function DebugPanel() {
         loadDebugData();
     }, []);
 
+    const compareProfiles = () => {
+        if (!dbProfile || !cacheProfile) return false;
+
+        const { created_at, ...restDbProfile } = dbProfile;
+        return JSON.stringify(restDbProfile) === JSON.stringify(cacheProfile);
+    };
+
     return (
         <div className="fixed bottom-0 left-0 w-full bg-black text-green-300 text-xs p-4 font-mono z-50 border-t border-green-500">
             <div className="flex flex-col gap-1">
@@ -45,7 +51,7 @@ export default function DebugPanel() {
                 <div>
                     🧪 <strong>Match:</strong>{' '}
                     {dbProfile && cacheProfile
-                        ? JSON.stringify(dbProfile) === JSON.stringify(cacheProfile)
+                        ? compareProfiles()
                             ? <span className="text-green-400">✅ Match</span>
                             : <span className="text-yellow-400">⚠️ Mismatch</span>
                         : 'N/A'}
