@@ -1,4 +1,4 @@
-// src/pages/RSVPEventsPage.jsx
+// RSVPEventsPage.jsx (full update)
 import React, { useEffect, useState } from 'react';
 import { getUpcomingEvents, submitRSVP } from '../services/schedulingService';
 import EventCard from '../components/Scheduling/EventCard';
@@ -9,7 +9,7 @@ export default function RSVPEventsPage() {
     const [events, setEvents] = useState([]);
     const [rsvpStatus, setRsvpStatus] = useState({});
     const [anonName, setAnonName] = useState(localStorage.getItem('anonName') || '');
-    const { profile } = useCurrentUserProfile(); // ⬅️ use coach profile check
+    const { profile } = useCurrentUserProfile();
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -25,29 +25,29 @@ export default function RSVPEventsPage() {
     }, []);
 
     const handleRSVP = async (eventId, status) => {
-        let userId = localStorage.getItem('userId');
-        let anonymousId = localStorage.getItem('anonId');
-
-        if (!userId) {
-            if (!anonymousId) {
-                anonymousId = crypto.randomUUID();
-                localStorage.setItem('anonId', anonymousId);
-            }
-
-            if (!anonName.trim()) {
-                const name = prompt("Please enter your name or nickname:");
-                if (!name) return alert("RSVP requires a name.");
-                localStorage.setItem('anonName', name);
-                setAnonName(name);
-            }
-        }
-
         try {
+            const userId = localStorage.getItem('userId');
+            let anonymousId = localStorage.getItem('anonId');
+
+            if (!userId) {
+                if (!anonymousId) {
+                    anonymousId = crypto.randomUUID();
+                    localStorage.setItem('anonId', anonymousId);
+                }
+
+                if (!anonName.trim()) {
+                    const name = prompt("Please enter your name or nickname:");
+                    if (!name) return alert("RSVP requires a name.");
+                    localStorage.setItem('anonName', name);
+                    setAnonName(name);
+                }
+            }
+
             await submitRSVP({
                 eventId,
                 userId: userId || null,
                 anonymousId: anonymousId || null,
-                anonymousName: anonName || localStorage.getItem('anonName') || '',
+                anonymousName: anonName || '',
                 status,
             });
 
@@ -64,7 +64,6 @@ export default function RSVPEventsPage() {
                 Upcoming Events
             </h1>
 
-            {/* ✅ Coach-only Create Event button */}
             {profile?.is_coach && (
                 <div className="text-right mb-4">
                     <a
@@ -79,9 +78,9 @@ export default function RSVPEventsPage() {
             <div className="space-y-4">
                 {events.length === 0 ? (
                     <p className="text-center text-gray-500 dark:text-gray-400">
-                        No upcoming events.<br />
+                        No upcoming events.
                         {profile?.is_coach && (
-                            <a href="/scheduling/events/create" className="text-blue-600 dark:text-blue-300 underline">Create one?</a>
+                            <a href="/scheduling/events/create" className="text-blue-600 dark:text-blue-300 underline"> Create one?</a>
                         )}
                     </p>
                 ) : (
@@ -90,7 +89,7 @@ export default function RSVPEventsPage() {
                             key={event.id}
                             event={event}
                             userRSVP={rsvpStatus[event.id]}
-                            onRSVP={handleRSVP}
+                            onRSVP={profile?.is_coach ? undefined : handleRSVP}
                         />
                     ))
                 )}
