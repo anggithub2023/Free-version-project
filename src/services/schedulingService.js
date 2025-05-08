@@ -1,13 +1,13 @@
 // src/services/schedulingService.js
 import supabase from '../lib/supabaseClient';
 
-// ✅ Authenticated: Get user + team
+// ✅ Authenticated: Get user + team (FIXED to use users_auth)
 async function getCurrentUserWithTeam() {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) throw new Error("User not authenticated");
 
     const { data: profile, error: profileError } = await supabase
-        .from('users')
+        .from('users_auth') // 🔥 FIXED
         .select('team_id')
         .eq('id', user.id)
         .single();
@@ -49,7 +49,6 @@ export async function fetchEvents() {
 // ✅ RSVP (supports both auth + anonymous)
 export async function rsvpToEvent({ eventId, userId, anonymousId, anonymousName, status }) {
     if (userId) {
-        // Authenticated RSVP
         const { team_id } = await getCurrentUserWithTeam();
         const { data, error } = await supabase
             .from('rsvps')
@@ -60,7 +59,6 @@ export async function rsvpToEvent({ eventId, userId, anonymousId, anonymousName,
         if (error) throw new Error(`Failed to RSVP: ${error.message}`);
         return data;
     } else {
-        // Anonymous RSVP
         if (!anonymousId || !anonymousName) throw new Error("Anonymous ID and name required");
 
         const { data, error } = await supabase
@@ -102,7 +100,6 @@ export async function getUpcomingEvents() {
         if (error) throw new Error(`Failed to fetch upcoming events: ${error.message}`);
         return data;
     } else {
-        // Anonymous users see all public events (or all until filtering is added)
         const { data, error } = await supabase
             .from('events')
             .select('*')
