@@ -1,47 +1,105 @@
-// src/pages/LoginPage.jsx
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
 
 export default function LoginPage() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
+    const [loading, setLoading] = useState(false);
 
-    async function handleLogin(e) {
+    const handleLogin = async (e) => {
         e.preventDefault();
+        setLoading(true);
+        setErrorMsg('');
 
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
             email,
-            password,
+            password
         });
 
         if (error) {
-            alert('❌ Login failed: ' + error.message);
-        } else {
-            console.log('✅ Logged in successfully');
+            setErrorMsg(error.message);
+            setLoading(false);
+            return;
         }
-    }
+
+        const user = data.user;
+
+        // Check if user exists in 'users_auth' table
+        const { data: existingUser, error: fetchError } = await supabase
+            .from('users_auth')
+            .select('team_id, is_coach')
+            .eq('id', user.id)
+            .maybeSingle();
+
+        if (fetchError) {
+            setErrorMsg('Failed to fetch user role.');
+            setLoading(false);
+            return;
+        }
+
+        // If not found, create a new user row
+        if (!existingUser) {
+            const { error: insertError } = await supabase.from('users_auth').insert({
+                id: user.id,
+                full_name: user.user_metadata?.full_name || user.email,
+                is_coach: false,
+                created_at: new Date().toISOString()
+            });
+
+            if (insertError) {
+                setErrorMsg('Could not create user record.');
+                setLoading(false);
+                return;
+            }
+
+            // No team yet — send to onboarding
+            return navigate('/get-started');
+        }
+
+        // If found, route them correctly
+        localStorage.setItem('team_id', existingUser.team_id);
+        if (!existingUser.team_id) return navigate('/get-started');
+
+        const destination = existingUser.is_coach
+            ? '/scheduling/coach'
+            : '/scheduling/events';
+
+        navigate(destination);
+        setLoading(false);
+    };
 
     return (
-        <form onSubmit={handleLogin} className="space-y-4 max-w-sm mx-auto mt-20">
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-3 border rounded"
-                required
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-3 border rounded"
-                required
-            />
-            <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded">
-                Sign In
-            </button>
-        </form>
+        <div className="max-w-md mx-auto mt-20 px-4">
+            <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
+            <form onSubmit={handleLogin} className="space-y-4">
+                <input
+                    type="email"
+                    placeholder="Email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg"
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg"
+                />
+                {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-500 transition"
+                >
+                    {loading ? 'Logging in...' : 'Login'}
+                </button>
+            </form>
+        </div>
     );
 }
