@@ -9,10 +9,18 @@ export default function useAuthRedirect() {
         console.log('🔁 useAuthRedirect hook running...');
 
         const run = async () => {
-            const { data: { session }, error } = await supabase.auth.getSession();
-            if (error || !session?.user) return;
+            try {
+                const { data: { session }, error } = await supabase.auth.getSession();
+                if (error || !session?.user) {
+                    console.warn('⚠️ No active session');
+                    return;
+                }
 
-            await handleRedirect(session.user);
+                console.log('✅ Found session, redirecting...');
+                await handleRedirect(session.user);
+            } catch (err) {
+                console.error('🛑 Session fetch failed:', err);
+            }
         };
 
         run();
@@ -30,50 +38,35 @@ export default function useAuthRedirect() {
     }, [navigate]);
 
     async function handleRedirect(user) {
-        const userId = user.id;
-        const fullName = user.user_metadata?.full_name || user.email || 'Anonymous';
+        try {
+            const userId = user.id;
+            const fullName = user.user_metadata?.full_name || user.email || 'Anonymous';
 
-        // Check for existing role
-        const { data: existingUser } = await supabase
-            .from('users_auth')
-            .select('is_coach')
-            .eq('id', userId)
-            .single();
+            console.log('👤 Handling user:', userId, fullName);
 
-        const isCoach = existingUser?.is_coach ?? false;
+            const { data: profile, error } = await supabase
+                .from('users_auth')
+                .select('team_id, is_coach')
+                .eq('id', userId)
+                .single();
 
-        const { error: upsertError } = await supabase.from('users_auth').upsert({
-            id: userId,
-            full_name: fullName,
-            is_coach: isCoach,
-            created_at: new Date().toISOString(),
-        });
+            if (error || !profile) {
+                console.error('❌ Failed to fetch profile:', error?.message);
+                return;
+            }
 
-        if (upsertError) {
-            console.error('🛑 Upsert error:', upsertError.message);
-            return;
-        }
+            localStorage.setItem('team_id', profile.team_id);
 
-        const { data: profile, error: profileError } = await supabase
-            .from('users_auth')
-            .select('team_id, is_coach')
-            .eq('id', userId)
-            .single();
-
-        if (profileError || !profile) {
-            console.error('❌ Failed to fetch profile:', profileError?.message);
-            return;
-        }
-
-        localStorage.setItem('team_id', profile.team_id);
-
-        if (!profile.team_id) {
-            console.warn('⚠️ No team — go to /get-started');
-            navigate('/get-started');
-        } else {
-            const destination = profile.is_coach ? '/scheduling/coach' : '/scheduling/events';
-            console.log('🎯 Redirecting to:', destination);
-            navigate(destination);
+            if (!profile.team_id) {
+                console.warn('⚠️ Missing team_id, redirecting to /get-started');
+                navigate('/get-started');
+            } else {
+                const dest = profile.is_coach ? '/scheduling/coach' : '/scheduling/events';
+                console.log('🎯 Redirecting to:', dest);
+                navigate(dest);
+            }
+        } catch (err) {
+            console.error('🔥 Unexpected error during redirect:', err);
         }
     }
 }
