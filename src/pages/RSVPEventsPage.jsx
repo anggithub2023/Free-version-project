@@ -3,11 +3,13 @@ import React, { useEffect, useState } from 'react';
 import { getUpcomingEvents, submitRSVP } from '../services/schedulingService';
 import EventCard from '../components/Scheduling/EventCard';
 import StickyCtaBar from '../components/StickyCtaBar';
+import useCurrentUserProfile from '../hooks/useCurrentUserProfile';
 
 export default function RSVPEventsPage() {
     const [events, setEvents] = useState([]);
     const [rsvpStatus, setRsvpStatus] = useState({});
     const [anonName, setAnonName] = useState(localStorage.getItem('anonName') || '');
+    const { profile } = useCurrentUserProfile(); // ⬅️ use coach profile check
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -62,11 +64,25 @@ export default function RSVPEventsPage() {
                 Upcoming Events
             </h1>
 
+            {/* ✅ Coach-only Create Event button */}
+            {profile?.is_coach && (
+                <div className="text-right mb-4">
+                    <a
+                        href="/scheduling/events/create"
+                        className="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500 transition"
+                    >
+                        + Create Event
+                    </a>
+                </div>
+            )}
+
             <div className="space-y-4">
                 {events.length === 0 ? (
                     <p className="text-center text-gray-500 dark:text-gray-400">
                         No upcoming events.<br />
-                        <a href="/scheduling/events/create" className="text-blue-600 dark:text-blue-300 underline">Create one?</a>
+                        {profile?.is_coach && (
+                            <a href="/scheduling/events/create" className="text-blue-600 dark:text-blue-300 underline">Create one?</a>
+                        )}
                     </p>
                 ) : (
                     events.map((event) => (
