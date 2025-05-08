@@ -8,7 +8,7 @@ export default function useAuthRedirect() {
     useEffect(() => {
         console.log('🔁 useAuthRedirect hook running...');
 
-        // 1️⃣ Immediately check session on mount
+        // 1️⃣ Check session on mount
         supabase.auth.getSession().then(({ data, error }) => {
             if (error) {
                 console.error('❌ getSession error:', error.message);
@@ -18,7 +18,7 @@ export default function useAuthRedirect() {
             }
         });
 
-        // 2️⃣ Subscribe to future login events
+        // 2️⃣ Listen for future auth changes
         const { data: listener } = supabase.auth.onAuthStateChange(async (event, session) => {
             if (event === 'SIGNED_IN' && session?.user) {
                 console.log('📦 Auth state changed:', event);
@@ -35,30 +35,40 @@ export default function useAuthRedirect() {
         const userId = user.id;
         const fullName = user.user_metadata?.full_name || user.email || 'Anonymous';
 
-        console.log('⬇️ Upserting user record:', userId, fullName);
+        // 🔍 Try to fetch existing user first
+        const { data: existing, error: fetchError } = await supabase
+            .from('users_auth')
+            .select('team_id, is_coach')
+            .eq('id', userId)
+            .single();
 
-        const { error: insertError } = await supabase.from('users_auth').upsert({
+        if (fetchError && fetchError.code !== 'PGRST116') {
+            console.error('❌ Failed to fetch user:', fetchError.message);
+            return;
+        }
+
+        const isNew = !existing;
+        const upsertPayload = {
             id: userId,
             full_name: fullName,
-            is_coach: false,
             created_at: new Date().toISOString()
-        });
+        };
+
+        // ✅ Only set is_coach false if user doesn't already exist
+        if (isNew) {
+            upsertPayload.is_coach = false;
+        }
+
+        const { error: insertError } = await supabase
+            .from('users_auth')
+            .upsert(upsertPayload);
 
         if (insertError) {
             console.error('🛑 User upsert failed:', insertError.message);
             return;
         }
 
-        const { data: profile, error: fetchError } = await supabase
-            .from('users_auth')
-            .select('team_id, is_coach')
-            .eq('id', userId)
-            .single();
-
-        if (fetchError || !profile) {
-            console.error('❌ Failed to fetch profile:', fetchError?.message);
-            return;
-        }
+        const profile = existing || { ...upsertPayload, team_id: null, is_coach: false };
 
         if (!profile.team_id) {
             console.warn('⚠️ No team_id — redirecting to /get-started');
