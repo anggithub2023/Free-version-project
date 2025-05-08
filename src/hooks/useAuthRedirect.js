@@ -26,7 +26,7 @@ export default function useAuthRedirect() {
         );
 
         return () => {
-            listener?.unsubscribe();
+            listener?.unsubscribe(); // ✅ safe unsubscribe
         };
     }, [navigate]);
 
@@ -34,39 +34,39 @@ export default function useAuthRedirect() {
         const userId = user.id;
         const fullName = user.user_metadata?.full_name || user.email || 'Anonymous';
 
-        // Check if user already exists
-        const { data: existingUser, error: fetchError } = await supabase
+        const { data: existing, error: fetchError } = await supabase
             .from('users_auth')
             .select('team_id, is_coach')
             .eq('id', userId)
             .single();
 
         if (fetchError && fetchError.code !== 'PGRST116') {
-            console.error('❌ Failed to fetch profile:', fetchError.message);
+            console.error('❌ Failed to fetch user:', fetchError.message);
             return;
         }
 
-        const isNewUser = !existingUser;
+        const isNewUser = !existing;
 
-        // ⛑️ Only upsert if brand new user
+        const upsertPayload = {
+            id: userId,
+            full_name: fullName,
+            created_at: new Date().toISOString()
+        };
+
         if (isNewUser) {
-            const { error: insertError } = await supabase.from('users_auth').upsert({
-                id: userId,
-                full_name: fullName,
-                is_coach: false,
-                created_at: new Date().toISOString(),
-            });
-
-            if (insertError) {
-                console.error('🛑 Upsert error:', insertError.message);
-                return;
-            }
+            upsertPayload.is_coach = false; // Only set default for first-time users
         }
 
-        const profile = existingUser || {
-            team_id: null,
-            is_coach: false,
-        };
+        const { error: upsertError } = await supabase
+            .from('users_auth')
+            .upsert(upsertPayload);
+
+        if (upsertError) {
+            console.error('🛑 Upsert failed:', upsertError.message);
+            return;
+        }
+
+        const profile = existing || { ...upsertPayload, team_id: null, is_coach: false };
 
         localStorage.setItem('team_id', profile.team_id);
 
@@ -77,6 +77,6 @@ export default function useAuthRedirect() {
                 : '/scheduling/events';
 
         console.log('🎯 Redirecting to:', destination);
-        setTimeout(() => navigate(destination), 0);
+        navigate(destination);
     }
 }
