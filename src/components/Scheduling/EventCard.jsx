@@ -31,7 +31,7 @@ export default function EventCard({ event, userRSVP, onRSVP }) {
                 {statuses.map((status) => (
                     <button
                         key={status}
-                        onClick={() => onRSVP(id, status)}
+                        onClick={() => typeof onRSVP === 'function' && onRSVP(id, status)}
                         className={`px-3 py-1 rounded-full text-xs font-medium border transition ${
                             userRSVP === status
                                 ? 'bg-green-600 text-white border-green-600'
