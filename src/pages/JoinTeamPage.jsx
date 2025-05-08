@@ -89,6 +89,13 @@ export default function JoinTeamPage() {
 
                 {error && <p className="text-red-500">{error}</p>}
                 {success && <p className="text-green-600">Joined successfully! Redirecting...</p>}
+
+                <p className="text-center text-sm text-gray-500 mt-4">
+                    Don’t have a team?{' '}
+                    <a href="/team-management" className="text-blue-600 hover:underline">
+                        Create one instead
+                    </a>
+                </p>
             </div>
         </div>
     );
