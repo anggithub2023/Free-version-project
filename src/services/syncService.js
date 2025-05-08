@@ -115,10 +115,10 @@ export const ensureUserExists = async (userId) => {
     if (error) throw error;
 
     if (!data) {
-        const { error: insertError } = await supabase
+        const { error } = await supabase
             .from('users')
             .insert({ user_id: userId });
 
-        if (insertError) throw insertError;
+        if (error) throw error;
     }
 };
