@@ -1,3 +1,4 @@
+// src/hooks/useAuthRedirect.js
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
@@ -6,7 +7,7 @@ export default function useAuthRedirect() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const { data: subscription } = supabase.auth.onAuthStateChange(async (event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
             if (event !== 'SIGNED_IN' || !session?.user) return;
 
             try {
@@ -15,10 +16,11 @@ export default function useAuthRedirect() {
                 const email = user.email;
                 const fullName = user.user_metadata?.full_name || email || 'Anonymous';
 
+                // ✅ Upsert into users_auth table
                 const { error: insertError } = await supabase.from('users_auth').upsert({
                     id: userId,
                     full_name: fullName,
-                    is_coach: false,
+                    is_coach: false, // default, can change after team creation
                     created_at: new Date().toISOString()
                 });
 
@@ -27,6 +29,7 @@ export default function useAuthRedirect() {
                     return;
                 }
 
+                // ✅ Fetch profile to determine next route
                 const { data: profile, error: fetchError } = await supabase
                     .from('users_auth')
                     .select('team_id, is_coach')
@@ -38,6 +41,7 @@ export default function useAuthRedirect() {
                     return;
                 }
 
+                // ✅ Conditional redirect based on team membership and role
                 if (!profile.team_id) {
                     console.warn('⚠️ No team_id — redirecting to /get-started');
                     navigate('/get-started');
@@ -50,6 +54,8 @@ export default function useAuthRedirect() {
             }
         });
 
-        return () => subscription?.unsubscribe();
+        return () => {
+            subscription.unsubscribe(); // ✅ proper cleanup
+        };
     }, [navigate]);
 }
