@@ -31,7 +31,7 @@ export default function CreateEventPage() {
                 location: formData.location,
                 notes: formData.notes
             });
-            navigate('/scheduling');
+            navigate('/scheduling/events');
         } catch (err) {
             alert('❌ Failed to create event');
             console.error(err);
