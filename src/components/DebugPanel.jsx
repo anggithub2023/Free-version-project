@@ -1,45 +1,55 @@
 // src/components/DebugPanel.jsx
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import supabase from '../lib/supabaseClient';
 
 export default function DebugPanel() {
-    const [user, setUser] = useState(null);
-    const [profile, setProfile] = useState(null);
-    const [teamId, setTeamId] = useState(null);
+    const [authUser, setAuthUser] = useState(null);
+    const [dbProfile, setDbProfile] = useState(null);
+    const [cacheProfile, setCacheProfile] = useState(null);
 
     useEffect(() => {
-        const run = async () => {
-            const { data: { user }, error } = await supabase.auth.getUser();
-            if (user) setUser(user);
+        const loadDebugData = async () => {
+            const {
+                data: { user },
+                error,
+            } = await supabase.auth.getUser();
+
+            if (user) {
+                setAuthUser(user);
+
+                const { data, error: profileErr } = await supabase
+                    .from('users_auth')
+                    .select('*')
+                    .eq('id', user.id)
+                    .single();
+
+                if (!profileErr) {
+                    setDbProfile(data);
+                }
+            }
+
+            const cached = localStorage.getItem('user_profile');
+            if (cached) setCacheProfile(JSON.parse(cached));
         };
 
-        const cachedProfile = localStorage.getItem('user_profile');
-        if (cachedProfile) setProfile(JSON.parse(cachedProfile));
-
-        const cachedTeamId = localStorage.getItem('team_id');
-        if (cachedTeamId) setTeamId(cachedTeamId);
-
-        run();
+        loadDebugData();
     }, []);
 
     return (
-        <div className="bg-black text-white text-xs p-4 border-t border-gray-700 font-mono">
-            <div className="mb-2 font-bold text-green-400">🧪 Debug Panel</div>
-            <div><strong>Auth User:</strong> {user ? user.email : 'None'}</div>
-            <div><strong>User ID:</strong> {user?.id || 'N/A'}</div>
-            <div><strong>Cached Profile:</strong> {profile ? JSON.stringify(profile) : 'None'}</div>
-            <div><strong>Team ID:</strong> {teamId || 'N/A'}</div>
-            <div className="mt-2">
-                <button
-                    onClick={() => {
-                        supabase.auth.signOut();
-                        localStorage.clear();
-                        window.location.reload();
-                    }}
-                    className="mt-2 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-500"
-                >
-                    🚪 Sign Out + Clear Cache
-                </button>
+        <div className="fixed bottom-0 left-0 w-full bg-black text-green-300 text-xs p-4 font-mono z-50 border-t border-green-500">
+            <div className="flex flex-col gap-1">
+                <div>🔐 <strong>Auth User:</strong> {authUser?.email || 'None'}</div>
+                <div>🧾 <strong>User ID:</strong> {authUser?.id || 'N/A'}</div>
+                <div>📂 <strong>Cached Profile:</strong> {cacheProfile ? JSON.stringify(cacheProfile) : 'None'}</div>
+                <div>📡 <strong>DB Profile:</strong> {dbProfile ? JSON.stringify(dbProfile) : 'None'}</div>
+                <div>
+                    🧪 <strong>Match:</strong>{' '}
+                    {dbProfile && cacheProfile
+                        ? JSON.stringify(dbProfile) === JSON.stringify(cacheProfile)
+                            ? <span className="text-green-400">✅ Match</span>
+                            : <span className="text-yellow-400">⚠️ Mismatch</span>
+                        : 'N/A'}
+                </div>
             </div>
         </div>
     );
