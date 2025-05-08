@@ -6,9 +6,7 @@ export default function useAuthRedirect() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const {
-            data: { subscription },
-        } = supabase.auth.onAuthStateChange(async (event, session) => {
+        const subscription = supabase.auth.onAuthStateChange(async (event, session) => {
             if (event !== 'SIGNED_IN' || !session?.user) return;
 
             try {
@@ -17,7 +15,6 @@ export default function useAuthRedirect() {
                 const email = user.email;
                 const fullName = user.user_metadata?.full_name || email || 'Anonymous';
 
-                // ⬇️ Upsert user record
                 const { error: insertError } = await supabase.from('users_auth').upsert({
                     id: userId,
                     full_name: fullName,
@@ -30,7 +27,6 @@ export default function useAuthRedirect() {
                     return;
                 }
 
-                // ⬇️ Fetch user profile
                 const { data: profile, error: fetchError } = await supabase
                     .from('users_auth')
                     .select('team_id, is_coach')
@@ -42,7 +38,6 @@ export default function useAuthRedirect() {
                     return;
                 }
 
-                // ⬇️ Save team and redirect
                 if (!profile.team_id) {
                     console.warn('⚠️ No team_id — redirecting to /get-started');
                     navigate('/get-started');
@@ -55,6 +50,6 @@ export default function useAuthRedirect() {
             }
         });
 
-        return () => subscription.unsubscribe();
+        return () => subscription?.unsubscribe();
     }, [navigate]);
 }
