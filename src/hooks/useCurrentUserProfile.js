@@ -19,15 +19,18 @@ export default function useCurrentUserProfile() {
     useEffect(() => {
         const { data: listener } = supabase.auth.onAuthStateChange((event, _session) => {
             if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-                fetchProfile();
+                console.log('🔁 Auth event, forcing profile refresh');
+                localStorage.removeItem('user_profile'); // 🧹 Remove stale profile
+                fetchProfile(); // ✅ Always re-fetch
             }
             if (event === 'SIGNED_OUT') {
+                console.log('🚪 Signed out, clearing profile');
                 setProfile(null);
                 localStorage.removeItem('user_profile');
             }
         });
 
-        return () => listener.subscription?.unsubscribe(); // ✅ Prevent crash
+        return () => listener.subscription?.unsubscribe(); // Prevent memory leak
     }, []);
 
     const fetchProfile = async () => {
