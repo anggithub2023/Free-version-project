@@ -66,7 +66,7 @@ export default function RSVPEventsPage() {
                 {events.length === 0 ? (
                     <p className="text-center text-gray-500 dark:text-gray-400">
                         No upcoming events.<br />
-                        <a href="/create-event" className="text-blue-600 dark:text-blue-300 underline">Create one?</a>
+                        <a href="/scheduling/events/create" className="text-blue-600 dark:text-blue-300 underline">Create one?</a>
                     </p>
                 ) : (
                     events.map((event) => (
