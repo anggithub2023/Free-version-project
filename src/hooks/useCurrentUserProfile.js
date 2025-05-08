@@ -14,7 +14,7 @@ export default function useCurrentUserProfile() {
                 setProfile(JSON.parse(cached));
                 setLoading(false);
             } catch (e) {
-                console.error("❌ Failed to parse cached profile:", e);
+                console.error('❌ Failed to parse cached profile:', e);
             }
         }
 
@@ -32,7 +32,7 @@ export default function useCurrentUserProfile() {
             }
         });
 
-        return () => listener.subscription?.unsubscribe(); // ✅ Prevent crash
+        return () => listener.subscription?.unsubscribe();
     }, []);
 
     const fetchProfile = async () => {
@@ -40,7 +40,7 @@ export default function useCurrentUserProfile() {
 
         const {
             data: { user },
-            error: authError
+            error: authError,
         } = await supabase.auth.getUser();
 
         if (authError || !user) {
@@ -58,9 +58,7 @@ export default function useCurrentUserProfile() {
         if (fetchError) {
             setError(fetchError);
         } else {
-            // 🔧 Normalize: strip volatile fields before caching
             const { created_at, ...profileToCache } = data;
-
             setProfile(profileToCache);
             localStorage.setItem('user_profile', JSON.stringify(profileToCache));
         }
