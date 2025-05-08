@@ -1,54 +1,47 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+// src/pages/LoginPage.jsx
+import { useState } from 'react';
 import supabase from '../lib/supabaseClient';
 
-export default function useAuthRedirect() {
-    const navigate = useNavigate();
+export default function LoginPage() {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-    useEffect(() => {
-        console.log('🔁 useAuthRedirect hook running...');
+    async function handleLogin(e) {
+        e.preventDefault();
 
-        const checkSession = async () => {
-            const { data: { session }, error } = await supabase.auth.getSession();
-            if (error || !session?.user) return;
-            await handleRedirect(session.user);
-        };
+        const { error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
 
-        checkSession();
-
-        const { data: subscription } = supabase.auth.onAuthStateChange(
-            async (event, session) => {
-                if (event === 'SIGNED_IN' && session?.user) {
-                    console.log('📦 Auth state changed:', event);
-                    await handleRedirect(session.user);
-                }
-            }
-        );
-
-        return () => {
-            subscription?.subscription?.unsubscribe();
-        };
-    }, [navigate]);
-
-    async function handleRedirect(user) {
-        const { data: profile, error } = await supabase
-            .from('users_auth')
-            .select('team_id, is_coach')
-            .eq('id', user.id)
-            .single();
-
-        if (error || !profile) {
-            console.error('❌ Failed to fetch profile:', error?.message);
-            return;
-        }
-
-        localStorage.setItem('team_id', profile.team_id);
-
-        if (!profile.team_id) {
-            console.warn('⚠️ Missing team_id — redirecting to /get-started');
-            navigate('/get-started');
+        if (error) {
+            alert('❌ Login failed: ' + error.message);
         } else {
-            navigate(profile.is_coach ? '/scheduling/coach' : '/scheduling/events');
+            console.log('✅ Logged in successfully');
         }
     }
+
+    return (
+        <form onSubmit={handleLogin} className="space-y-4 max-w-sm mx-auto mt-20">
+            <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full p-3 border rounded"
+                required
+            />
+            <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full p-3 border rounded"
+                required
+            />
+            <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded">
+                Sign In
+            </button>
+        </form>
+    );
 }
