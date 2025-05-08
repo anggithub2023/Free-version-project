@@ -1,3 +1,4 @@
+// src/hooks/useAuthRedirect.js
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
@@ -34,24 +35,29 @@ export default function useAuthRedirect() {
         const userId = user.id;
         const fullName = user.user_metadata?.full_name || user.email || 'Anonymous';
 
-        // 1️⃣ Check if user exists
         const { data: existing, error: fetchError } = await supabase
             .from('users_auth')
-            .select('id')
+            .select('team_id, is_coach')
             .eq('id', userId)
             .single();
 
-        const isNewUser = !!fetchError || !existing;
+        if (fetchError && fetchError.code !== 'PGRST116') {
+            console.error('❌ Failed to fetch user:', fetchError.message);
+            return;
+        }
 
-        // 2️⃣ Prepare payload
+        const isNewUser = !existing;
+
         const upsertPayload = {
             id: userId,
             full_name: fullName,
             created_at: new Date().toISOString()
         };
-        if (isNewUser) upsertPayload.is_coach = false;
 
-        // 3️⃣ Upsert safely
+        if (isNewUser) {
+            upsertPayload.is_coach = false; // Only set default for first-time users
+        }
+
         const { error: upsertError } = await supabase
             .from('users_auth')
             .upsert(upsertPayload);
@@ -61,17 +67,8 @@ export default function useAuthRedirect() {
             return;
         }
 
-        // 4️⃣ Always re-fetch the latest profile (in case is_coach or team_id was updated)
-        const { data: profile, error: profileError } = await supabase
-            .from('users_auth')
-            .select('team_id, is_coach')
-            .eq('id', userId)
-            .single();
-
-        if (profileError || !profile) {
-            console.error('❌ Failed to load user profile:', profileError?.message);
-            return;
-        }
+        const profile = existing || { ...upsertPayload, team_id: null, is_coach: false };
+        console.log('🧠 Final profile decision:', profile); // 🪵 Logging logic branch result
 
         localStorage.setItem('team_id', profile.team_id);
 
