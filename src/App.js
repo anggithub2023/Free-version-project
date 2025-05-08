@@ -42,7 +42,7 @@ function App() {
                 <Route path="/dashboard" element={<DashboardPage />} />
 
                 {/* Scheduling */}
-                <Route path="/login" element={<LoginPage />} /> // ✅ Add this line
+                <Route path="/login" element={<LoginPage />} />
                 <Route path="/scheduling" element={<SchedulingDashboard />} />
                 <Route path="/scheduling/create" element={<CreateEventPage />} />
                 <Route path="/scheduling/events" element={<RSVPEventsPage />} />
