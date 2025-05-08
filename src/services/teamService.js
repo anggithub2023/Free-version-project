@@ -2,6 +2,7 @@
 import supabase from '../lib/supabaseClient';
 
 export async function createTeam(name) {
+    // 🔐 Get authenticated user
     const {
         data: { user },
         error: authError,
@@ -14,9 +15,19 @@ export async function createTeam(name) {
 
     console.log('🧪 Authenticated user:', user);
 
+    // 🧪 Inspect active session/token
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) {
+        console.error('🛑 Session fetch error:', sessionError);
+    } else {
+        console.log('🔐 Supabase session:', sessionData.session);
+        console.log('🔑 Access token:', sessionData.session?.access_token);
+    }
+
+    // 🔑 Generate a join code
     const joinCode = crypto.randomUUID().slice(0, 6).toUpperCase();
 
-    // 1. Create team
+    // 🚀 Step 1: Create team
     const { data: team, error: teamError } = await supabase
         .from('teams')
         .insert([{ name, join_code: joinCode }])
@@ -30,7 +41,7 @@ export async function createTeam(name) {
 
     console.log('✅ Team created:', team);
 
-    // 2. Promote user and associate with team
+    // 🚀 Step 2: Update user's team_id and coach status
     const { error: updateError } = await supabase
         .from('users_auth')
         .update({ team_id: team.id, is_coach: true })
