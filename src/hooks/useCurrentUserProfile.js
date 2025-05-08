@@ -1,3 +1,4 @@
+// src/hooks/useCurrentUserProfile.js
 import { useEffect, useState } from 'react';
 import supabase from '../lib/supabaseClient';
 
@@ -6,73 +7,67 @@ export default function useCurrentUserProfile() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const load = async () => {
-            // ✅ Always force fresh profile
-            localStorage.removeItem('user_profile');
+    // ✅ Fetch profile from DB
+    const fetchProfile = async () => {
+        setLoading(true);
 
-            const { data: { user }, error: userError } = await supabase.auth.getUser();
-            if (userError || !user) {
-                setError(userError || new Error('Not authenticated'));
-                setLoading(false);
-                return;
-            }
+        const {
+            data: { user },
+            error: authError
+        } = await supabase.auth.getUser();
 
-            const { data, error: fetchError } = await supabase
-                .from('users_auth')
-                .select('id, full_name, is_coach, team_id')
-                .eq('id', user.id)
-                .single();
-
-            if (fetchError) {
-                setError(fetchError);
-            } else {
-                setProfile(data);
-                localStorage.setItem('user_profile', JSON.stringify(data));
-            }
-
+        if (authError || !user) {
+            setError(authError || new Error('User not authenticated'));
             setLoading(false);
-        };
+            return;
+        }
 
-        load();
+        const { data, error: fetchError } = await supabase
+            .from('users_auth')
+            .select('id, full_name, is_coach, team_id')
+            .eq('id', user.id)
+            .single();
+
+        if (fetchError) {
+            setError(fetchError);
+        } else {
+            setProfile(data);
+            localStorage.setItem('user_profile', JSON.stringify(data)); // ✅ Always update
+            localStorage.setItem('team_id', data.team_id); // ⬅️ Optional but ensures consistency
+        }
+
+        setLoading(false);
+    };
+
+    // ✅ Initial load from cache, then revalidate
+    useEffect(() => {
+        const cached = localStorage.getItem('user_profile');
+        if (cached) {
+            setProfile(JSON.parse(cached));
+            setLoading(false);
+        }
+
+        fetchProfile(); // 🔁 Always revalidate from Supabase
     }, []);
 
+    // ✅ Sync on login/logout/session changes
     useEffect(() => {
-        const { data: listener } = supabase.auth.onAuthStateChange((event) => {
+        const { data: listener } = supabase.auth.onAuthStateChange((event, _session) => {
+            console.log('🔁 Auth event, forcing profile refresh:', event);
+
             if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-                console.log('🔁 Auth event, forcing profile refresh');
-                localStorage.removeItem('user_profile');
-                setProfile(null);
-                setLoading(true);
-                supabase.auth.getUser().then(({ data: { user } }) => {
-                    if (user) {
-                        supabase
-                            .from('users_auth')
-                            .select('id, full_name, is_coach, team_id')
-                            .eq('id', user.id)
-                            .single()
-                            .then(({ data, error }) => {
-                                if (data) {
-                                    setProfile(data);
-                                    localStorage.setItem('user_profile', JSON.stringify(data));
-                                } else {
-                                    setError(error);
-                                }
-                                setLoading(false);
-                            });
-                    } else {
-                        setLoading(false);
-                    }
-                });
+                localStorage.removeItem('user_profile'); // ✅ clear stale
+                fetchProfile(); // 🔁 re-fetch
             }
 
             if (event === 'SIGNED_OUT') {
                 setProfile(null);
                 localStorage.removeItem('user_profile');
+                localStorage.removeItem('team_id');
             }
         });
 
-        return () => listener?.subscription?.unsubscribe();
+        return () => listener.subscription?.unsubscribe(); // ✅ safe unsubscribe
     }, []);
 
     return { profile, loading, error };
