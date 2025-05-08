@@ -44,7 +44,7 @@ export default function useAuthRedirect() {
                     localStorage.setItem('team_id', profile.team_id);
                 } else {
                     console.warn('No team_id found for user — redirecting to /join-team');
-                    navigate('/join-team');
+                    navigate('/get-started');
                     return;
                 }
 
