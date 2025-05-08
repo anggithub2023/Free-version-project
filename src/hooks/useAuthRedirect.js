@@ -11,10 +11,7 @@ export default function useAuthRedirect() {
 
         const checkSession = async () => {
             const { data: { session }, error } = await supabase.auth.getSession();
-            if (error || !session?.user) {
-                console.warn('⚠️ No active session found');
-                return;
-            }
+            if (error || !session?.user) return;
             await handleRedirect(session.user);
         };
 
@@ -30,7 +27,7 @@ export default function useAuthRedirect() {
         );
 
         return () => {
-            listener?.unsubscribe(); // ✅ safe cleanup
+            listener?.unsubscribe(); // ✅ safe unsubscribe
         };
     }, [navigate]);
 
@@ -58,7 +55,7 @@ export default function useAuthRedirect() {
         };
 
         if (isNewUser) {
-            upsertPayload.is_coach = false; // Default role
+            upsertPayload.is_coach = false; // Default new users to player
         }
 
         const { error: upsertError } = await supabase
@@ -72,11 +69,8 @@ export default function useAuthRedirect() {
 
         const profile = existing || { ...upsertPayload, team_id: null, is_coach: false };
 
-        // 🧠 Deep diagnostic logging
-        console.log('🧠 Profile decision breakdown:');
-        console.log('team_id:', profile.team_id);
-        console.log('is_coach:', profile.is_coach);
-
+        // ✅ Clear cached stale role data
+        localStorage.removeItem('user_profile');
         localStorage.setItem('team_id', profile.team_id);
 
         const destination = !profile.team_id
@@ -85,7 +79,7 @@ export default function useAuthRedirect() {
                 ? '/scheduling/coach'
                 : '/scheduling/events';
 
-        console.log('🎯 Final redirect path:', destination);
+        console.log('🎯 Redirecting to:', destination);
         navigate(destination);
     }
 }
