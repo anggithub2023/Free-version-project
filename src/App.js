@@ -13,6 +13,7 @@ import WorkoutsPage from './pages/WorkoutsPage';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import DashboardPage from './pages/DashboardPage';
 
+import AuthCallback from './pages/AuthCallback';
 import SchedulingDashboard from './pages/SchedulingDashboard';
 import LoginPage from './pages/LoginPage'; // ✅ Import it
 import CreateEventPage from './pages/CreateEventPage';
@@ -47,6 +48,7 @@ function App() {
                 <Route path="/scheduling/coach" element={<CoachEventDashboard />} />
 
                 {/* Auth + Teams */}
+                <Route path="/auth/callback" element={<AuthCallback />} />
                 <Route path="/create-team" element={<CreateTeamPage />} />
                 <Route path="/join-team" element={<JoinTeamPage />} />
                 <Route path="/team-management" element={<TeamManagementPage />} /> {/* ✅ New Route */}
