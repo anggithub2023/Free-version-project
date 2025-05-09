@@ -3,7 +3,32 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import AppShell from './components/AppShell';
 import ProtectedRoute from './routes/ProtectedRoute';
 
-// Pages (same imports)
+// 🔥 Pages – make sure every import exists!
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import AuthCallback from './pages/AuthCallback';
+
+import DashboardPage from './pages/DashboardPage';
+import ReflectionPage from './pages/ReflectionPage';
+import ResultsPage from './pages/ResultsPage';
+import ReadinessPage from './pages/ReadinessPage';
+
+import PlayerStatsPage from './pages/PlayerStatsPage';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import WorkoutsPage from './pages/WorkoutsPage';
+import InjuryPage from './pages/InjuryPage';
+import VideosPage from './pages/VideosPage';
+
+import RSVPEventsPage from './pages/RSVPEventsPage';
+import CoachEventDashboard from './pages/CoachEventDashboard';
+import CreateEventPage from './pages/CreateEventPage';
+import EventDetailPage from './pages/EventDetailPage';
+
+import CreateTeamPage from './pages/CreateTeamPage';
+import JoinTeamPage from './pages/JoinTeamPage';
+import TeamManagementPage from './pages/TeamManagementPage';
+
+import TestSupabase from './pages/TestSupabase';
 
 export default function App() {
     return (
@@ -88,7 +113,6 @@ export default function App() {
                             </AppShell>
                         }
                     />
-
                     <Route
                         path="/scheduling/events"
                         element={
@@ -151,6 +175,7 @@ export default function App() {
                     />
                 </Route>
 
+                {/* Dev Route */}
                 <Route
                     path="/test"
                     element={
