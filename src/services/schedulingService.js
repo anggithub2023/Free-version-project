@@ -1,35 +1,46 @@
 import supabase from '../lib/supabaseClient';
 
-// ✅ Get all events with RSVP data (coach view)
+// 🧠 Utility
+const getTeamId = () => localStorage.getItem('team_id');
+
+// ✅ Coach: Get all events with RSVP data
 export async function getAllEventsWithRSVPs() {
+    const teamId = getTeamId();
+    if (!teamId) throw new Error('Missing team ID');
+
     const { data, error } = await supabase
         .from('events')
         .select('*, rsvps(*)')
-        .eq('team_id', localStorage.getItem('team_id'))
+        .eq('team_id', teamId)
         .order('event_date', { ascending: true });
 
     if (error) throw error;
     return data;
 }
 
-// ✅ Get upcoming events (player view)
+// ✅ Player: Get upcoming events
 export async function getUpcomingEvents() {
+    const teamId = getTeamId();
+    if (!teamId) throw new Error('Missing team ID');
+
+    const today = new Date().toISOString().split('T')[0];
+
     const { data, error } = await supabase
         .from('events')
         .select('*')
-        .eq('team_id', localStorage.getItem('team_id'))
-        .gte('event_date', new Date().toISOString().split('T')[0])
+        .eq('team_id', teamId)
+        .gte('event_date', today)
         .order('event_date', { ascending: true });
 
     if (error) throw error;
     return data;
 }
 
-// ✅ Submit RSVP (supports auth + anonymous)
+// ✅ Submit RSVP (auth or anonymous)
 export async function submitRSVP({ eventId, userId, anonymousId, anonymousName, status }) {
-    if (!eventId || !status) throw new Error('Missing event or response.');
+    if (!eventId || !status) throw new Error('Missing event ID or response.');
 
-    const teamId = localStorage.getItem('team_id');
+    const teamId = getTeamId();
     if (!teamId) throw new Error('Missing team ID');
 
     const payload = {
@@ -55,7 +66,7 @@ export async function submitRSVP({ eventId, userId, anonymousId, anonymousName, 
     if (error) throw error;
 }
 
-// ✅ Get single event by ID
+// ✅ Get single event
 export async function getEventById(eventId) {
     const { data, error } = await supabase
         .from('events')
@@ -82,8 +93,11 @@ export async function updateEvent(eventId, updates) {
 
 // ✅ Create new event
 export async function createEvent(payload) {
-    const teamId = localStorage.getItem('team_id');
+    const teamId = getTeamId();
+    if (!teamId) throw new Error('Missing team ID');
+
     const { data: authUser } = await supabase.auth.getUser();
+    if (!authUser?.user?.id) throw new Error('Missing user context');
 
     const { data, error } = await supabase
         .from('events')
