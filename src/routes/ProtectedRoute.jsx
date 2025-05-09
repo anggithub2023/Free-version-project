@@ -1,31 +1,22 @@
+// src/routes/ProtectedRoute.jsx
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import useCurrentUserProfile from '../hooks/useCurrentUserProfile';
 
-export default function ProtectedRoute({ requireCoach = false, requireAuth = true }) {
-    const { profile, loading, error } = useCurrentUserProfile();
+export function RequireAuth({ children }) {
+    const { profile, loading } = useCurrentUserProfile();
 
-    // 🔁 Still loading – don't render/redirect yet
-    if (loading) {
-        return <div className="text-center p-8">🔐 Authenticating...</div>;
-    }
+    if (loading) return <p className="text-center p-8">🔄 Authenticating...</p>;
+    if (!profile) return <Navigate to="/login" />;
 
-    // ❌ Auth error (optional)
-    if (error) {
-        console.error("Profile error:", error);
-        return <Navigate to="/login" />;
-    }
+    return children;
+}
 
-    // 🧑‍💻 Not authenticated
-    if (requireAuth && !profile) {
-        return <Navigate to="/login" />;
-    }
+export function RequireCoach({ children }) {
+    const { profile, loading } = useCurrentUserProfile();
 
-    // 🧑‍🏫 Not a coach (when required)
-    if (requireCoach && !profile?.is_coach) {
-        return <Navigate to="/scheduling/events" />;
-    }
+    if (loading) return <p className="text-center p-8">🔄 Checking access...</p>;
+    if (!profile?.is_coach) return <Navigate to="/scheduling/events" />;
 
-    // ✅ Access granted
-    return <Outlet />;
+    return children;
 }
