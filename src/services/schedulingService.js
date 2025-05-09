@@ -1,69 +1,21 @@
 // src/services/schedulingService.js
 import supabase from '../lib/supabaseClient';
 
-// ✅ Fetch all events with RSVPs for a team
-export async function getAllEventsWithRSVPs() {
-    const { data, error } = await supabase
-        .from('events')
-        .select('*, rsvps(*)')
-        .eq('team_id', localStorage.getItem('team_id'))
-        .order('event_date', { ascending: true });
+const TEAM_ID = localStorage.getItem('team_id');
 
-    if (error) throw error;
-    return data;
-}
-
-// ✅ Fetch upcoming events for RSVP page (without rsvps())
+// ✅ Get all upcoming events (used across views)
 export async function getUpcomingEvents() {
     const { data, error } = await supabase
         .from('events')
-        .select('*')
-        .eq('team_id', localStorage.getItem('team_id'))
-        .gte('event_date', new Date().toISOString())
+        .select('*, rsvps(*)')
+        .eq('team_id', TEAM_ID)
         .order('event_date', { ascending: true });
 
     if (error) throw error;
     return data;
 }
 
-// ✅ Submit RSVP response for current user
-export async function submitRSVP(eventId, response) {
-    if (!eventId || !response) throw new Error('Missing event or response.');
-
-    const { data: userInfo, error: userError } = await supabase.auth.getUser();
-    if (userError) throw userError;
-
-    const userId = userInfo.user?.id;
-    if (!userId) throw new Error('User not authenticated.');
-
-    const { error: upsertError } = await supabase
-        .from('rsvps')
-        .upsert({ event_id: eventId, user_id: userId, response }, { onConflict: ['event_id', 'user_id'] });
-
-    if (upsertError) throw upsertError;
-}
-
-// ✅ Create a new event
-export async function createEvent(eventData) {
-    const teamId = localStorage.getItem('team_id');
-    if (!teamId) throw new Error('Missing team_id in localStorage');
-
-    const payload = {
-        ...eventData,
-        team_id: teamId
-    };
-
-    const { data, error } = await supabase
-        .from('events')
-        .insert([payload])
-        .select()
-        .single();
-
-    if (error) throw error;
-    return data;
-}
-
-// ✅ Get single event by ID
+// ✅ Fetch a single event by ID
 export async function getEventById(eventId) {
     const { data, error } = await supabase
         .from('events')
@@ -75,7 +27,7 @@ export async function getEventById(eventId) {
     return data;
 }
 
-// ✅ Update event
+// ✅ Update an existing event
 export async function updateEvent(eventId, updates) {
     const { data, error } = await supabase
         .from('events')
@@ -86,4 +38,38 @@ export async function updateEvent(eventId, updates) {
 
     if (error) throw error;
     return data;
+}
+
+// ✅ Create a new event
+export async function createEvent(eventData) {
+    const userProfile = JSON.parse(localStorage.getItem('user_profile') || '{}');
+    const teamId = userProfile?.team_id;
+
+    if (!teamId) throw new Error('Missing team ID');
+
+    const { data, error } = await supabase
+        .from('events')
+        .insert([{ ...eventData, team_id: teamId }])
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
+}
+
+// ✅ Submit RSVP (used by players)
+export async function submitRSVP(eventId, response) {
+    if (!eventId || !response) throw new Error('Missing event or response');
+
+    const { data: userInfo, error: userError } = await supabase.auth.getUser();
+    if (userError) throw userError;
+
+    const userId = userInfo.user?.id;
+    if (!userId) throw new Error('User not authenticated');
+
+    const { error: upsertError } = await supabase
+        .from('rsvps')
+        .upsert({ event_id: eventId, user_id: userId, response }, { onConflict: ['event_id', 'user_id'] });
+
+    if (upsertError) throw upsertError;
 }
