@@ -1,18 +1,22 @@
 // src/pages/EventDetailPage.jsx
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getEventById, updateEvent } from '../services/schedulingService';
 import EventCard from '../components/Scheduling/EventCard';
 import useCurrentUserProfile from '../hooks/useCurrentUserProfile';
 
 export default function EventDetailPage() {
     const { id } = useParams();
+    const navigate = useNavigate();
+    const { profile } = useCurrentUserProfile();
+
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [editMode, setEditMode] = useState(false);
     const [formData, setFormData] = useState({});
-    const { profile } = useCurrentUserProfile();
+
+    const isCoach = profile?.is_coach;
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -22,7 +26,7 @@ export default function EventDetailPage() {
                 setFormData({
                     title: data.title || '',
                     location: data.location || '',
-                    event_date: data.event_date || '',
+                    event_date: data.event_date?.split('T')[0] || '',
                 });
             } catch (err) {
                 console.error('❌ Failed to fetch event:', err);
@@ -61,19 +65,27 @@ export default function EventDetailPage() {
                 showRSVPButtons={false}
             />
 
-            {profile?.is_coach && (
-                <div className="mt-6 max-w-xl mx-auto">
+            {isCoach && (
+                <div className="mt-6 max-w-xl mx-auto space-y-6">
                     {!editMode ? (
-                        <button
-                            onClick={() => setEditMode(true)}
-                            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition"
-                        >
-                            ✏️ Edit Event
-                        </button>
+                        <div className="flex justify-between">
+                            <button
+                                onClick={() => setEditMode(true)}
+                                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition"
+                            >
+                                ✏️ Edit Event
+                            </button>
+                            <button
+                                onClick={() => navigate('/scheduling/coach')}
+                                className="text-sm text-blue-600 hover:underline"
+                            >
+                                ← Back to Dashboard
+                            </button>
+                        </div>
                     ) : (
-                        <div className="space-y-4 mt-4">
+                        <>
                             <div>
-                                <label className="block font-semibold">Title</label>
+                                <label className="block font-semibold mb-1">Title</label>
                                 <input
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -81,7 +93,7 @@ export default function EventDetailPage() {
                                 />
                             </div>
                             <div>
-                                <label className="block font-semibold">Location</label>
+                                <label className="block font-semibold mb-1">Location</label>
                                 <input
                                     value={formData.location}
                                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
@@ -89,7 +101,7 @@ export default function EventDetailPage() {
                                 />
                             </div>
                             <div>
-                                <label className="block font-semibold">Event Date</label>
+                                <label className="block font-semibold mb-1">Event Date</label>
                                 <input
                                     type="date"
                                     value={formData.event_date}
@@ -102,7 +114,7 @@ export default function EventDetailPage() {
                                     onClick={handleUpdate}
                                     className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-500"
                                 >
-                                    ✅ Save Changes
+                                    ✅ Save
                                 </button>
                                 <button
                                     onClick={() => setEditMode(false)}
@@ -111,7 +123,7 @@ export default function EventDetailPage() {
                                     ❌ Cancel
                                 </button>
                             </div>
-                        </div>
+                        </>
                     )}
                 </div>
             )}
