@@ -1,10 +1,11 @@
+// src/pages/CreateEventPage.jsx
 import React, { useState } from 'react';
-import { createEvent } from '../services/schedulingService';
 import { useNavigate } from 'react-router-dom';
-import useCurrentUserProfile from '../hooks/useCurrentUserProfile'; // 🔥 Add this
+import { createEvent } from '../services/schedulingService';
+import useCurrentUserProfile from '../hooks/useCurrentUserProfile';
 
 export default function CreateEventPage() {
-    const { profile, loading: profileLoading, error } = useCurrentUserProfile(); // ✅ Get user info
+    const { profile, loading: profileLoading, error } = useCurrentUserProfile();
     const [formData, setFormData] = useState({
         title: '',
         date: '',
@@ -33,8 +34,8 @@ export default function CreateEventPage() {
             });
             navigate('/scheduling/events');
         } catch (err) {
-            alert('❌ Failed to create event');
-            console.error(err);
+            console.error('❌ Failed to create event:', err);
+            alert('Something went wrong. Try again.');
         } finally {
             setLoading(false);
         }
@@ -45,55 +46,73 @@ export default function CreateEventPage() {
     if (!profile?.is_coach) return <p className="text-center mt-10 text-gray-500">Only coaches can create events.</p>;
 
     return (
-        <div className="max-w-xl mx-auto p-6 font-['Inter'] text-gray-800 dark:text-white">
-            <h2 className="text-3xl font-bold mb-6 text-center">Create New Event</h2>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <input
-                    name="title"
-                    value={formData.title}
-                    onChange={handleChange}
-                    placeholder="Event Title"
-                    className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
-                    required
-                />
-                <input
-                    name="date"
-                    type="date"
-                    value={formData.date}
-                    onChange={handleChange}
-                    className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
-                    required
-                />
-                <input
-                    name="time"
-                    type="time"
-                    value={formData.time}
-                    onChange={handleChange}
-                    className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
-                    required
-                />
-                <input
-                    name="location"
-                    value={formData.location}
-                    onChange={handleChange}
-                    placeholder="Location (Optional)"
-                    className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
-                />
-                <textarea
-                    name="notes"
-                    value={formData.notes}
-                    onChange={handleChange}
-                    placeholder="Additional Notes"
-                    className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 min-h-[100px]"
-                />
+        <main className="min-h-screen p-6 bg-gray-50 text-gray-800 font-sans">
+            <h1 className="text-3xl font-bold text-center mb-8">Create New Event</h1>
+
+            <form onSubmit={handleSubmit} className="max-w-xl mx-auto bg-white shadow-md p-6 rounded-lg space-y-5">
+                <div>
+                    <label className="block font-medium mb-1">Title</label>
+                    <input
+                        name="title"
+                        value={formData.title}
+                        onChange={handleChange}
+                        placeholder="Team Practice"
+                        required
+                        className="w-full border rounded-md px-4 py-2"
+                    />
+                </div>
+                <div className="flex gap-4">
+                    <div className="flex-1">
+                        <label className="block font-medium mb-1">Date</label>
+                        <input
+                            name="date"
+                            type="date"
+                            value={formData.date}
+                            onChange={handleChange}
+                            required
+                            className="w-full border rounded-md px-4 py-2"
+                        />
+                    </div>
+                    <div className="flex-1">
+                        <label className="block font-medium mb-1">Time</label>
+                        <input
+                            name="time"
+                            type="time"
+                            value={formData.time}
+                            onChange={handleChange}
+                            required
+                            className="w-full border rounded-md px-4 py-2"
+                        />
+                    </div>
+                </div>
+                <div>
+                    <label className="block font-medium mb-1">Location</label>
+                    <input
+                        name="location"
+                        value={formData.location}
+                        onChange={handleChange}
+                        placeholder="e.g. Main Field"
+                        className="w-full border rounded-md px-4 py-2"
+                    />
+                </div>
+                <div>
+                    <label className="block font-medium mb-1">Notes</label>
+                    <textarea
+                        name="notes"
+                        value={formData.notes}
+                        onChange={handleChange}
+                        placeholder="Optional notes or instructions"
+                        className="w-full border rounded-md px-4 py-2 min-h-[100px]"
+                    />
+                </div>
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-blue-600 hover:bg-blue-500 text-white py-3 rounded-lg font-semibold transition"
+                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 rounded-lg transition"
                 >
                     {loading ? 'Creating...' : 'Create Event'}
                 </button>
             </form>
-        </div>
+        </main>
     );
 }
