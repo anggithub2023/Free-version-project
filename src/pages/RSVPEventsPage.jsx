@@ -79,6 +79,7 @@ export default function RSVPEventsPage() {
                             event={event}
                             userRSVP={rsvpStatus[event.id]}
                             onRSVP={profile?.is_coach ? undefined : handleRSVP}
+                            showRSVPButtons={!profile?.is_coach} // ✅ Add this line
                         />
                     ))
                 )}
