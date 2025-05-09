@@ -31,8 +31,13 @@ export default function JoinTeamPage() {
 
     const handleJoinTeam = async () => {
         setJoining(true);
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return alert('You must be logged in to join a team.');
+
+        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        if (authError || !user) {
+            setFeedback({ error: 'You must be logged in to join a team.', success: '' });
+            setJoining(false);
+            return;
+        }
 
         const { error } = await supabase
             .from('users_auth')
@@ -42,16 +47,18 @@ export default function JoinTeamPage() {
         if (error) {
             setFeedback({ error: 'Failed to join team. Try again.', success: '' });
         } else {
-            setFeedback({ error: '', success: 'Successfully joined! Redirecting...' });
+            setFeedback({ error: '', success: '✅ Successfully joined! Redirecting...' });
+            localStorage.setItem('team_id', team.id);
             setTimeout(() => navigate('/dashboard'), 1500);
         }
+
         setJoining(false);
     };
 
     if (profileLoading) return <p className="text-center mt-10">Loading...</p>;
-    if (profileError) return <p className="text-center text-red-500">Error: {profileError.message}</p>;
+    if (profileError) return <p className="text-red-500 text-center">{profileError.message}</p>;
     if (profile?.team_id) {
-        return <p className="text-center mt-10 text-gray-600">You are already part of a team.</p>;
+        return <p className="text-center mt-10 text-gray-500">You're already part of a team.</p>;
     }
 
     return (
@@ -92,7 +99,7 @@ export default function JoinTeamPage() {
 
                 <p className="text-center text-sm text-gray-500 mt-4">
                     Don’t have a team?{' '}
-                    <a href="/team-management" className="text-blue-600 hover:underline">
+                    <a href="/team/create" className="text-blue-600 hover:underline">
                         Create one instead
                     </a>
                 </p>
