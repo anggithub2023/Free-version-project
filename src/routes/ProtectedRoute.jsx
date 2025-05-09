@@ -1,16 +1,28 @@
-// src/routes/ProtectedRoute.jsx
 import React from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import useCurrentUserProfile from '../hooks/useCurrentUserProfile';
 
-export default function ProtectedRoute({ children, requireCoach = false }) {
+export default function ProtectedRoute({ requireCoach = false, requireAuth = true }) {
     const { profile, loading, error } = useCurrentUserProfile();
 
-    if (loading) return <p className="text-center mt-10">Loading...</p>;
-    if (error) return <p className="text-center mt-10 text-red-500">Error loading user.</p>;
+    if (loading) {
+        return <div className="text-center p-8">🔄 Loading...</div>;
+    }
 
-    if (!profile) return <Navigate to="/login" replace />;
-    if (requireCoach && !profile.is_coach) return <Navigate to="/dashboard" replace />;
+    if (error) {
+        console.error("User profile load error:", error);
+        return <Navigate to="/login" />;
+    }
 
-    return children;
+    // Redirect if auth required and no profile
+    if (requireAuth && !profile) {
+        return <Navigate to="/login" />;
+    }
+
+    // Redirect if coach access required and user isn't a coach
+    if (requireCoach && !profile?.is_coach) {
+        return <Navigate to="/scheduling/events" />;
+    }
+
+    return <Outlet />;
 }
