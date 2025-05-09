@@ -10,7 +10,7 @@ export async function getAllEventsWithRSVPs() {
 
     const { data, error } = await supabase
         .from('events')
-        .select('*, rsvps(*)')
+        .select('*, rsvps(*, users(full_name))') // include user names
         .eq('team_id', teamId)
         .order('event_date', { ascending: true });
 
@@ -36,28 +36,19 @@ export async function getUpcomingEvents() {
     return data;
 }
 
-// ✅ Submit RSVP (auth or anonymous)
-export async function submitRSVP({ eventId, userId, anonymousId, anonymousName, status }) {
-    if (!eventId || !status) throw new Error('Missing event ID or response.');
+// ✅ Submit RSVP (authenticated only)
+export async function submitRSVP({ eventId, userId, status }) {
+    if (!eventId || !status || !userId) throw new Error('Missing RSVP data');
 
     const teamId = getTeamId();
     if (!teamId) throw new Error('Missing team ID');
 
     const payload = {
         event_id: eventId,
+        user_id: userId,
         response: status,
         team_id: teamId,
     };
-
-    if (userId) {
-        payload.user_id = userId;
-    } else if (anonymousId) {
-        payload.user_id = anonymousId;
-        payload.anonymous_id = anonymousId;
-        payload.anonymous_name = anonymousName || 'Anonymous';
-    } else {
-        throw new Error('Missing identity for RSVP');
-    }
 
     const { error } = await supabase
         .from('rsvps')
