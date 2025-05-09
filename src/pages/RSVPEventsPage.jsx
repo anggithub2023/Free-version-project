@@ -1,47 +1,35 @@
-// src/pages/RSVPEventsPage.jsx
 import React, { useEffect, useState } from 'react';
 import { getUpcomingEvents, submitRSVP } from '../services/schedulingService';
 import EventCard from '../components/Scheduling/EventCard';
 import StickyCtaBar from '../components/StickyCtaBar';
 import useCurrentUserProfile from '../hooks/useCurrentUserProfile';
-import useCurrentIdentity from '../hooks/useCurrentIdentity';
 
 export default function RSVPEventsPage() {
     const [events, setEvents] = useState([]);
     const [rsvpStatus, setRsvpStatus] = useState({});
-    const { profile } = useCurrentUserProfile();
-    const { userId, anonymousId, anonymousName, promptForName } = useCurrentIdentity();
+    const { profile, loading, error } = useCurrentUserProfile();
 
     const isCoach = profile?.is_coach;
+    const userId = profile?.id;
 
     useEffect(() => {
         const fetchEvents = async () => {
             try {
                 const fetched = await getUpcomingEvents();
                 setEvents(fetched);
-            } catch (error) {
-                console.error('Error fetching events:', error);
+            } catch (err) {
+                console.error('Error fetching events:', err);
                 alert('❌ Failed to load events. Try again later.');
             }
         };
-        fetchEvents();
-    }, []);
+        if (!loading && !error) {
+            fetchEvents();
+        }
+    }, [loading, error]);
 
     const handleRSVP = async (eventId, status) => {
         try {
-            if (!userId && !anonymousName) {
-                const name = await promptForName();
-                if (!name) return alert("RSVP requires a name.");
-            }
-
-            await submitRSVP({
-                eventId,
-                userId,
-                anonymousId,
-                anonymousName,
-                status,
-            });
-
+            await submitRSVP({ eventId, userId, status });
             setRsvpStatus((prev) => ({ ...prev, [eventId]: status }));
         } catch (err) {
             console.error('❌ Failed to submit RSVP:', err.message);
@@ -77,7 +65,13 @@ export default function RSVPEventsPage() {
                     <p className="text-center text-gray-500 dark:text-gray-400">
                         No upcoming events.
                         {isCoach && (
-                            <a href="/scheduling/events/create" className="text-blue-600 dark:text-blue-300 underline"> Create one?</a>
+                            <a
+                                href="/scheduling/events/create"
+                                className="text-blue-600 dark:text-blue-300 underline"
+                            >
+                                {' '}
+                                Create one?
+                            </a>
                         )}
                     </p>
                 ) : (
