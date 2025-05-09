@@ -1,15 +1,15 @@
-// RSVPEventsPage.jsx (full update)
 import React, { useEffect, useState } from 'react';
 import { getUpcomingEvents, submitRSVP } from '../services/schedulingService';
 import EventCard from '../components/Scheduling/EventCard';
 import StickyCtaBar from '../components/StickyCtaBar';
 import useCurrentUserProfile from '../hooks/useCurrentUserProfile';
+import useCurrentIdentity from '../hooks/useCurrentIdentity'; // ✅ NEW
 
 export default function RSVPEventsPage() {
     const [events, setEvents] = useState([]);
     const [rsvpStatus, setRsvpStatus] = useState({});
-    const [anonName, setAnonName] = useState(localStorage.getItem('anonName') || '');
     const { profile } = useCurrentUserProfile();
+    const { userId, anonymousId, anonymousName, promptForName } = useCurrentIdentity(); // ✅
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -26,28 +26,17 @@ export default function RSVPEventsPage() {
 
     const handleRSVP = async (eventId, status) => {
         try {
-            const userId = localStorage.getItem('userId');
-            let anonymousId = localStorage.getItem('anonId');
-
-            if (!userId) {
-                if (!anonymousId) {
-                    anonymousId = crypto.randomUUID();
-                    localStorage.setItem('anonId', anonymousId);
-                }
-
-                if (!anonName.trim()) {
-                    const name = prompt("Please enter your name or nickname:");
-                    if (!name) return alert("RSVP requires a name.");
-                    localStorage.setItem('anonName', name);
-                    setAnonName(name);
-                }
+            // ✅ Ask for anon name if missing
+            if (!userId && !anonymousName) {
+                const name = await promptForName();
+                if (!name) return alert("RSVP requires a name.");
             }
 
             await submitRSVP({
                 eventId,
-                userId: userId || null,
-                anonymousId: anonymousId || null,
-                anonymousName: anonName || '',
+                userId,
+                anonymousId,
+                anonymousName,
                 status,
             });
 
