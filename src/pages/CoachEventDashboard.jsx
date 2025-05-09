@@ -1,3 +1,4 @@
+// src/pages/CoachEventDashboard.jsx
 import React, { useEffect, useState } from 'react';
 import { getAllEventsWithRSVPs } from '../services/schedulingService';
 import EventCard from '../components/Scheduling/EventCard';
@@ -48,9 +49,12 @@ export default function CoachEventDashboard() {
                     Team: {teamName}
                 </p>
             )}
-            <h1 className="text-3xl font-bold text-center mb-4 text-blue-700 dark:text-blue-300">
+            <h1 className="text-3xl font-bold text-center text-blue-700 dark:text-blue-300">
                 RSVP Overview
             </h1>
+            <p className="text-sm text-center text-gray-500 dark:text-gray-400 mb-4">
+                Coach view — RSVP tracking for all events
+            </p>
 
             {loading ? (
                 <div className="animate-pulse space-y-2">
