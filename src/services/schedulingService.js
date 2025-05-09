@@ -13,6 +13,19 @@ export async function getAllEventsWithRSVPs() {
     return data;
 }
 
+// ✅ Fetch upcoming events for RSVP page (without rsvps())
+export async function getUpcomingEvents() {
+    const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('team_id', localStorage.getItem('team_id'))
+        .gte('event_date', new Date().toISOString())
+        .order('event_date', { ascending: true });
+
+    if (error) throw error;
+    return data;
+}
+
 // ✅ Submit RSVP response for current user
 export async function submitRSVP(eventId, response) {
     if (!eventId || !response) throw new Error('Missing event or response.');
@@ -30,7 +43,7 @@ export async function submitRSVP(eventId, response) {
     if (upsertError) throw upsertError;
 }
 
-// ✅ Create a new event (used by coaches)
+// ✅ Create a new event
 export async function createEvent(eventData) {
     const teamId = localStorage.getItem('team_id');
     if (!teamId) throw new Error('Missing team_id in localStorage');
