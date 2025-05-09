@@ -5,24 +5,27 @@ import useCurrentUserProfile from '../hooks/useCurrentUserProfile';
 export default function ProtectedRoute({ requireCoach = false, requireAuth = true }) {
     const { profile, loading, error } = useCurrentUserProfile();
 
+    // 🔁 Still loading – don't render/redirect yet
     if (loading) {
-        return <div className="text-center p-8">🔄 Loading...</div>;
+        return <div className="text-center p-8">🔐 Authenticating...</div>;
     }
 
+    // ❌ Auth error (optional)
     if (error) {
-        console.error("User profile load error:", error);
+        console.error("Profile error:", error);
         return <Navigate to="/login" />;
     }
 
-    // Redirect if auth required and no profile
+    // 🧑‍💻 Not authenticated
     if (requireAuth && !profile) {
         return <Navigate to="/login" />;
     }
 
-    // Redirect if coach access required and user isn't a coach
+    // 🧑‍🏫 Not a coach (when required)
     if (requireCoach && !profile?.is_coach) {
         return <Navigate to="/scheduling/events" />;
     }
 
+    // ✅ Access granted
     return <Outlet />;
 }
