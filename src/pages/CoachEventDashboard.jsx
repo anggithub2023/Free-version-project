@@ -21,7 +21,7 @@ export default function CoachEventDashboard() {
     } = useCurrentUserProfile();
 
     useEffect(() => {
-        if (profile && profile.is_coach) {
+        if (profile?.is_coach) {
             const fetchRSVPs = async () => {
                 try {
                     const all = await getAllEventsWithRSVPs();
@@ -71,8 +71,8 @@ export default function CoachEventDashboard() {
                         <EventCard
                             event={event}
                             userRSVP={null}
-                            onRSVP={null} // ❌ no need for handleRSVP
-                            showRSVPButtons={false} // ✅ prevent RSVP display
+                            onRSVP={null}
+                            showRSVPButtons={false}
                             onClick={() => navigate(`/scheduling/events/${event.id}`)}
                         />
                         <EventResponseChart
