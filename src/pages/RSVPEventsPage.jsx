@@ -1,15 +1,16 @@
+// src/pages/RSVPEventsPage.jsx
 import React, { useEffect, useState } from 'react';
 import { getUpcomingEvents, submitRSVP } from '../services/schedulingService';
 import EventCard from '../components/Scheduling/EventCard';
 import StickyCtaBar from '../components/StickyCtaBar';
 import useCurrentUserProfile from '../hooks/useCurrentUserProfile';
-import useCurrentIdentity from '../hooks/useCurrentIdentity'; // ✅ NEW
+import useCurrentIdentity from '../hooks/useCurrentIdentity';
 
 export default function RSVPEventsPage() {
     const [events, setEvents] = useState([]);
     const [rsvpStatus, setRsvpStatus] = useState({});
     const { profile } = useCurrentUserProfile();
-    const { userId, anonymousId, anonymousName, promptForName } = useCurrentIdentity(); // ✅
+    const { userId, anonymousId, anonymousName, promptForName } = useCurrentIdentity();
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -26,7 +27,6 @@ export default function RSVPEventsPage() {
 
     const handleRSVP = async (eventId, status) => {
         try {
-            // ✅ Ask for anon name if missing
             if (!userId && !anonymousName) {
                 const name = await promptForName();
                 if (!name) return alert("RSVP requires a name.");
@@ -79,7 +79,7 @@ export default function RSVPEventsPage() {
                             event={event}
                             userRSVP={rsvpStatus[event.id]}
                             onRSVP={profile?.is_coach ? undefined : handleRSVP}
-                            showRSVPButtons={!profile?.is_coach} // ✅ Add this line
+                            showRSVPButtons={!profile?.is_coach}
                         />
                     ))
                 )}
