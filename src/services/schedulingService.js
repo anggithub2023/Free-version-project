@@ -1,3 +1,4 @@
+// src/services/schedulingService.js
 import supabase from '../lib/supabaseClient';
 
 // ✅ Fetch all events with RSVPs for a team
@@ -27,6 +28,26 @@ export async function submitRSVP(eventId, response) {
         .upsert({ event_id: eventId, user_id: userId, response }, { onConflict: ['event_id', 'user_id'] });
 
     if (upsertError) throw upsertError;
+}
+
+// ✅ Create a new event (used by coaches)
+export async function createEvent(eventData) {
+    const teamId = localStorage.getItem('team_id');
+    if (!teamId) throw new Error('Missing team_id in localStorage');
+
+    const payload = {
+        ...eventData,
+        team_id: teamId
+    };
+
+    const { data, error } = await supabase
+        .from('events')
+        .insert([payload])
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
 }
 
 // ✅ Get single event by ID
