@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { createClient } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabaseClient'; // adjust if needed
 
 export default function useCurrentIdentity() {
