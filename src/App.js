@@ -24,6 +24,7 @@ import JoinTeamPage from './pages/JoinTeamPage';
 import TeamManagementPage from './pages/TeamManagementPage'; // ✅ Add this
 import CreateTeamPage from './pages/CreateTeamPage';
 import useAnonymousUser from './hooks/useAnonymousUser';
+import EventDetailPage from './pages/EventDetailPage';
 
 function App() {
     useAnonymousUser();
@@ -49,6 +50,7 @@ function App() {
                 <Route path="/scheduling/coach" element={<CoachEventDashboard />} />
 
                 {/* Auth + Teams */}
+                <Route path="/scheduling/events/:id" element={<EventDetailPage />} />
                 <Route path="/get-started" element={<GetStartedPage />} />
                 <Route path="/auth/callback" element={<AuthCallback />} />
                 <Route path="/create-team" element={<CreateTeamPage />} />
