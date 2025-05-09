@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../lib/supabaseClient'; // adjust if needed
+import supabase from '../lib/supabaseClient';
 
 export default function useCurrentIdentity() {
     const [identity, setIdentity] = useState({
