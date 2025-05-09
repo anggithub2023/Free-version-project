@@ -1,6 +1,6 @@
-// src/pages/CoachEventDashboard.jsx
 import React, { useEffect, useState } from 'react';
-import { getAllEventsWithRSVPs } from '../services/schedulingService';
+import { useNavigate } from 'react-router-dom';
+import { getAllEventsWithRSVPs, submitRSVP } from '../services/schedulingService';
 import EventCard from '../components/Scheduling/EventCard';
 import EventResponseChart from '../components/Scheduling/EventResponseChart';
 import StickyCtaBar from '../components/StickyCtaBar';
@@ -11,6 +11,7 @@ export default function CoachEventDashboard() {
     const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
     const [teamName, setTeamName] = useState('');
+    const navigate = useNavigate();
 
     const {
         profile,
@@ -38,6 +39,16 @@ export default function CoachEventDashboard() {
         }
     }, [profile]);
 
+    const handleRSVP = async (eventId, status) => {
+        try {
+            await submitRSVP(eventId, status);
+            const updated = await getAllEventsWithRSVPs();
+            setEvents(updated);
+        } catch (err) {
+            console.error('⚠️ RSVP failed:', err);
+        }
+    };
+
     if (profileLoading) return <p className="text-center mt-10">Loading profile...</p>;
     if (profileError) return <p className="text-center mt-10 text-red-500">Error loading profile</p>;
     if (!profile?.is_coach) return <p className="text-center mt-10 text-gray-500">Access restricted to coaches only.</p>;
@@ -49,11 +60,11 @@ export default function CoachEventDashboard() {
                     Team: {teamName}
                 </p>
             )}
-            <h1 className="text-3xl font-bold text-center text-blue-700 dark:text-blue-300">
+            <h1 className="text-3xl font-bold text-center mb-1 text-blue-700 dark:text-blue-300">
                 RSVP Overview
             </h1>
-            <p className="text-sm text-center text-gray-500 dark:text-gray-400 mb-4">
-                Coach view — RSVP tracking for all events
+            <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-4">
+                View who’s attending your upcoming team events
             </p>
 
             {loading ? (
@@ -66,7 +77,17 @@ export default function CoachEventDashboard() {
             ) : events.length > 0 ? (
                 events.map((event) => (
                     <div key={event.id} className="mb-8">
-                        <EventCard event={event} showDetails={false} />
+                        <div
+                            role="button"
+                            onClick={() => navigate(`/scheduling/events/${event.id}`)}
+                            className="cursor-pointer hover:opacity-90 transition"
+                        >
+                            <EventCard
+                                event={event}
+                                userRSVP={null}
+                                onRSVP={handleRSVP}
+                            />
+                        </div>
                         <EventResponseChart
                             responses={event.rsvps?.map((rsvp) => ({
                                 ...rsvp,
