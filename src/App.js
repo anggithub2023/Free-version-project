@@ -1,64 +1,32 @@
-// src/App.js
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import AppShell from './components/AppShell';
+import ProtectedRoute from './routes/ProtectedRoute';
 
-import HomePage from './pages/HomePage';
-import ReflectionPage from './pages/ReflectionPage';
-import ReadinessPage from './pages/ReadinessPage';
-import InjuryPage from './pages/InjuryPage';
-import PlayerStatsPage from './pages/PlayerStatsPage';
-import VideosPage from './pages/VideosPage';
-import WorkoutsPage from './pages/WorkoutsPage';
-import AnalyticsDashboard from './pages/AnalyticsDashboard';
-import DashboardPage from './pages/DashboardPage';
+<Route path="/scheduling/coach" element={
+    <ProtectedRoute requireCoach>
+        <CoachEventDashboard />
+    </ProtectedRoute>
+} />
 
-import GetStartedPage from './pages/GetStartedPage';
-import AuthCallback from './pages/AuthCallback';
-import SchedulingDashboard from './pages/SchedulingDashboard';
-import LoginPage from './pages/LoginPage'; // ✅ Import it
-import CreateEventPage from './pages/CreateEventPage';
-import RSVPEventsPage from './pages/RSVPEventsPage';
-import CoachEventDashboard from './pages/CoachEventDashboard';
-import JoinTeamPage from './pages/JoinTeamPage';
-import TeamManagementPage from './pages/TeamManagementPage'; // ✅ Add this
-import CreateTeamPage from './pages/CreateTeamPage';
-import useAnonymousUser from './hooks/useAnonymousUser';
-import EventDetailPage from './pages/EventDetailPage';
+<Route path="/scheduling/events/create" element={
+    <ProtectedRoute requireCoach>
+        <CreateEventPage />
+    </ProtectedRoute>
+} />
 
-function App() {
-    useAnonymousUser();
+<Route path="/team-management" element={
+    <ProtectedRoute requireCoach>
+        <TeamManagementPage />
+    </ProtectedRoute>
+} />
 
-    return (
-        <AppShell>
-            <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/reflect" element={<ReflectionPage />} />
-                <Route path="/readiness" element={<ReadinessPage />} />
-                <Route path="/injury" element={<InjuryPage />} />
-                <Route path="/playerstats" element={<PlayerStatsPage />} />
-                <Route path="/videos" element={<VideosPage />} />
-                <Route path="/workouts" element={<WorkoutsPage />} />
-                <Route path="/analytics" element={<AnalyticsDashboard />} />
-                <Route path="/dashboard" element={<DashboardPage />} />
+{/* Player Routes (just authenticated) */}
+<Route path="/scheduling/events" element={
+    <ProtectedRoute>
+        <RSVPEventsPage />
+    </ProtectedRoute>
+} />
 
-                {/* Scheduling */}
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/scheduling" element={<SchedulingDashboard />} />
-                <Route path="/scheduling/events/create" element={<CreateEventPage />} />
-                <Route path="/scheduling/events" element={<RSVPEventsPage />} />
-                <Route path="/scheduling/coach" element={<CoachEventDashboard />} />
-
-                {/* Auth + Teams */}
-                <Route path="/scheduling/events/:id" element={<EventDetailPage />} />
-                <Route path="/get-started" element={<GetStartedPage />} />
-                <Route path="/auth/callback" element={<AuthCallback />} />
-                <Route path="/create-team" element={<CreateTeamPage />} />
-                <Route path="/join-team" element={<JoinTeamPage />} />
-                <Route path="/team-management" element={<TeamManagementPage />} /> {/* ✅ New Route */}
-            </Routes>
-        </AppShell>
-    );
-}
-
-export default App;
+<Route path="/scheduling/events/:id" element={
+    <ProtectedRoute>
+        <EventDetailPage />
+    </ProtectedRoute>
+} />
