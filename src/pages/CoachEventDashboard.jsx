@@ -1,3 +1,4 @@
+// src/pages/CoachEventDashboard.jsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAllEventsWithRSVPs, submitRSVP } from '../services/schedulingService';
@@ -77,17 +78,12 @@ export default function CoachEventDashboard() {
             ) : events.length > 0 ? (
                 events.map((event) => (
                     <div key={event.id} className="mb-8">
-                        <div
-                            role="button"
+                        <EventCard
+                            event={event}
+                            userRSVP={null}
+                            onRSVP={handleRSVP}
                             onClick={() => navigate(`/scheduling/events/${event.id}`)}
-                            className="cursor-pointer hover:opacity-90 transition"
-                        >
-                            <EventCard
-                                event={event}
-                                userRSVP={null}
-                                onRSVP={handleRSVP}
-                            />
-                        </div>
+                        />
                         <EventResponseChart
                             responses={event.rsvps?.map((rsvp) => ({
                                 ...rsvp,
