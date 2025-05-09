@@ -1,87 +1,55 @@
 // src/pages/EventDetailPage.jsx
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { getEventById, updateEvent } from '../services/schedulingService';
+import EventCard from '../components/Scheduling/EventCard';
+import useCurrentUserProfile from '../hooks/useCurrentUserProfile';
 
 export default function EventDetailPage() {
     const { id } = useParams();
-    const navigate = useNavigate();
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
+    const [error, setError] = useState(null);
+    const { profile } = useCurrentUserProfile();
 
     useEffect(() => {
         const fetchEvent = async () => {
             try {
-                const fetched = await getEventById(id);
-                setEvent(fetched);
+                const data = await getEventById(id);
+                setEvent(data);
             } catch (err) {
-                setError('Failed to load event.');
+                console.error('❌ Failed to fetch event:', err);
+                setError('Could not load event details.');
             } finally {
                 setLoading(false);
             }
         };
-        fetchEvent();
+
+        if (id) fetchEvent();
     }, [id]);
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setEvent((prev) => ({ ...prev, [name]: value }));
-    };
-
-    const handleSave = async () => {
+    const handleUpdate = async (updatedFields) => {
         try {
-            await updateEvent(id, event);
-            navigate('/scheduling/coach');
+            const updated = await updateEvent(id, updatedFields);
+            setEvent(updated);
         } catch (err) {
-            console.error('Failed to update:', err);
-            setError('Update failed');
+            console.error('⚠️ Failed to update event:', err);
+            setError('Failed to update event.');
         }
     };
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p className="text-red-600">{error}</p>;
+    if (loading) return <p className="text-center mt-10">Loading event...</p>;
+    if (error) return <p className="text-center mt-10 text-red-500">{error}</p>;
+    if (!event) return <p className="text-center mt-10 text-gray-500">Event not found.</p>;
 
     return (
-        <div className="max-w-xl mx-auto mt-10 space-y-4 p-4 bg-white dark:bg-gray-900 rounded-lg shadow">
-            <h1 className="text-xl font-semibold">Edit Event</h1>
-            <input
-                type="text"
-                name="title"
-                value={event.title}
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-                placeholder="Event Title"
+        <div className="min-h-screen p-4">
+            <h1 className="text-2xl font-bold text-center mb-6">Event Details</h1>
+            <EventCard
+                event={event}
+                editable={profile?.is_coach}
+                onSave={handleUpdate}
             />
-            <input
-                type="datetime-local"
-                name="event_date"
-                value={new Date(event.event_date).toISOString().slice(0, 16)}
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-            />
-            <input
-                type="text"
-                name="location"
-                value={event.location || ''}
-                onChange={handleChange}
-                className="w-full border p-2 rounded"
-                placeholder="Location"
-            />
-            <div className="flex justify-between">
-                <button
-                    onClick={handleSave}
-                    className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded"
-                >
-                    Save Changes
-                </button>
-                <button
-                    onClick={() => navigate(-1)}
-                    className="text-gray-600 underline"
-                >
-                    Cancel
-                </button>
-            </div>
         </div>
     );
 }
