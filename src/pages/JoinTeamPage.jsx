@@ -1,3 +1,4 @@
+// src/pages/JoinTeamPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
@@ -5,69 +6,67 @@ import useCurrentUserProfile from '../hooks/useCurrentUserProfile';
 
 export default function JoinTeamPage() {
     const { profile, loading: profileLoading, error: profileError } = useCurrentUserProfile();
-    const [code, setCode] = useState('');
+    const [joinCode, setJoinCode] = useState('');
     const [team, setTeam] = useState(null);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState(false);
+    const [feedback, setFeedback] = useState({ error: '', success: '' });
     const navigate = useNavigate();
 
     const handleCheckCode = async () => {
-        setError('');
+        setFeedback({ error: '', success: '' });
         setTeam(null);
+
         const { data, error } = await supabase
             .from('teams')
             .select('*')
-            .eq('join_code', code.trim())
+            .eq('join_code', joinCode.trim())
             .single();
 
         if (error || !data) {
-            setError('Invalid join code. Please try again.');
-            return;
+            setFeedback({ error: 'Invalid join code. Please try again.', success: '' });
+        } else {
+            setTeam(data);
         }
-        setTeam(data);
     };
 
     const handleJoinTeam = async () => {
-        const {
-            data: { user },
-        } = await supabase.auth.getUser();
+        const { data: { user } } = await supabase.auth.getUser();
         if (!user) return alert('You must be logged in to join a team.');
 
         const { error } = await supabase
-            .from('users_auth') // 👈 Updated table name if using auth version
+            .from('users_auth')
             .update({ team_id: team.id })
             .eq('id', user.id);
 
         if (error) {
-            setError('Failed to join team. Try again.');
+            setFeedback({ error: 'Failed to join team. Try again.', success: '' });
         } else {
-            setSuccess(true);
+            setFeedback({ error: '', success: 'Successfully joined! Redirecting...' });
             setTimeout(() => navigate('/dashboard'), 1500);
         }
     };
 
-    // ⏳ Loading or ❌ Error state
+    // ⏳ Loading or ❌ Profile error
     if (profileLoading) return <p className="text-center mt-10">Loading...</p>;
-    if (profileError) return <p className="text-red-500 text-center">Error: {profileError.message}</p>;
+    if (profileError) return <p className="text-center text-red-500">Error: {profileError.message}</p>;
 
-    // ❌ Already on a team
+    // ✅ Already on a team
     if (profile?.team_id) {
-        return <p className="text-center mt-10 text-gray-500">You're already on a team.</p>;
+        return <p className="text-center mt-10 text-gray-600">You are already part of a team.</p>;
     }
 
-    // ✅ Join flow
     return (
-        <div className="min-h-screen bg-white dark:bg-gray-900 p-6 text-gray-800 dark:text-white">
+        <div className="min-h-screen bg-white text-gray-800 p-6">
             <h1 className="text-2xl font-bold text-center mb-6">Join a Team</h1>
 
             <div className="max-w-sm mx-auto space-y-4">
                 <input
                     type="text"
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
+                    value={joinCode}
+                    onChange={(e) => setJoinCode(e.target.value)}
                     placeholder="Enter Join Code"
-                    className="w-full p-3 border rounded-lg dark:bg-gray-800 dark:border-gray-600"
+                    className="w-full p-3 border border-gray-300 rounded-lg"
                 />
+
                 <button
                     onClick={handleCheckCode}
                     className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-500 transition"
@@ -76,7 +75,7 @@ export default function JoinTeamPage() {
                 </button>
 
                 {team && (
-                    <div className="p-4 border rounded-lg bg-green-50 dark:bg-gray-800">
+                    <div className="p-4 border border-green-300 bg-green-50 rounded-lg">
                         <p><strong>Team:</strong> {team.name}</p>
                         <button
                             onClick={handleJoinTeam}
@@ -87,8 +86,8 @@ export default function JoinTeamPage() {
                     </div>
                 )}
 
-                {error && <p className="text-red-500">{error}</p>}
-                {success && <p className="text-green-600">Joined successfully! Redirecting...</p>}
+                {feedback.error && <p className="text-red-500">{feedback.error}</p>}
+                {feedback.success && <p className="text-green-600">{feedback.success}</p>}
 
                 <p className="text-center text-sm text-gray-500 mt-4">
                     Don’t have a team?{' '}
