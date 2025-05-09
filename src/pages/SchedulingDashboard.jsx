@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchEvents } from '../services/schedulingService';
+import { getUpcomingEvents } from '../services/schedulingService'; // ✅ fixed
 import EventList from '../components/Scheduling/EventList';
 import StickyCtaBar from '../components/StickyCtaBar';
 import { useNavigate } from 'react-router-dom';
@@ -11,7 +11,7 @@ export default function SchedulingDashboard() {
     useEffect(() => {
         const loadEvents = async () => {
             try {
-                const data = await fetchEvents();
+                const data = await getUpcomingEvents(); // ✅ fixed
                 setEvents(data);
             } catch (err) {
                 console.error('Error loading events:', err);
