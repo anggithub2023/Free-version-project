@@ -12,6 +12,8 @@ export default function RSVPEventsPage() {
     const { profile } = useCurrentUserProfile();
     const { userId, anonymousId, anonymousName, promptForName } = useCurrentIdentity();
 
+    const isCoach = profile?.is_coach;
+
     useEffect(() => {
         const fetchEvents = async () => {
             try {
@@ -49,11 +51,17 @@ export default function RSVPEventsPage() {
 
     return (
         <div className="min-h-screen p-4 bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-white font-['Inter']">
-            <h1 className="text-3xl font-bold text-center mb-6 text-blue-800 dark:text-blue-200">
+            <h1 className="text-3xl font-bold text-center mb-1 text-blue-800 dark:text-blue-200">
                 Upcoming Events
             </h1>
 
-            {profile?.is_coach && (
+            {!isCoach && (
+                <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">
+                    Tap a button to let your coach know if you're attending!
+                </p>
+            )}
+
+            {isCoach && (
                 <div className="text-right mb-4">
                     <a
                         href="/scheduling/events/create"
@@ -68,7 +76,7 @@ export default function RSVPEventsPage() {
                 {events.length === 0 ? (
                     <p className="text-center text-gray-500 dark:text-gray-400">
                         No upcoming events.
-                        {profile?.is_coach && (
+                        {isCoach && (
                             <a href="/scheduling/events/create" className="text-blue-600 dark:text-blue-300 underline"> Create one?</a>
                         )}
                     </p>
@@ -78,8 +86,8 @@ export default function RSVPEventsPage() {
                             key={event.id}
                             event={event}
                             userRSVP={rsvpStatus[event.id]}
-                            onRSVP={profile?.is_coach ? undefined : handleRSVP}
-                            showRSVPButtons={!profile?.is_coach}
+                            onRSVP={!isCoach ? handleRSVP : undefined}
+                            showRSVPButtons={!isCoach}
                         />
                     ))
                 )}
