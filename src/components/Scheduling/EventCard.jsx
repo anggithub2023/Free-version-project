@@ -1,3 +1,4 @@
+// src/components/Scheduling/EventCard.jsx
 import React from 'react';
 import { MdEvent, MdAccessTime, MdLocationOn } from 'react-icons/md';
 
