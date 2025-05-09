@@ -9,6 +9,7 @@ export default function JoinTeamPage() {
     const [joinCode, setJoinCode] = useState('');
     const [team, setTeam] = useState(null);
     const [feedback, setFeedback] = useState({ error: '', success: '' });
+    const [joining, setJoining] = useState(false);
     const navigate = useNavigate();
 
     const handleCheckCode = async () => {
@@ -29,6 +30,7 @@ export default function JoinTeamPage() {
     };
 
     const handleJoinTeam = async () => {
+        setJoining(true);
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return alert('You must be logged in to join a team.');
 
@@ -43,13 +45,11 @@ export default function JoinTeamPage() {
             setFeedback({ error: '', success: 'Successfully joined! Redirecting...' });
             setTimeout(() => navigate('/dashboard'), 1500);
         }
+        setJoining(false);
     };
 
-    // ⏳ Loading or ❌ Profile error
     if (profileLoading) return <p className="text-center mt-10">Loading...</p>;
     if (profileError) return <p className="text-center text-red-500">Error: {profileError.message}</p>;
-
-    // ✅ Already on a team
     if (profile?.team_id) {
         return <p className="text-center mt-10 text-gray-600">You are already part of a team.</p>;
     }
@@ -79,9 +79,10 @@ export default function JoinTeamPage() {
                         <p><strong>Team:</strong> {team.name}</p>
                         <button
                             onClick={handleJoinTeam}
+                            disabled={joining}
                             className="mt-3 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-500 transition"
                         >
-                            Confirm Join
+                            {joining ? 'Joining...' : 'Confirm Join'}
                         </button>
                     </div>
                 )}
