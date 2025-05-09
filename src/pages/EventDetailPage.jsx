@@ -1,4 +1,3 @@
-// src/pages/EventDetailPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getEventById, updateEvent } from '../services/schedulingService';
@@ -12,14 +11,19 @@ export default function EventDetailPage() {
 
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+    const [error, setError] = useState('');
     const [editMode, setEditMode] = useState(false);
-    const [formData, setFormData] = useState({});
+
+    const [formData, setFormData] = useState({
+        title: '',
+        location: '',
+        event_date: '',
+    });
 
     const isCoach = profile?.is_coach;
 
     useEffect(() => {
-        const fetchEvent = async () => {
+        const loadEvent = async () => {
             try {
                 const data = await getEventById(id);
                 setEvent(data);
@@ -29,14 +33,14 @@ export default function EventDetailPage() {
                     event_date: data.event_date?.split('T')[0] || '',
                 });
             } catch (err) {
-                console.error('❌ Failed to fetch event:', err);
-                setError('Could not load event details.');
+                console.error('❌ Error loading event:', err);
+                setError('Unable to load event.');
             } finally {
                 setLoading(false);
             }
         };
 
-        if (id) fetchEvent();
+        if (id) loadEvent();
     }, [id]);
 
     const handleUpdate = async () => {
@@ -45,7 +49,7 @@ export default function EventDetailPage() {
             setEvent(updated);
             setEditMode(false);
         } catch (err) {
-            console.error('⚠️ Failed to update event:', err);
+            console.error('⚠️ Update failed:', err);
             setError('Failed to update event.');
         }
     };
@@ -55,25 +59,20 @@ export default function EventDetailPage() {
     if (!event) return <p className="text-center mt-10 text-gray-500">Event not found.</p>;
 
     return (
-        <div className="min-h-screen p-4">
+        <div className="min-h-screen p-4 font-sans text-gray-800 dark:text-white">
             <h1 className="text-2xl font-bold text-center mb-6">Event Details</h1>
 
-            <EventCard
-                event={event}
-                userRSVP={null}
-                onRSVP={null}
-                showRSVPButtons={false}
-            />
+            <EventCard event={event} userRSVP={null} showRSVPButtons={false} />
 
             {isCoach && (
-                <div className="mt-6 max-w-xl mx-auto space-y-6">
+                <div className="mt-6 max-w-xl mx-auto space-y-5">
                     {!editMode ? (
-                        <div className="flex justify-between">
+                        <div className="flex justify-between items-center">
                             <button
                                 onClick={() => setEditMode(true)}
                                 className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition"
                             >
-                                ✏️ Edit Event
+                                ✏️ Edit
                             </button>
                             <button
                                 onClick={() => navigate('/scheduling/coach')}
@@ -84,31 +83,22 @@ export default function EventDetailPage() {
                         </div>
                     ) : (
                         <>
-                            <div>
-                                <label className="block font-semibold mb-1">Title</label>
-                                <input
-                                    value={formData.title}
-                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    className="w-full p-2 border rounded"
-                                />
-                            </div>
-                            <div>
-                                <label className="block font-semibold mb-1">Location</label>
-                                <input
-                                    value={formData.location}
-                                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                                    className="w-full p-2 border rounded"
-                                />
-                            </div>
-                            <div>
-                                <label className="block font-semibold mb-1">Event Date</label>
-                                <input
-                                    type="date"
-                                    value={formData.event_date}
-                                    onChange={(e) => setFormData({ ...formData, event_date: e.target.value })}
-                                    className="w-full p-2 border rounded"
-                                />
-                            </div>
+                            {['title', 'location', 'event_date'].map((field) => (
+                                <div key={field}>
+                                    <label className="block font-semibold mb-1 capitalize">
+                                        {field.replace('_', ' ')}
+                                    </label>
+                                    <input
+                                        type={field === 'event_date' ? 'date' : 'text'}
+                                        value={formData[field]}
+                                        onChange={(e) =>
+                                            setFormData({ ...formData, [field]: e.target.value })
+                                        }
+                                        className="w-full p-2 border rounded dark:bg-gray-800 dark:border-gray-600"
+                                    />
+                                </div>
+                            ))}
+
                             <div className="flex gap-3 mt-4">
                                 <button
                                     onClick={handleUpdate}
