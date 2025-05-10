@@ -1,128 +1,128 @@
-// src/pages/CreateEventPage.jsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
 
-export default function CreateEventPage() {
-    const [title, setTitle] = useState('');
-    const [eventDate, setEventDate] = useState('');
-    const [eventTime, setEventTime] = useState('');
-    const [location, setLocation] = useState('');
-    const [opponent, setOpponent] = useState('');
-    const [eventType, setEventType] = useState('');
-    const [notes, setNotes] = useState('');
-    const [errorMsg, setErrorMsg] = useState('');
-    const [loading, setLoading] = useState(false);
+export default function RSVPEventPage() {
+    const { eventId } = useParams();
+    const [event, setEvent] = useState(null);
+    const [rsvpStatus, setRsvpStatus] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [submitLoading, setSubmitLoading] = useState(false);
+    const [error, setError] = useState('');
 
-    const navigate = useNavigate();
+    // Fetch event + current RSVP
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const {
+                    data: { user },
+                } = await supabase.auth.getUser();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setErrorMsg('');
-        setLoading(true);
+                if (!user) {
+                    setError('You must be logged in to RSVP.');
+                    setLoading(false);
+                    return;
+                }
 
+                const { data: eventData, error: eventErr } = await supabase
+                    .from('events')
+                    .select('*')
+                    .eq('id', eventId)
+                    .single();
+
+                if (eventErr || !eventData) {
+                    setError('Event not found.');
+                    setLoading(false);
+                    return;
+                }
+
+                setEvent(eventData);
+
+                const { data: rsvpData } = await supabase
+                    .from('rsvps')
+                    .select('response')
+                    .eq('event_id', eventId)
+                    .eq('user_id', user.id)
+                    .maybeSingle();
+
+                if (rsvpData?.response) setRsvpStatus(rsvpData.response);
+            } catch (err) {
+                setError('Error loading RSVP data.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [eventId]);
+
+    const handleRSVP = async (response) => {
+        setSubmitLoading(true);
+        setError('');
         try {
             const {
                 data: { user },
-                error: userError,
             } = await supabase.auth.getUser();
 
-            if (userError) {
-                setErrorMsg(userError.message);
-                return;
-            }
-
-            const teamId = 'your-team-id'; // Replace with dynamic logic later
-
-            const { error } = await supabase.from('events').insert([
+            const { error: upsertError } = await supabase.from('rsvps').upsert(
                 {
-                    title,
-                    event_date: eventDate,
-                    event_time: eventTime || null,
-                    location: location || null,
-                    notes: notes || null,
-                    team_id: teamId,
-                    created_by: user.id,
-                    description: opponent ? `vs ${opponent}` : null,
-                    event_type: eventType || null,
+                    event_id: eventId,
+                    user_id: user.id,
+                    response,
                 },
-            ]);
+                { onConflict: ['event_id', 'user_id'] }
+            );
 
-            if (error) {
-                setErrorMsg(error.message);
+            if (upsertError) {
+                setError('Failed to update RSVP.');
                 return;
             }
 
-            navigate('/dashboard');
+            setRsvpStatus(response);
         } catch (err) {
-            setErrorMsg(err.message || 'Unexpected error occurred');
+            setError('Unexpected error occurred.');
         } finally {
-            setLoading(false);
+            setSubmitLoading(false);
         }
     };
 
+    if (loading) return <p className="text-center mt-10">Loading event...</p>;
+    if (error) return <p className="text-center mt-10 text-red-600">{error}</p>;
+
     return (
-        <div className="max-w-xl mx-auto p-6 mt-10 border rounded shadow">
-            <h1 className="text-2xl font-semibold mb-6">Create Event</h1>
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <input
-                    type="text"
-                    placeholder="Event Title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    required
-                    className="w-full border p-2 rounded"
-                />
-                <input
-                    type="date"
-                    value={eventDate}
-                    onChange={(e) => setEventDate(e.target.value)}
-                    required
-                    className="w-full border p-2 rounded"
-                />
-                <input
-                    type="time"
-                    value={eventTime}
-                    onChange={(e) => setEventTime(e.target.value)}
-                    className="w-full border p-2 rounded"
-                />
-                <input
-                    type="text"
-                    placeholder="Location (optional)"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    className="w-full border p-2 rounded"
-                />
-                <input
-                    type="text"
-                    placeholder="Opponent (optional)"
-                    value={opponent}
-                    onChange={(e) => setOpponent(e.target.value)}
-                    className="w-full border p-2 rounded"
-                />
-                <input
-                    type="text"
-                    placeholder="Event Type (e.g., Practice, Game)"
-                    value={eventType}
-                    onChange={(e) => setEventType(e.target.value)}
-                    className="w-full border p-2 rounded"
-                />
-                <textarea
-                    placeholder="Additional Notes (optional)"
-                    value={notes}
-                    onChange={(e) => setNotes(e.target.value)}
-                    className="w-full border p-2 rounded"
-                    rows={3}
-                />
+        <div className="max-w-xl mx-auto mt-10 p-6 border rounded shadow">
+            <h1 className="text-2xl font-bold mb-4">{event.title}</h1>
+            <p className="mb-1 text-gray-700">
+                📅 {event.event_date} at {event.event_time || 'TBD'}
+            </p>
+            <p className="mb-3 text-gray-700">
+                📍 {event.location || 'No location provided'}
+            </p>
+
+            <div className="space-x-4 mt-4">
                 <button
-                    type="submit"
-                    disabled={loading}
-                    className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                    className={`px-4 py-2 rounded ${
+                        rsvpStatus === 'yes' ? 'bg-green-600 text-white' : 'bg-gray-200'
+                    }`}
+                    onClick={() => handleRSVP('yes')}
+                    disabled={submitLoading}
                 >
-                    {loading ? 'Creating...' : 'Create Event'}
+                    {submitLoading && rsvpStatus !== 'yes' ? 'Saving...' : 'RSVP Yes'}
                 </button>
-                {errorMsg && <p className="text-red-500">{errorMsg}</p>}
-            </form>
+                <button
+                    className={`px-4 py-2 rounded ${
+                        rsvpStatus === 'no' ? 'bg-red-600 text-white' : 'bg-gray-200'
+                    }`}
+                    onClick={() => handleRSVP('no')}
+                    disabled={submitLoading}
+                >
+                    {submitLoading && rsvpStatus !== 'no' ? 'Saving...' : 'RSVP No'}
+                </button>
+            </div>
+
+            {rsvpStatus && (
+                <p className="mt-4 text-sm text-gray-600">Your RSVP: {rsvpStatus}</p>
+            )}
         </div>
     );
 }
