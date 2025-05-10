@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
 
 export default function LoginPage() {
@@ -8,13 +8,16 @@ export default function LoginPage() {
     const [errorMsg, setErrorMsg] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const redirectParam = new URLSearchParams(location.search).get('redirectTo');
 
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
         setErrorMsg('');
 
-        // Step 1: Attempt sign-in
+        // Step 1: Login
         const { data, error: loginError } = await supabase.auth.signInWithPassword({
             email,
             password
@@ -28,10 +31,10 @@ export default function LoginPage() {
 
         const user = data.user;
 
-        // Step 2: Check if user exists in users_auth
+        // Step 2: Fetch user profile
         const { data: existingUser, error: fetchError } = await supabase
             .from('users_auth')
-            .select('team_id, is_coach')
+            .select('team_id, is_coach, full_name')
             .eq('id', user.id)
             .maybeSingle();
 
@@ -41,13 +44,14 @@ export default function LoginPage() {
             return;
         }
 
-        // Step 3: Create missing user record
+        // Step 3: Create missing profile
         if (!existingUser) {
             const { error: insertError } = await supabase.from('users_auth').insert({
                 id: user.id,
                 full_name: user.user_metadata?.full_name || user.email,
                 is_coach: false,
-                created_at: new Date().toISOString()
+                created_at: new Date().toISOString(),
+                email: user.email
             });
 
             if (insertError) {
@@ -56,19 +60,26 @@ export default function LoginPage() {
                 return;
             }
 
-            return navigate('/get-started');
+            navigate(redirectParam || '/get-started');
+            setLoading(false);
+            return;
         }
 
-        // Step 4: Save team_id and route
+        // Step 4: Store context
         localStorage.setItem('team_id', existingUser.team_id || '');
 
-        if (!existingUser.team_id) return navigate('/get-started');
+        // Step 5: Redirect
+        if (redirectParam) {
+            navigate(redirectParam);
+        } else if (!existingUser.team_id) {
+            navigate('/get-started');
+        } else {
+            const destination = existingUser.is_coach
+                ? '/scheduling/coach'
+                : '/scheduling/events';
+            navigate(destination);
+        }
 
-        const destination = existingUser.is_coach
-            ? '/scheduling/coach'
-            : '/scheduling/events';
-
-        navigate(destination);
         setLoading(false);
     };
 
