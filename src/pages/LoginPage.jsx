@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
 
 export default function LoginPage() {
@@ -8,119 +8,83 @@ export default function LoginPage() {
     const [errorMsg, setErrorMsg] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    const location = useLocation();
-
-    const redirectParam = new URLSearchParams(location.search).get('redirectTo');
 
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoading(true);
         setErrorMsg('');
 
-        const { data, error: loginError } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
             email,
-            password
+            password,
         });
 
-        if (loginError || !data?.user) {
-            setErrorMsg(loginError?.message || 'Login failed');
-            setLoading(false);
-            return;
-        }
-
-        const user = data.user;
-
-        // Check profile
-        const { data: existingUser, error: fetchError } = await supabase
-            .from('users_auth')
-            .select('team_id, is_coach, full_name')
-            .eq('id', user.id)
-            .maybeSingle();
-
-        if (fetchError) {
-            setErrorMsg('Failed to fetch user profile');
-            setLoading(false);
-            return;
-        }
-
-        // Create profile if missing
-        if (!existingUser) {
-            const { error: insertError } = await supabase.from('users_auth').insert({
-                id: user.id,
-                full_name: user.user_metadata?.full_name || user.email,
-                is_coach: false,
-                created_at: new Date().toISOString(),
-                email: user.email
-            });
-
-            if (insertError) {
-                setErrorMsg('Could not create user profile');
-                setLoading(false);
-                return;
-            }
-
-            // ✅ Redirect after new user
-            if (redirectParam) {
-                navigate(redirectParam);
-            } else {
-                navigate('/get-started');
-            }
-
-            setLoading(false);
-            return;
-        }
-
-        // ✅ Redirect immediately if redirectTo exists
-        if (redirectParam) {
-            navigate(redirectParam);
-            setLoading(false);
-            return;
-        }
-
-        // Otherwise normal route
-        localStorage.setItem('team_id', existingUser.team_id || '');
-
-        if (!existingUser.team_id) {
-            navigate('/get-started');
+        if (error) {
+            setErrorMsg(error.message);
         } else {
-            const destination = existingUser.is_coach
-                ? '/scheduling/coach'
-                : '/scheduling/events';
-            navigate(destination);
+            navigate('/dashboard');
         }
 
         setLoading(false);
     };
 
+    const handleGoogleLogin = async () => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: `${window.location.origin}/auth/callback`,
+            },
+        });
+
+        if (error) {
+            setErrorMsg(error.message);
+        }
+    };
+
     return (
-        <div className="max-w-md mx-auto mt-20 px-4 font-sans">
-            <h2 className="text-2xl font-bold text-center mb-6">Login</h2>
+        <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow font-sans bg-white">
+            <h2 className="text-2xl font-semibold mb-6 text-center">Sign In</h2>
+
             <form onSubmit={handleLogin} className="space-y-4">
                 <input
                     type="email"
+                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                     placeholder="Email"
-                    required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg"
+                    required
                 />
+
                 <input
                     type="password"
+                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                     placeholder="Password"
-                    required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full p-3 border border-gray-300 rounded-lg"
+                    required
                 />
-                {errorMsg && <p className="text-red-500 text-sm">{errorMsg}</p>}
+
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-500 transition"
+                    className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
                 >
                     {loading ? 'Logging in...' : 'Login'}
                 </button>
             </form>
+
+            <div className="my-4 text-center text-sm text-gray-500">or</div>
+
+            <button
+                onClick={handleGoogleLogin}
+                className="w-full border border-gray-300 py-2 rounded hover:bg-gray-100 text-sm"
+            >
+                Continue with Google
+            </button>
+
+            {errorMsg && (
+                <p className="text-red-500 mt-4 text-center text-sm">{errorMsg}</p>
+            )}
         </div>
     );
 }
