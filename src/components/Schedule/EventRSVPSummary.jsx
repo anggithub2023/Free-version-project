@@ -1,82 +1,78 @@
+// src/components/Schedule/EventRSVPSummary.jsx
 import React, { useEffect, useState } from 'react';
-import supabase from '../../lib/supabaseClient';
+import { Link } from 'react-router-dom';
 import { useTeamContext } from '../../context/TeamContext';
+import supabase from '../../lib/supabaseClient';
 
 export default function EventRSVPSummary() {
     const { teamId } = useTeamContext();
-    const [eventSummaries, setEventSummaries] = useState([]);
+    const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [refreshKey, setRefreshKey] = useState(0);
 
     useEffect(() => {
-        const fetchRSVPData = async () => {
+        const fetchEvents = async () => {
             setLoading(true);
-            setError('');
-
-            if (!teamId) {
-                setError('Missing team context');
-                setLoading(false);
-                return;
-            }
-
-            const { data: events, error: eventsError } = await supabase
+            const { data, error } = await supabase
                 .from('events')
                 .select('id, title, event_date')
                 .eq('team_id', teamId)
-                .order('event_date', { ascending: false });
+                .order('event_date', { ascending: true });
 
-            if (eventsError || !events) {
-                setError('Unable to load events');
-                setLoading(false);
-                return;
-            }
+            if (error) setError('Failed to load events');
+            else setEvents(data || []);
 
-            const { data: rsvps, error: rsvpsError } = await supabase
-                .from('rsvps')
-                .select('event_id, response');
-
-            if (rsvpsError || !rsvps) {
-                setError('Unable to load RSVP data');
-                setLoading(false);
-                return;
-            }
-
-            const summaries = events.map(event => {
-                const responses = rsvps.filter(r => r.event_id === event.id);
-                const yes = responses.filter(r => r.response === 'yes').length;
-                const no = responses.filter(r => r.response === 'no').length;
-                return {
-                    ...event,
-                    yes,
-                    no,
-                    total: responses.length,
-                };
-            });
-
-            setEventSummaries(summaries);
             setLoading(false);
         };
 
-        fetchRSVPData();
-    }, [teamId]);
+        if (teamId) fetchEvents();
+    }, [teamId, refreshKey]);
 
-    if (loading) return <p className="mt-6 text-center">Loading RSVP summary...</p>;
-    if (error) return <p className="mt-6 text-red-500">{error}</p>;
+    const handleDelete = async (id) => {
+        const confirm = window.confirm('Delete this event?');
+        if (!confirm) return;
+
+        const { error } = await supabase.from('events').delete().eq('id', id);
+        if (error) alert('Error deleting event');
+        else setRefreshKey((k) => k + 1); // Trigger re-fetch
+    };
+
+    if (loading) return <p>Loading events...</p>;
+    if (error) return <p className="text-red-500">{error}</p>;
+    if (events.length === 0) return <p>No events found.</p>;
 
     return (
-        <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-4">RSVP Summary</h2>
-            <ul className="space-y-3">
-                {eventSummaries.map((event) => (
-                    <li key={event.id} className="border rounded p-4">
-                        <h3 className="font-bold">{event.title}</h3>
-                        <p className="text-sm text-gray-600">{event.event_date}</p>
-                        <p className="mt-2 text-sm">
-                            ✅ Yes: {event.yes} | ❌ No: {event.no} | Total: {event.total}
-                        </p>
-                    </li>
-                ))}
-            </ul>
+        <div className="space-y-4">
+            {events.map((ev) => (
+                <div
+                    key={ev.id}
+                    className="border rounded p-4 flex items-center justify-between"
+                >
+                    <div>
+                        <h2 className="font-semibold">{ev.title}</h2>
+                        <p className="text-sm text-gray-600">{ev.event_date}</p>
+                        <Link
+                            to={`/team/${teamId}/events/${ev.id}`}
+                            className="text-blue-600 text-sm underline"
+                        >
+                            View RSVPs
+                        </Link>
+                    </div>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => handleDelete(ev.id)}
+                            className="text-red-600 text-sm hover:underline"
+                        >
+                            Delete
+                        </button>
+                        {/* Placeholder for Edit */}
+                        <button className="text-gray-500 text-sm cursor-not-allowed">
+                            Edit
+                        </button>
+                    </div>
+                </div>
+            ))}
         </div>
     );
 }
