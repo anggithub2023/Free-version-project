@@ -1,3 +1,4 @@
+// src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
@@ -33,14 +34,7 @@ export default function LoginPage() {
             .eq('user_id', user.id)
             .limit(1);
 
-        if (teamError) {
-            setErrorMsg(teamError.message || 'Failed to fetch team.');
-            setLoading(false);
-            return;
-        }
-
-        if (!teamMemberships?.length) {
-            // 👇 Redirect to team creation page if no teams
+        if (teamError || !teamMemberships?.length) {
             navigate('/create-team');
             setLoading(false);
             return;
