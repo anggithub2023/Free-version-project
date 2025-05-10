@@ -1,3 +1,4 @@
+// src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
@@ -11,34 +12,37 @@ export default function LoginPage() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setLoading(true);
         setErrorMsg('');
+        setLoading(true);
 
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
             email,
             password,
         });
 
-        if (error) {
-            setErrorMsg(error.message);
-        } else {
-            navigate('/dashboard');
+        if (authError || !authData?.user) {
+            setErrorMsg(authError?.message || 'Login failed');
+            setLoading(false);
+            return;
         }
 
+        const user = authData.user;
+
+        const { data: teamMemberships, error: teamError } = await supabase
+            .from('team_memberships')
+            .select('team_id')
+            .eq('user_id', user.id)
+            .limit(1);
+
+        if (teamError || !teamMemberships?.length) {
+            setErrorMsg('No team membership found.');
+            setLoading(false);
+            return;
+        }
+
+        const teamId = teamMemberships[0].team_id;
+        navigate(`/team/${teamId}/dashboard`);
         setLoading(false);
-    };
-
-    const handleGoogleLogin = async () => {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: `${window.location.origin}/auth/callback`,
-            },
-        });
-
-        if (error) {
-            setErrorMsg(error.message);
-        }
     };
 
     return (
@@ -72,15 +76,6 @@ export default function LoginPage() {
                     {loading ? 'Logging in...' : 'Login'}
                 </button>
             </form>
-
-            <div className="my-4 text-center text-sm text-gray-500">or</div>
-
-            <button
-                onClick={handleGoogleLogin}
-                className="w-full border border-gray-300 py-2 rounded hover:bg-gray-100 text-sm"
-            >
-                Continue with Google
-            </button>
 
             {errorMsg && (
                 <p className="text-red-500 mt-4 text-center text-sm">{errorMsg}</p>
