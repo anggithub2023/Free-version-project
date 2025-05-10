@@ -39,10 +39,13 @@ export default function App() {
                     <Route path="/analytics" element={<AnalyticsDashboard />} />
                     <Route path="/results" element={<ResultsPage />} />
 
-                    {/* ✅ New Dynamic Team Routes */}
+                    {/* ✅ Dynamic Team Routes */}
                     <Route path="/team/:teamId/dashboard" element={<TeamDashboard />} />
                     <Route path="/team/:teamId/events/create" element={<CreateEventPage />} />
                     <Route path="/team/:teamId/events/:eventId" element={<RSVPEventPage />} />
+
+                    {/* 404 Fallback */}
+                    <Route path="*" element={<div className="p-6 text-center">Page not found</div>} />
                 </Routes>
             </AppShell>
         </TeamProvider>
