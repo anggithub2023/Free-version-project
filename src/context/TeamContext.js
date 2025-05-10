@@ -11,22 +11,19 @@ export const TeamProvider = ({ children }) => {
     const [coachId, setCoachId] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // ✅ Extract real teamId from the URL (ignore placeholders)
+    // 🔎 Extract teamId from URL path like /team/:teamId/*
     useEffect(() => {
         const match = location.pathname.match(/\/team\/([^/]+)/);
-        const newId = match && match[1] !== ':teamId' ? match[1] : null;
-
-        if (newId && newId !== teamId) {
-            console.log('[TeamContext] Detected teamId:', newId);
-            setTeamId(newId);
+        const extractedId = match?.[1];
+        if (extractedId && extractedId !== ':teamId' && extractedId !== teamId) {
+            setTeamId(extractedId);
         }
     }, [location.pathname, teamId]);
 
-    // 🔍 Fetch metadata for the current team
+    // 📡 Fetch team info when teamId changes
     useEffect(() => {
         const fetchTeamInfo = async () => {
             if (!teamId) return;
-
             setLoading(true);
             const { data, error } = await supabase
                 .from('teams')
@@ -34,11 +31,11 @@ export const TeamProvider = ({ children }) => {
                 .eq('id', teamId)
                 .single();
 
-            if (data && !error) {
+            if (data) {
                 setTeamName(data.name);
                 setCoachId(data.created_by);
             } else {
-                console.warn('[TeamContext] Failed to fetch team data:', error?.message);
+                console.warn('[TeamContext] Could not load team data:', error?.message);
             }
 
             setLoading(false);
