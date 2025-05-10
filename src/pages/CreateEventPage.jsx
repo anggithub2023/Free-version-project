@@ -1,10 +1,11 @@
 // src/pages/CreateEventPage.jsx
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
+import { useTeamContext } from '../context/TeamContext';
 
 export default function CreateEventPage() {
+    const { teamId } = useTeamContext();
     const [formData, setFormData] = useState({
         title: '',
         event_date: '',
@@ -33,6 +34,11 @@ export default function CreateEventPage() {
             return;
         }
 
+        if (!teamId) {
+            setErrorMsg('Missing team ID.');
+            return;
+        }
+
         setLoading(true);
         const { data, error: userErr } = await supabase.auth.getUser();
         const user = data?.user;
@@ -46,7 +52,7 @@ export default function CreateEventPage() {
         const { error: insertErr } = await supabase.from('events').insert({
             ...formData,
             created_by: user.id,
-            team_id: 'replace-with-your-team-id', // Replace when dynamic
+            team_id: teamId,
         });
 
         if (insertErr) {
@@ -55,7 +61,7 @@ export default function CreateEventPage() {
             return;
         }
 
-        navigate('/dashboard');
+        navigate(`/team/${teamId}/dashboard`);
         setLoading(false);
     };
 
