@@ -5,6 +5,7 @@ import supabase from '../lib/supabaseClient';
 
 export default function CreateTeamPage() {
     const [teamName, setTeamName] = useState('');
+    const [location, setLocation] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -23,9 +24,29 @@ export default function CreateTeamPage() {
             return;
         }
 
+        // 🔍 Check if team already exists with name + location
+        const { data: existing, error: lookupError } = await supabase
+            .from('teams')
+            .select('id')
+            .ilike('name', teamName.trim()) // case-insensitive match
+            .ilike('location', location.trim());
+
+        if (lookupError) {
+            setError('Error checking for duplicates.');
+            setLoading(false);
+            return;
+        }
+
+        if (existing && existing.length > 0) {
+            setError('A team with this name and location already exists.');
+            setLoading(false);
+            return;
+        }
+
+        // ✅ Create new team
         const { data: team, error: teamErr } = await supabase
             .from('teams')
-            .insert({ name: teamName, created_by: user.id })
+            .insert({ name: teamName.trim(), location: location.trim(), created_by: user.id })
             .select()
             .single();
 
@@ -35,6 +56,7 @@ export default function CreateTeamPage() {
             return;
         }
 
+        // 👤 Add creator as first member
         await supabase.from('team_memberships').insert({
             user_id: user.id,
             team_id: team.id,
@@ -52,6 +74,14 @@ export default function CreateTeamPage() {
                     placeholder="Team Name"
                     value={teamName}
                     onChange={(e) => setTeamName(e.target.value)}
+                    required
+                    className="w-full border p-2 rounded"
+                />
+                <input
+                    type="text"
+                    placeholder="Location"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
                     required
                     className="w-full border p-2 rounded"
                 />
