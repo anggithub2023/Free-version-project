@@ -4,18 +4,22 @@ import supabase from '../lib/supabaseClient';
 
 const getTeamId = () => localStorage.getItem('team_id');
 
-// ✅ Coach: Get all events with RSVP data
+// ✅ Coach: Get all events with RSVP data (corrected for Supabase FK schema)
 export async function getAllEventsWithRSVPs() {
     const teamId = getTeamId();
     if (!teamId) throw new Error('Missing team ID');
 
     const { data, error } = await supabase
         .from('events')
-        .select('*, rsvps(*, users(full_name))')
+        .select('*, rsvps(*, users_auth(full_name))') // 👈 Fix: use users_auth not users
         .eq('team_id', teamId)
         .order('event_date', { ascending: true });
 
-    if (error) throw error;
+    if (error) {
+        console.error('❌ Error fetching events with RSVPs:', error);
+        throw error;
+    }
+
     return data;
 }
 
