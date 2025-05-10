@@ -4,8 +4,9 @@ import { Routes, Route } from 'react-router-dom';
 import AppShell from './components/AppShell';
 import { TeamProvider } from './context/TeamContext';
 
-// Pages
+// ✅ Pages
 import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import ReflectionPage from './pages/ReflectionPage';
 import ReadinessPage from './pages/ReadinessPage';
@@ -15,10 +16,9 @@ import VideosPage from './pages/VideosPage';
 import WorkoutsPage from './pages/WorkoutsPage';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import ResultsPage from './pages/ResultsPage';
-
 import CreateEventPage from './pages/CreateEventPage';
 import RSVPEventPage from './pages/RSVPEventPage';
-import TeamDashboard from './pages/TeamDashboard'; // if implemented
+import TeamDashboard from './pages/TeamDashboard';
 import CoachEventDashboard from './pages/CoachEventDashboard';
 
 export default function App() {
@@ -26,10 +26,11 @@ export default function App() {
         <TeamProvider>
             <AppShell>
                 <Routes>
-                    {/* Public */}
+                    {/* 🌐 Public */}
                     <Route path="/" element={<HomePage />} />
+                    <Route path="/login" element={<LoginPage />} />
 
-                    {/* Static Core Pages */}
+                    {/* 📊 Core Pages */}
                     <Route path="/dashboard" element={<DashboardPage />} />
                     <Route path="/reflect" element={<ReflectionPage />} />
                     <Route path="/readiness" element={<ReadinessPage />} />
@@ -40,13 +41,13 @@ export default function App() {
                     <Route path="/analytics" element={<AnalyticsDashboard />} />
                     <Route path="/results" element={<ResultsPage />} />
 
-                    {/* ✅ Dynamic Team Routes */}
+                    {/* 🧠 Scheduling + Teams */}
                     <Route path="/team/:teamId/dashboard" element={<TeamDashboard />} />
                     <Route path="/team/:teamId/events/create" element={<CreateEventPage />} />
                     <Route path="/team/:teamId/events/:eventId" element={<RSVPEventPage />} />
                     <Route path="/team/:teamId/events/admin" element={<CoachEventDashboard />} />
 
-                    {/* 404 Fallback */}
+                    {/* ❌ 404 fallback */}
                     <Route path="*" element={<div className="p-6 text-center">Page not found</div>} />
                 </Routes>
             </AppShell>
