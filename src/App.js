@@ -4,7 +4,7 @@ import { Routes, Route } from 'react-router-dom';
 import AppShell from './components/AppShell';
 import { TeamProvider } from './context/TeamContext';
 
-// ✅ Confirmed Pages
+// Pages
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 import ReflectionPage from './pages/ReflectionPage';
@@ -16,6 +16,10 @@ import WorkoutsPage from './pages/WorkoutsPage';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import ResultsPage from './pages/ResultsPage';
 
+import CreateEventPage from './pages/CreateEventPage';
+import RSVPEventPage from './pages/RSVPEventPage';
+import TeamDashboard from './pages/TeamDashboard'; // if implemented
+
 export default function App() {
     return (
         <TeamProvider>
@@ -24,7 +28,7 @@ export default function App() {
                     {/* Public */}
                     <Route path="/" element={<HomePage />} />
 
-                    {/* Core Pages */}
+                    {/* Static Core Pages */}
                     <Route path="/dashboard" element={<DashboardPage />} />
                     <Route path="/reflect" element={<ReflectionPage />} />
                     <Route path="/readiness" element={<ReadinessPage />} />
@@ -34,6 +38,11 @@ export default function App() {
                     <Route path="/workouts" element={<WorkoutsPage />} />
                     <Route path="/analytics" element={<AnalyticsDashboard />} />
                     <Route path="/results" element={<ResultsPage />} />
+
+                    {/* ✅ New Dynamic Team Routes */}
+                    <Route path="/team/:teamId/dashboard" element={<TeamDashboard />} />
+                    <Route path="/team/:teamId/events/create" element={<CreateEventPage />} />
+                    <Route path="/team/:teamId/events/:eventId" element={<RSVPEventPage />} />
                 </Routes>
             </AppShell>
         </TeamProvider>
