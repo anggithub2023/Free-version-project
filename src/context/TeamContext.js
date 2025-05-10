@@ -12,15 +12,14 @@ export const TeamProvider = ({ children }) => {
     const [coachId, setCoachId] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // Extract teamId from URL
+    // 🧠 Extract teamId from route
     useEffect(() => {
         const match = location.pathname.match(/\/team\/([^/]+)/);
-        if (match && match[1] !== teamId) {
-            setTeamId(match[1]);
-        }
+        const newId = match?.[1] || null;
+        if (newId !== teamId) setTeamId(newId);
     }, [location.pathname, teamId]);
 
-    // Fetch team info when teamId is set
+    // 📡 Fetch team metadata
     useEffect(() => {
         const fetchTeamInfo = async () => {
             if (!teamId) return;
@@ -31,7 +30,7 @@ export const TeamProvider = ({ children }) => {
                 .eq('id', teamId)
                 .single();
 
-            if (!error && data) {
+            if (data && !error) {
                 setTeamName(data.name);
                 setCoachId(data.created_by);
             }
