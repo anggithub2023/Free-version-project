@@ -15,6 +15,7 @@ export default function LoginPage() {
         setErrorMsg('');
         setLoading(true);
 
+        // 🔐 Sign in the user
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
             email,
             password,
@@ -28,20 +29,27 @@ export default function LoginPage() {
 
         const user = authData.user;
 
+        // 🧠 Check for existing team membership
         const { data: teamMemberships, error: teamError } = await supabase
             .from('team_memberships')
             .select('team_id')
             .eq('user_id', user.id)
             .limit(1);
 
-        if (teamError || !teamMemberships?.length) {
-            navigate('/create-team');
+        if (teamError) {
+            setErrorMsg('Error loading teams.');
             setLoading(false);
             return;
         }
 
-        const teamId = teamMemberships[0].team_id;
-        navigate(`/team/${teamId}/dashboard`);
+        // ✅ Redirect based on presence of a team
+        if (teamMemberships?.length) {
+            const teamId = teamMemberships[0].team_id;
+            navigate(`/team/${teamId}/dashboard`);
+        } else {
+            navigate('/create-team');
+        }
+
         setLoading(false);
     };
 
