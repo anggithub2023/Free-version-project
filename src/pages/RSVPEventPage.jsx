@@ -1,3 +1,4 @@
+// src/pages/RSVPEventPage.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
@@ -10,17 +11,12 @@ export default function RSVPEventPage() {
     const [submitLoading, setSubmitLoading] = useState(false);
     const [error, setError] = useState('');
 
-    // Fetch event + current RSVP
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const {
-                    data: { user },
-                } = await supabase.auth.getUser();
-
-                if (!user) {
+                const { data: { user }, error: userError } = await supabase.auth.getUser();
+                if (userError || !user) {
                     setError('You must be logged in to RSVP.');
-                    setLoading(false);
                     return;
                 }
 
@@ -32,7 +28,6 @@ export default function RSVPEventPage() {
 
                 if (eventErr || !eventData) {
                     setError('Event not found.');
-                    setLoading(false);
                     return;
                 }
 
@@ -46,7 +41,7 @@ export default function RSVPEventPage() {
                     .maybeSingle();
 
                 if (rsvpData?.response) setRsvpStatus(rsvpData.response);
-            } catch (err) {
+            } catch {
                 setError('Error loading RSVP data.');
             } finally {
                 setLoading(false);
@@ -60,18 +55,22 @@ export default function RSVPEventPage() {
         setSubmitLoading(true);
         setError('');
         try {
-            const {
-                data: { user },
-            } = await supabase.auth.getUser();
+            const { data: { user }, error: userError } = await supabase.auth.getUser();
+            if (userError || !user) {
+                setError('User not authenticated.');
+                return;
+            }
 
-            const { error: upsertError } = await supabase.from('rsvps').upsert(
-                {
-                    event_id: eventId,
-                    user_id: user.id,
-                    response,
-                },
-                { onConflict: ['event_id', 'user_id'] }
-            );
+            const { error: upsertError } = await supabase
+                .from('rsvps')
+                .upsert(
+                    {
+                        event_id: eventId,
+                        user_id: user.id,
+                        response,
+                    },
+                    { onConflict: ['event_id', 'user_id'] }
+                );
 
             if (upsertError) {
                 setError('Failed to update RSVP.');
@@ -79,7 +78,7 @@ export default function RSVPEventPage() {
             }
 
             setRsvpStatus(response);
-        } catch (err) {
+        } catch {
             setError('Unexpected error occurred.');
         } finally {
             setSubmitLoading(false);
@@ -90,7 +89,7 @@ export default function RSVPEventPage() {
     if (error) return <p className="text-center mt-10 text-red-600">{error}</p>;
 
     return (
-        <div className="max-w-xl mx-auto mt-10 p-6 border rounded shadow">
+        <div className="max-w-xl mx-auto mt-10 p-6 border rounded shadow font-[Poppins]">
             <h1 className="text-2xl font-bold mb-4">{event.title}</h1>
             <p className="mb-1 text-gray-700">
                 📅 {event.event_date} at {event.event_time || 'TBD'}
