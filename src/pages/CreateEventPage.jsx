@@ -1,118 +1,107 @@
-// src/pages/CreateEventPage.jsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { createEvent } from '../services/schedulingService';
-import useCurrentUserProfile from '../hooks/useCurrentUserProfile';
+// src/services/schedulingService.js
+import supabase from '../lib/supabaseClient';
 
-export default function CreateEventPage() {
-    const { profile, loading: profileLoading, error } = useCurrentUserProfile();
-    const [formData, setFormData] = useState({
-        title: '',
-        date: '',
-        time: '',
-        location: '',
-        notes: ''
-    });
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+const getTeamId = () => localStorage.getItem('team_id');
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+// ✅ Coach: Get all events with RSVP data
+export async function getAllEventsWithRSVPs() {
+    const teamId = getTeamId();
+    if (!teamId) throw new Error('Missing team ID');
+
+    const { data, error } = await supabase
+        .from('events')
+        .select('*, rsvps(*, users_auth(full_name))') // use users_auth not users
+        .eq('team_id', teamId)
+        .order('event_date', { ascending: true });
+
+    if (error) throw error;
+    return data;
+}
+
+// ✅ Player: Get upcoming events
+export async function getUpcomingEvents() {
+    const teamId = getTeamId();
+    if (!teamId) throw new Error('Missing team ID');
+
+    const today = new Date().toISOString().split('T')[0];
+
+    const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('team_id', teamId)
+        .gte('event_date', today)
+        .order('event_date', { ascending: true });
+
+    if (error) throw error;
+    return data;
+}
+
+// ✅ Submit RSVP
+export async function submitRSVP({ eventId, userId, status }) {
+    if (!eventId || !status || !userId) throw new Error('Missing RSVP data');
+
+    const teamId = getTeamId();
+    if (!teamId) throw new Error('Missing team ID');
+
+    const payload = {
+        event_id: eventId,
+        user_id: userId,
+        response: status,
+        team_id: teamId,
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        try {
-            const event_date = new Date(`${formData.date}T${formData.time}`);
-            await createEvent({
-                title: formData.title,
-                event_date,
-                location: formData.location,
-                notes: formData.notes
-            });
-            navigate('/scheduling/events');
-        } catch (err) {
-            console.error('❌ Failed to create event:', err);
-            alert('Something went wrong. Try again.');
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { error } = await supabase
+        .from('rsvps')
+        .upsert(payload, { onConflict: ['event_id', 'user_id'] });
 
-    if (profileLoading) return <p className="text-center mt-10">Loading profile...</p>;
-    if (error) return <p className="text-center mt-10 text-red-500">Error loading profile</p>;
-    if (!profile?.is_coach) return <p className="text-center mt-10 text-gray-500">Only coaches can create events.</p>;
+    if (error) throw error;
+}
 
-    return (
-        <main className="min-h-screen p-6 bg-gray-50 text-gray-800 font-sans">
-            <h1 className="text-3xl font-bold text-center mb-8">Create New Event</h1>
+// ✅ Get single event
+export async function getEventById(eventId) {
+    const { data, error } = await supabase
+        .from('events')
+        .select('*')
+        .eq('id', eventId)
+        .single();
 
-            <form onSubmit={handleSubmit} className="max-w-xl mx-auto bg-white shadow-md p-6 rounded-lg space-y-5">
-                <div>
-                    <label className="block font-medium mb-1">Title</label>
-                    <input
-                        name="title"
-                        value={formData.title}
-                        onChange={handleChange}
-                        placeholder="Team Practice"
-                        required
-                        className="w-full border rounded-md px-4 py-2"
-                    />
-                </div>
-                <div className="flex gap-4">
-                    <div className="flex-1">
-                        <label className="block font-medium mb-1">Date</label>
-                        <input
-                            name="date"
-                            type="date"
-                            value={formData.date}
-                            onChange={handleChange}
-                            required
-                            className="w-full border rounded-md px-4 py-2"
-                        />
-                    </div>
-                    <div className="flex-1">
-                        <label className="block font-medium mb-1">Time</label>
-                        <input
-                            name="time"
-                            type="time"
-                            value={formData.time}
-                            onChange={handleChange}
-                            required
-                            className="w-full border rounded-md px-4 py-2"
-                        />
-                    </div>
-                </div>
-                <div>
-                    <label className="block font-medium mb-1">Location</label>
-                    <input
-                        name="location"
-                        value={formData.location}
-                        onChange={handleChange}
-                        placeholder="e.g. Main Field"
-                        className="w-full border rounded-md px-4 py-2"
-                    />
-                </div>
-                <div>
-                    <label className="block font-medium mb-1">Notes</label>
-                    <textarea
-                        name="notes"
-                        value={formData.notes}
-                        onChange={handleChange}
-                        placeholder="Optional notes or instructions"
-                        className="w-full border rounded-md px-4 py-2 min-h-[100px]"
-                    />
-                </div>
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 rounded-lg transition"
-                >
-                    {loading ? 'Creating...' : 'Create Event'}
-                </button>
-            </form>
-        </main>
-    );
+    if (error) throw error;
+    return data;
+}
+
+// ✅ Update event
+export async function updateEvent(eventId, updates) {
+    const { data, error } = await supabase
+        .from('events')
+        .update(updates)
+        .eq('id', eventId)
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
+}
+
+// ✅ Create new event — FIXED for RLS compliance
+export async function createEvent(payload) {
+    const teamId = getTeamId();
+    if (!teamId) throw new Error('Missing team ID');
+
+    const { data: authUser, error: userErr } = await supabase.auth.getUser();
+    if (userErr || !authUser?.user?.id) {
+        throw new Error('Missing or invalid auth user');
+    }
+
+    const { data, error } = await supabase
+        .from('events')
+        .insert({
+            ...payload,
+            team_id: teamId,
+            created_by: authUser.user.id
+        })
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
 }
