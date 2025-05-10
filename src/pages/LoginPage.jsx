@@ -17,7 +17,6 @@ export default function LoginPage() {
         setLoading(true);
         setErrorMsg('');
 
-        // Step 1: Login
         const { data, error: loginError } = await supabase.auth.signInWithPassword({
             email,
             password
@@ -31,7 +30,7 @@ export default function LoginPage() {
 
         const user = data.user;
 
-        // Step 2: Fetch user profile
+        // Check profile
         const { data: existingUser, error: fetchError } = await supabase
             .from('users_auth')
             .select('team_id, is_coach, full_name')
@@ -44,7 +43,7 @@ export default function LoginPage() {
             return;
         }
 
-        // Step 3: Create missing profile
+        // Create profile if missing
         if (!existingUser) {
             const { error: insertError } = await supabase.from('users_auth').insert({
                 id: user.id,
@@ -60,18 +59,28 @@ export default function LoginPage() {
                 return;
             }
 
-            navigate(redirectParam || '/get-started');
+            // ✅ Redirect after new user
+            if (redirectParam) {
+                navigate(redirectParam);
+            } else {
+                navigate('/get-started');
+            }
+
             setLoading(false);
             return;
         }
 
-        // Step 4: Store context
-        localStorage.setItem('team_id', existingUser.team_id || '');
-
-        // Step 5: Redirect
+        // ✅ Redirect immediately if redirectTo exists
         if (redirectParam) {
             navigate(redirectParam);
-        } else if (!existingUser.team_id) {
+            setLoading(false);
+            return;
+        }
+
+        // Otherwise normal route
+        localStorage.setItem('team_id', existingUser.team_id || '');
+
+        if (!existingUser.team_id) {
             navigate('/get-started');
         } else {
             const destination = existingUser.is_coach
