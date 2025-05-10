@@ -1,16 +1,17 @@
+// schedulingService.js
 import supabase from '../lib/supabaseClient';
 
-// 🧠 Utility
+// 🔐 Local helper
 const getTeamId = () => localStorage.getItem('team_id');
 
-// ✅ Coach: Get all events with RSVP data
+// ✅ Get all events (Coach view)
 export async function getAllEventsWithRSVPs() {
     const teamId = getTeamId();
     if (!teamId) throw new Error('Missing team ID');
 
     const { data, error } = await supabase
         .from('events')
-        .select('*, rsvps(*, users(full_name))') // include user names
+        .select('*, rsvps(*, users_auth(full_name))')
         .eq('team_id', teamId)
         .order('event_date', { ascending: true });
 
@@ -18,7 +19,7 @@ export async function getAllEventsWithRSVPs() {
     return data;
 }
 
-// ✅ Player: Get upcoming events
+// ✅ Get upcoming events (Player view)
 export async function getUpcomingEvents() {
     const teamId = getTeamId();
     if (!teamId) throw new Error('Missing team ID');
@@ -36,7 +37,7 @@ export async function getUpcomingEvents() {
     return data;
 }
 
-// ✅ Submit RSVP (authenticated only)
+// ✅ Submit RSVP
 export async function submitRSVP({ eventId, userId, status }) {
     if (!eventId || !status || !userId) throw new Error('Missing RSVP data');
 
@@ -57,7 +58,7 @@ export async function submitRSVP({ eventId, userId, status }) {
     if (error) throw error;
 }
 
-// ✅ Get single event
+// ✅ Get a specific event
 export async function getEventById(eventId) {
     const { data, error } = await supabase
         .from('events')
@@ -69,7 +70,7 @@ export async function getEventById(eventId) {
     return data;
 }
 
-// ✅ Update event
+// ✅ Update an event
 export async function updateEvent(eventId, updates) {
     const { data, error } = await supabase
         .from('events')
@@ -82,7 +83,7 @@ export async function updateEvent(eventId, updates) {
     return data;
 }
 
-// ✅ Create new event
+// ✅ Create a new event
 export async function createEvent(payload) {
     const teamId = getTeamId();
     if (!teamId) throw new Error('Missing team ID');
