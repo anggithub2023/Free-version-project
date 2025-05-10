@@ -33,27 +33,34 @@ export default function CreateEventPage() {
             return;
         }
 
-        try {
-            setLoading(true);
-            const user = (await supabase.auth.getUser()).data.user;
+        setLoading(true);
+        const { data, error: userErr } = await supabase.auth.getUser();
+        const user = data?.user;
 
-            const { error } = await supabase.from('events').insert({
-                ...formData,
-                created_by: user.id,
-                team_id: 'replace-with-your-team-id', // temp placeholder
-            });
-
-            if (error) throw error;
-            navigate('/dashboard');
-        } catch (err) {
-            setErrorMsg(err.message);
-        } finally {
+        if (userErr || !user) {
+            setErrorMsg('Authentication error.');
             setLoading(false);
+            return;
         }
+
+        const { error: insertErr } = await supabase.from('events').insert({
+            ...formData,
+            created_by: user.id,
+            team_id: 'replace-with-your-team-id', // Replace when dynamic
+        });
+
+        if (insertErr) {
+            setErrorMsg(insertErr.message);
+            setLoading(false);
+            return;
+        }
+
+        navigate('/dashboard');
+        setLoading(false);
     };
 
     return (
-        <div className="max-w-xl mx-auto mt-10 p-6 border rounded shadow">
+        <div className="max-w-xl mx-auto mt-10 p-6 border rounded shadow font-[Poppins]">
             <h2 className="text-2xl font-bold mb-4">Create Event</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <input
