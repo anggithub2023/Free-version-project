@@ -29,6 +29,7 @@ export default function useCurrentUserProfile() {
             if (event === 'SIGNED_OUT') {
                 setProfile(null);
                 localStorage.removeItem('user_profile');
+                localStorage.removeItem('team_id');
             }
         });
 
@@ -61,6 +62,7 @@ export default function useCurrentUserProfile() {
             const { created_at, ...profileToCache } = data;
             setProfile(profileToCache);
             localStorage.setItem('user_profile', JSON.stringify(profileToCache));
+            localStorage.setItem('team_id', profileToCache.team_id); // ✅ new line
         }
 
         setLoading(false);
