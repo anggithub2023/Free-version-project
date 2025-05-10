@@ -1,51 +1,43 @@
-// src/hooks/useTeamData.js
 import { useState, useEffect } from 'react';
 import {
     getPlayers,
     getSchedule,
     getGames,
-    getUsers,
+    getUsers
 } from '../services/teamService';
 
-export default function useTeamData(teamId) {
-    const [state, setState] = useState({
-        players: [],
-        schedule: [],
-        games: [],
-        users: [],
-        loading: true,
-        error: null,
-    });
+export function useTeamData(teamId) {
+    const [players, setPlayers] = useState([]);
+    const [schedule, setSchedule] = useState([]);
+    const [games, setGames] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        if (!teamId) return;
-
-        const fetchData = async () => {
-            setState(prev => ({ ...prev, loading: true }));
+        async function fetchData() {
+            setLoading(true);
             try {
-                const [players, schedule, games, users] = await Promise.all([
+                const [playersRes, scheduleRes, gamesRes, usersRes] = await Promise.all([
                     getPlayers(teamId),
                     getSchedule(teamId),
                     getGames(teamId),
                     getUsers(teamId),
                 ]);
 
-                setState({
-                    players,
-                    schedule,
-                    games,
-                    users,
-                    loading: false,
-                    error: null,
-                });
-            } catch (error) {
-                console.error('Data fetch error:', error);
-                setState(prev => ({ ...prev, loading: false, error }));
+                setPlayers(playersRes || []);
+                setSchedule(scheduleRes || []);
+                setGames(gamesRes || []);
+                setUsers(usersRes || []);
+            } catch (err) {
+                setError(err.message || 'Failed to load team data.');
+            } finally {
+                setLoading(false);
             }
-        };
+        }
 
-        fetchData();
+        if (teamId) fetchData();
     }, [teamId]);
 
-    return state;
+    return { players, schedule, games, users, loading, error };
 }
