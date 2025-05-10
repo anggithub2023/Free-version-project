@@ -29,6 +29,7 @@ import CoachEventDashboard from './pages/CoachEventDashboard';
 import CreateTeamPage from './pages/CreateTeamPage';
 import JoinTeamPage from './pages/JoinTeamPage';
 import TeamManagementPage from './pages/TeamManagementPage';
+import TeamDashboard from './pages/TeamDashboard';
 
 import TestSupabase from './pages/TestSupabase';
 
@@ -37,13 +38,13 @@ export default function App() {
         <TeamProvider>
             <AppShell>
                 <Routes>
-                    {/* Public */}
+                    {/* Public Routes */}
                     <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/auth/callback" element={<AuthCallback />} />
                     <Route path="/get-started" element={<GetStartedPage />} />
 
-                    {/* Core */}
+                    {/* Core App Pages */}
                     <Route path="/dashboard" element={<DashboardPage />} />
                     <Route path="/reflect" element={<ReflectionPage />} />
                     <Route path="/readiness" element={<ReadinessPage />} />
@@ -53,18 +54,19 @@ export default function App() {
                     <Route path="/workouts" element={<WorkoutsPage />} />
                     <Route path="/analytics" element={<AnalyticsDashboard />} />
 
-                    {/* Scheduling */}
+                    {/* Scheduling Features */}
                     <Route path="/scheduling/events" element={<RSVPEventsPage />} />
                     <Route path="/scheduling/events/create" element={<CreateEventPage />} />
                     <Route path="/scheduling/events/:id" element={<EventDetailPage />} />
                     <Route path="/scheduling/coach" element={<CoachEventDashboard />} />
 
-                    {/* Teams */}
+                    {/* Team Management */}
                     <Route path="/team/create" element={<CreateTeamPage />} />
                     <Route path="/team/join" element={<JoinTeamPage />} />
                     <Route path="/team/manage" element={<TeamManagementPage />} />
+                    <Route path="/team/:teamId/dashboard" element={<TeamDashboard />} />
 
-                    {/* Dev/Test */}
+                    {/* Developer / QA */}
                     <Route path="/test" element={<TestSupabase />} />
                 </Routes>
             </AppShell>
