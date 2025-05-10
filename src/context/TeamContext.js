@@ -1,4 +1,3 @@
-// src/context/TeamContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
@@ -12,17 +11,22 @@ export const TeamProvider = ({ children }) => {
     const [coachId, setCoachId] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // 🧠 Extract teamId from route
+    // ✅ Extract real teamId from the URL (ignore placeholders)
     useEffect(() => {
         const match = location.pathname.match(/\/team\/([^/]+)/);
-        const newId = match?.[1] || null;
-        if (newId !== teamId) setTeamId(newId);
+        const newId = match && match[1] !== ':teamId' ? match[1] : null;
+
+        if (newId && newId !== teamId) {
+            console.log('[TeamContext] Detected teamId:', newId);
+            setTeamId(newId);
+        }
     }, [location.pathname, teamId]);
 
-    // 📡 Fetch team metadata
+    // 🔍 Fetch metadata for the current team
     useEffect(() => {
         const fetchTeamInfo = async () => {
             if (!teamId) return;
+
             setLoading(true);
             const { data, error } = await supabase
                 .from('teams')
@@ -33,7 +37,10 @@ export const TeamProvider = ({ children }) => {
             if (data && !error) {
                 setTeamName(data.name);
                 setCoachId(data.created_by);
+            } else {
+                console.warn('[TeamContext] Failed to fetch team data:', error?.message);
             }
+
             setLoading(false);
         };
 
