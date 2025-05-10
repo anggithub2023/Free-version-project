@@ -10,6 +10,10 @@ export default function CreateTeamPage() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    const generateJoinCode = () => {
+        return Math.random().toString(36).substring(2, 8).toUpperCase();
+    };
+
     const handleCreate = async (e) => {
         e.preventDefault();
         setError('');
@@ -24,15 +28,15 @@ export default function CreateTeamPage() {
             return;
         }
 
-        // 🔍 Check if team already exists with name + location
-        const { data: existing, error: lookupError } = await supabase
+        // Check for duplicate team
+        const { data: existing, error: dupCheckErr } = await supabase
             .from('teams')
             .select('id')
-            .ilike('name', teamName.trim()) // case-insensitive match
-            .ilike('location', location.trim());
+            .ilike('name', teamName)
+            .ilike('location', location);
 
-        if (lookupError) {
-            setError('Error checking for duplicates.');
+        if (dupCheckErr) {
+            setError('Error checking for duplicate teams');
             setLoading(false);
             return;
         }
@@ -43,10 +47,16 @@ export default function CreateTeamPage() {
             return;
         }
 
-        // ✅ Create new team
+        const joinCode = generateJoinCode();
+
         const { data: team, error: teamErr } = await supabase
             .from('teams')
-            .insert({ name: teamName.trim(), location: location.trim(), created_by: user.id })
+            .insert({
+                name: teamName,
+                location: location,
+                created_by: user.id,
+                join_code: joinCode,
+            })
             .select()
             .single();
 
@@ -56,7 +66,6 @@ export default function CreateTeamPage() {
             return;
         }
 
-        // 👤 Add creator as first member
         await supabase.from('team_memberships').insert({
             user_id: user.id,
             team_id: team.id,
