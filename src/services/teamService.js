@@ -32,12 +32,22 @@ export async function getUsers(teamId) {
 export async function createTeam(data) {
     const res = await fetch(`${API_BASE}`, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
     });
 
     if (!res.ok) throw new Error('Failed to create team');
+    return res.json();
+}
+
+// Join a team by invite code
+export async function joinTeamByCode(code) {
+    const res = await fetch(`${API_BASE}/join`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+    });
+
+    if (!res.ok) throw new Error('Failed to join team');
     return res.json();
 }
