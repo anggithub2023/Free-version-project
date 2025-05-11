@@ -44,6 +44,14 @@ export default function TeamSubDashboard() {
 
             <div className="space-y-4">
                 <button
+                    onClick={() => navigate(`/team/${teamId}/events/create`)}
+                    className="w-full flex items-center gap-3 px-4 py-3 border rounded shadow-sm hover:bg-gray-50"
+                >
+                    <BsCalendarEvent className="text-lg" />
+                    <span className="text-sm font-medium">Create Event</span>
+                </button>
+
+                <button
                     onClick={() => navigate(`/team/${teamId}/events/admin`)}
                     className="w-full flex items-center gap-3 px-4 py-3 border rounded shadow-sm hover:bg-gray-50"
                 >
