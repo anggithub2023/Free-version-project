@@ -1,94 +1,100 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BsCheckCircleFill, BsFillPeopleFill } from 'react-icons/bs';
-import supabase from '../lib/supabaseClient';
+import { useParams, useNavigate } from 'react-router-dom';
+import { supabase } from '../lib/supabaseClient';
+import ScheduleList from '../components/Schedule/ScheduleList';
+import ConfirmDeleteModal from '../components/common/ConfirmDeleteModal';
+import { MdDelete, MdKeyboardArrowLeft } from 'react-icons/md';
 
 export default function TeamDashboard() {
+    const { teamId } = useParams();
     const navigate = useNavigate();
-    const [teams, setTeams] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [, setError] = useState(null); // placeholder for any future error handling
+
+    const [team, setTeam] = useState(null);
+    const [events, setEvents] = useState([]);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
-        const fetchTeams = async () => {
-            setLoading(true);
-
-            const {
-                data: sessionData,
-                error: sessionError,
-            } = await supabase.auth.getSession();
-
-            if (sessionError || !sessionData?.session?.user) {
-                setError('Unable to fetch user session');
-                setLoading(false);
-                return;
-            }
-
-            const userId = sessionData.session.user.id;
-
+        const fetchTeam = async () => {
             const { data, error } = await supabase
                 .from('teams')
                 .select('*')
-                .eq('created_by', userId);
+                .eq('id', teamId)
+                .single();
 
-            if (error) {
-                setError(error.message);
-            } else {
-                setTeams(data);
-            }
-
-            setLoading(false);
+            if (error) console.error('Error fetching team:', error);
+            else setTeam(data);
         };
 
-        fetchTeams();
-    }, []);
+        const fetchEvents = async () => {
+            const { data, error } = await supabase
+                .from('events')
+                .select('*')
+                .eq('team_id', teamId)
+                .order('event_date', { ascending: true });
+
+            if (error) console.error('Error fetching events:', error);
+            else setEvents(data);
+        };
+
+        fetchTeam();
+        fetchEvents();
+    }, [teamId]);
+
+    const handleDeleteTeam = async () => {
+        const { error } = await supabase
+            .from('teams')
+            .delete()
+            .eq('id', teamId);
+
+        if (error) {
+            console.error('Error deleting team:', error);
+            alert(`Error deleting team: ${error.message}`);
+        } else {
+            setShowDeleteModal(false);
+            navigate('/dashboard');
+        }
+    };
+
+    if (!team) return <div className="p-4 text-center text-gray-500">Loading team...</div>;
 
     return (
-        <div className="max-w-3xl mx-auto mt-10 font-poppins px-4">
-            <div className="flex items-center justify-center gap-2 text-sm font-medium mb-8">
-                <BsCheckCircleFill className="text-black dark:text-white" />
-                <span>processwins.app</span>
-            </div>
-
-            <h1 className="text-2xl font-semibold mb-4">Your Teams</h1>
-
-            {loading ? (
-                <div className="text-center mt-10 text-gray-500">Loading teams...</div>
-            ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {teams.map((team) => (
-                        <div
-                            key={team.id}
-                            onClick={() => navigate(`/team/${team.id}/dashboard`)}
-                            className="cursor-pointer bg-white shadow-md rounded-xl p-5 hover:shadow-lg transition"
-                        >
-                            <div className="flex items-center gap-3 mb-2">
-                                <BsFillPeopleFill className="text-blue-600 text-lg" />
-                                <h2 className="text-lg font-bold">{team.name}</h2>
-                            </div>
-                            <p className="text-sm text-gray-600">{team.location}</p>
-                        </div>
-                    ))}
-                </div>
-            )}
-
-            <div className="mt-10 text-center">
+        <div className="max-w-4xl mx-auto px-4 py-6">
+            <div className="flex justify-between items-center mb-4">
                 <button
-                    onClick={() => navigate('/create-team')}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 mb-4"
+                    onClick={() => navigate('/dashboard')}
+                    className="flex items-center text-sm font-medium text-gray-600 hover:text-blue-600"
                 >
-                    + Create New Team
+                    <MdKeyboardArrowLeft size={20} />
+                    Back to Dashboard
                 </button>
-
-                <div>
-                    <button
-                        onClick={() => navigate('/coach-profile')}
-                        className="text-sm text-blue-600 hover:underline"
-                    >
-                        Manage Coach Profile
-                    </button>
-                </div>
+                <button
+                    onClick={() => setShowDeleteModal(true)}
+                    className="text-red-600 hover:text-red-800 text-sm font-semibold flex items-center gap-1"
+                >
+                    <MdDelete size={18} />
+                    Delete Team
+                </button>
             </div>
+
+            <h1 className="text-xl font-semibold text-gray-800 mb-1">{team.name}</h1>
+            <p className="text-sm text-gray-500 mb-4">Location: {team.location}</p>
+
+            <div className="mt-6">
+                <h2 className="text-lg font-semibold text-gray-700 mb-2">Upcoming Events</h2>
+                {events.length === 0 ? (
+                    <p className="text-sm text-gray-500">No events scheduled yet.</p>
+                ) : (
+                    <ScheduleList events={events} />
+                )}
+            </div>
+
+            <ConfirmDeleteModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={handleDeleteTeam}
+                itemName={team.name}
+                itemType="team"
+            />
         </div>
     );
 }
