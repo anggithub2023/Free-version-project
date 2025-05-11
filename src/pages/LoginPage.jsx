@@ -25,22 +25,8 @@ export default function LoginPage() {
             return;
         }
 
-        const user = authData.user;
-
-        const { data: teamMemberships, error: teamError } = await supabase
-            .from('team_memberships')
-            .select('team_id')
-            .eq('user_id', user.id)
-            .limit(1);
-
-        if (teamError || !teamMemberships?.length) {
-            navigate('/create-team');
-            setLoading(false);
-            return;
-        }
-
-        const teamId = teamMemberships[0].team_id;
-        navigate(`/team/${teamId}/dashboard`);
+        // ✅ Redirect to full dashboard with team cards
+        navigate('/dashboard');
         setLoading(false);
     };
 
