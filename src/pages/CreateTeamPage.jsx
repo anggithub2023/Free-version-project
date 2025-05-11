@@ -3,6 +3,10 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
 
+function generateJoinCode() {
+    return Math.random().toString(36).substring(2, 8).toUpperCase(); // e.g. 'A80B5A'
+}
+
 export default function CreateTeamPage() {
     const [teamName, setTeamName] = useState('');
     const [location, setLocation] = useState('');
@@ -10,67 +14,76 @@ export default function CreateTeamPage() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const generateJoinCode = () => {
-        return Math.random().toString(36).substring(2, 8).toUpperCase();
-    };
-
     const handleCreate = async (e) => {
         e.preventDefault();
         setError('');
         setLoading(true);
 
-        const { data: userData } = await supabase.auth.getUser();
+        // 🔐 Get the current authenticated user
+        const { data: userData, error: userError } = await supabase.auth.getUser();
         const user = userData?.user;
 
-        if (!user) {
+        if (!user || userError) {
             setError('Not authenticated');
             setLoading(false);
             return;
         }
 
-        // Check for duplicate team
-        const { data: existing, error: dupCheckErr } = await supabase
+        // 🔍 Check for duplicate team with same name + location
+        const { data: existingTeams, error: checkError } = await supabase
             .from('teams')
             .select('id')
-            .ilike('name', teamName)
-            .ilike('location', location);
+            .ilike('name', teamName.trim())
+            .ilike('location', location.trim());
 
-        if (dupCheckErr) {
-            setError('Error checking for duplicate teams');
+        if (checkError) {
+            setError('Error checking for duplicate team');
             setLoading(false);
             return;
         }
 
-        if (existing && existing.length > 0) {
-            setError('A team with this name and location already exists.');
+        if (existingTeams?.length) {
+            setError('A team with this name already exists in that location.');
             setLoading(false);
             return;
         }
 
+        // 🧠 Generate join code (required field)
         const joinCode = generateJoinCode();
 
+        // 🚀 Create new team
         const { data: team, error: teamErr } = await supabase
             .from('teams')
-            .insert({
-                name: teamName,
-                location: location,
+            .insert([{
+                name: teamName.trim(),
+                location: location.trim(),
                 created_by: user.id,
                 join_code: joinCode,
-            })
+            }])
             .select()
             .single();
 
-        if (teamErr) {
-            setError(teamErr.message);
+        if (teamErr || !team) {
+            setError(teamErr?.message || 'Failed to create team');
             setLoading(false);
             return;
         }
 
-        await supabase.from('team_memberships').insert({
-            user_id: user.id,
-            team_id: team.id,
-        });
+        // 👤 Add user to team_memberships
+        const { error: membershipErr } = await supabase
+            .from('team_memberships')
+            .insert({
+                user_id: user.id,
+                team_id: team.id,
+            });
 
+        if (membershipErr) {
+            setError('Failed to add user to team');
+            setLoading(false);
+            return;
+        }
+
+        // ✅ Success
         navigate(`/team/${team.id}/dashboard`);
     };
 
