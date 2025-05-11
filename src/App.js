@@ -23,6 +23,7 @@ import CoachEventDashboard from './pages/CoachEventDashboard';
 import CreateTeamPage from './pages/CreateTeamPage';
 import JoinTeamPage from './pages/JoinTeamPage'; // 👈 Optional
 import CoachProfilePage from './pages/CoachProfilePage';
+import TeamSubDashboard from './pages/TeamSubDashboard';
 
 export default function App() {
     return (
@@ -55,6 +56,7 @@ export default function App() {
                     <Route path="/create-team" element={<CreateTeamPage />} />
                     <Route path="/join-team" element={<JoinTeamPage />} />
                     <Route path="/coach-profile" element={<CoachProfilePage />} />
+                    <Route path="/team/:teamId/dashboard" element={<TeamSubDashboard />} />
 
                     {/* ❌ 404 fallback */}
                     <Route path="*" element={<div className="p-6 text-center">Page not found</div>} />
