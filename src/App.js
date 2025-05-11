@@ -47,7 +47,7 @@ export default function App() {
                     <Route path="/results" element={<ResultsPage />} />
 
                     {/* 🧠 Scheduling + Teams */}
-                    <Route path="/dashboard" element={<TeamDashboard />} /> // ✅ All teams
+                    <Route path="/coach-dashboard" element={<TeamDashboard />} />
                     <Route path="/team/:teamId/events/create" element={<CreateEventPage />} />
                     <Route path="/team/:teamId/events/:eventId" element={<RSVPEventPage />} />
                     <Route path="/team/:teamId/events/admin" element={<CoachEventDashboard />} />
