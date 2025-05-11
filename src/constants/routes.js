@@ -1,11 +1,15 @@
 // src/constants/routes.js
+
 export const ROUTES = {
-    COACH_DASHBOARD: '/coach-dashboard',
     LOGIN: '/login',
     SIGNUP: '/signup',
-    DASHBOARD: '/dashboard',
-    CREATE_TEAM: '/create-team',
+    COACH_DASHBOARD: '/coach-dashboard',
+    PLAYER_DASHBOARD: '/player-dashboard',
+    TEAM_DASHBOARD: (teamId = ':teamId') => `/team/${teamId}`,
+    CREATE_EVENT: '/create-event',
     VIDEOS: '/videos',
     RESULTS: '/results',
     WORKOUTS: '/workouts',
+    CREATE_TEAM: '/create-team',
+    COACH_PROFILE: '/coach-profile',
 };
