@@ -1,35 +1,31 @@
-// src/pages/CreateTeamPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
 
-function generateJoinCode() {
-    return Math.random().toString(36).substring(2, 8).toUpperCase(); // e.g. 'A80B5A'
-}
-
 export default function CreateTeamPage() {
     const [teamName, setTeamName] = useState('');
     const [location, setLocation] = useState('');
-    const [error, setError] = useState('');
+    const [errorMsg, setErrorMsg] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleCreate = async (e) => {
+    const handleCreateTeam = async (e) => {
         e.preventDefault();
-        setError('');
+        setErrorMsg('');
         setLoading(true);
 
-        // 🔐 Get the current authenticated user
-        const { data: userData, error: userError } = await supabase.auth.getUser();
-        const user = userData?.user;
+        const {
+            data: { user },
+            error: userError,
+        } = await supabase.auth.getUser();
 
-        if (!user || userError) {
-            setError('Not authenticated');
+        if (userError || !user) {
+            setErrorMsg('User not authenticated');
             setLoading(false);
             return;
         }
 
-        // 🔍 Check for duplicate team with same name + location
+        // 1. Check for duplicate team (by name + location)
         const { data: existingTeams, error: checkError } = await supabase
             .from('teams')
             .select('id')
@@ -37,84 +33,98 @@ export default function CreateTeamPage() {
             .ilike('location', location.trim());
 
         if (checkError) {
-            setError('Error checking for duplicate team');
+            setErrorMsg('Error checking for existing teams');
             setLoading(false);
             return;
         }
 
-        if (existingTeams?.length) {
-            setError('A team with this name already exists in that location.');
+        if (existingTeams.length > 0) {
+            setErrorMsg('Team already exists in this location.');
             setLoading(false);
             return;
         }
 
-        // 🧠 Generate join code (required field)
-        const joinCode = generateJoinCode();
-
-        // 🚀 Create new team
-        const { data: team, error: teamErr } = await supabase
+        // 2. Create team
+        const { data: newTeam, error: teamError } = await supabase
             .from('teams')
-            .insert([{
-                name: teamName.trim(),
-                location: location.trim(),
-                created_by: user.id,
-                join_code: joinCode,
-            }])
+            .insert([
+                {
+                    name: teamName.trim(),
+                    location: location.trim(),
+                    created_by: user.id,
+                },
+            ])
             .select()
             .single();
 
-        if (teamErr || !team) {
-            setError(teamErr?.message || 'Failed to create team');
+        if (teamError || !newTeam) {
+            setErrorMsg('Failed to create team');
             setLoading(false);
             return;
         }
 
-        // 👤 Add user to team_memberships
-        const { error: membershipErr } = await supabase
-            .from('team_memberships')
-            .insert({
+        // 3. Add to team_memberships
+        const { error: membershipError } = await supabase.from('team_memberships').insert([
+            {
+                team_id: newTeam.id,
                 user_id: user.id,
-                team_id: team.id,
-            });
+            },
+        ]);
 
-        if (membershipErr) {
-            setError('Failed to add user to team');
+        if (membershipError) {
+            setErrorMsg('Failed to assign team membership');
             setLoading(false);
             return;
         }
 
-        // ✅ Success
-        navigate(`/team/${team.id}/dashboard`);
+        // 4. Update user to mark as coach and attach team
+        const { error: userUpdateErr } = await supabase
+            .from('users_auth')
+            .update({ is_coach: true, team_id: newTeam.id })
+            .eq('id', user.id);
+
+        if (userUpdateErr) {
+            setErrorMsg('Failed to update user profile');
+            setLoading(false);
+            return;
+        }
+
+        navigate(`/team/${newTeam.id}/dashboard`);
+        setLoading(false);
     };
 
     return (
         <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow font-sans bg-white">
-            <h2 className="text-2xl font-semibold mb-6 text-center">Create Your Team</h2>
-            <form onSubmit={handleCreate} className="space-y-4">
+            <h2 className="text-2xl font-semibold mb-6 text-center">Create a Team</h2>
+
+            <form onSubmit={handleCreateTeam} className="space-y-4">
                 <input
                     type="text"
                     placeholder="Team Name"
+                    className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                     value={teamName}
                     onChange={(e) => setTeamName(e.target.value)}
                     required
-                    className="w-full border p-2 rounded"
                 />
+
                 <input
                     type="text"
                     placeholder="Location"
+                    className="w-full border p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
                     required
-                    className="w-full border p-2 rounded"
                 />
+
                 <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-green-600 text-white py-2 rounded"
+                    className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
                 >
                     {loading ? 'Creating...' : 'Create Team'}
                 </button>
-                {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
+                {errorMsg && <p className="text-red-500 mt-2 text-center text-sm">{errorMsg}</p>}
             </form>
         </div>
     );
