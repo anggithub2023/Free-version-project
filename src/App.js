@@ -47,7 +47,7 @@ export default function App() {
                     <Route path="/results" element={<ResultsPage />} />
 
                     {/* 🧠 Scheduling + Teams */}
-                    <Route path="/team/:teamId/dashboard" element={<TeamDashboard />} />
+                    <Route path="/dashboard" element={<TeamDashboard />} /> // ✅ All teams
                     <Route path="/team/:teamId/events/create" element={<CreateEventPage />} />
                     <Route path="/team/:teamId/events/:eventId" element={<RSVPEventPage />} />
                     <Route path="/team/:teamId/events/admin" element={<CoachEventDashboard />} />
@@ -56,7 +56,7 @@ export default function App() {
                     <Route path="/create-team" element={<CreateTeamPage />} />
                     <Route path="/join-team" element={<JoinTeamPage />} />
                     <Route path="/coach-profile" element={<CoachProfilePage />} />
-                    <Route path="/team/:teamId/dashboard" element={<TeamSubDashboard />} />
+                    <Route path="/team/:teamId/dashboard" element={<TeamSubDashboard />} /> // ✅ Sub-dashboard for a single team
 
                     {/* ❌ 404 fallback */}
                     <Route path="*" element={<div className="p-6 text-center">Page not found</div>} />
