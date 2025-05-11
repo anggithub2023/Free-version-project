@@ -2,12 +2,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
-import { BsCalendarEvent, BsPeople, BsPersonBadge } from 'react-icons/bs';
+import { BsCalendarEvent, BsPeople, BsPersonBadge, BsTrash } from 'react-icons/bs';
+import ConfirmDeleteModal from '../components/common/ConfirmDeleteModal';
 
 export default function TeamSubDashboard() {
     const { teamId } = useParams();
     const [team, setTeam] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -28,6 +30,19 @@ export default function TeamSubDashboard() {
 
         fetchTeam();
     }, [teamId]);
+
+    const handleDelete = async () => {
+        const { error } = await supabase
+            .from('teams')
+            .delete()
+            .eq('id', teamId);
+
+        if (!error) {
+            navigate('/coach-dashboard');
+        } else {
+            console.error('Error deleting team:', error);
+        }
+    };
 
     if (loading) return <div className="p-6 text-center">Loading team...</div>;
     if (!team) return <div className="p-6 text-center">Team not found</div>;
@@ -68,22 +83,30 @@ export default function TeamSubDashboard() {
                 </button>
 
                 <button
-                    onClick={() => navigate(`/coach-profile`)}
-                    className="w-full flex items-center gap-3 px-4 py-3 border rounded shadow-sm hover:bg-gray-50"
+                    onClick={() => setShowDeleteModal(true)}
+                    className="w-full flex items-center gap-3 px-4 py-3 border border-red-500 text-red-600 rounded shadow-sm hover:bg-red-50"
                 >
-                    <BsPersonBadge className="text-lg" />
-                    <span className="text-sm font-medium">Coach Profile</span>
+                    <BsTrash className="text-lg" />
+                    <span className="text-sm font-medium">Delete Team</span>
                 </button>
             </div>
 
             <div className="text-center mt-8">
                 <button
                     onClick={() => navigate('/coach-dashboard')}
-                    className="text-sm text-blue-600 hover:underline"
+                    className="text-[15px] text-blue-600 hover:underline"
                 >
-                    ← Back to All Teams
+                    ← Back to Dashboard
                 </button>
             </div>
+
+            <ConfirmDeleteModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={handleDelete}
+                title="Delete Team?"
+                message="This will remove the team and all related data. Are you sure?"
+            />
         </div>
     );
 }
