@@ -6,14 +6,19 @@ import ConfirmDeleteModal from '../components/common/ConfirmDeleteModal';
 import { MdDelete, MdKeyboardArrowLeft } from 'react-icons/md';
 
 export default function TeamDashboard() {
-    const { teamId } = useParams();
+    const { teamId: paramTeamId } = useParams();
     const navigate = useNavigate();
+
+    const teamId = paramTeamId || localStorage.getItem('teamId');
 
     const [team, setTeam] = useState(null);
     const [events, setEvents] = useState([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (!teamId) return;
+
         const fetchTeam = async () => {
             const { data, error } = await supabase
                 .from('teams')
@@ -21,8 +26,12 @@ export default function TeamDashboard() {
                 .eq('id', teamId)
                 .single();
 
-            if (error) console.error('Error fetching team:', error);
-            else setTeam(data);
+            if (error) {
+                console.error('Error fetching team:', error);
+                setTeam(null);
+            } else {
+                setTeam(data);
+            }
         };
 
         const fetchEvents = async () => {
@@ -32,12 +41,16 @@ export default function TeamDashboard() {
                 .eq('team_id', teamId)
                 .order('event_date', { ascending: true });
 
-            if (error) console.error('Error fetching events:', error);
-            else setEvents(data);
+            if (error) {
+                console.error('Error fetching events:', error);
+            } else {
+                setEvents(data);
+            }
         };
 
         fetchTeam();
         fetchEvents();
+        setLoading(false);
     }, [teamId]);
 
     const handleDeleteTeam = async () => {
@@ -55,10 +68,32 @@ export default function TeamDashboard() {
         }
     };
 
-    if (!team) return <div className="p-4 text-center text-gray-500">Loading team...</div>;
+    if (!teamId) {
+        return (
+            <div className="p-4 text-center text-red-500">
+                Error: No team selected. Please go back to the dashboard.
+            </div>
+        );
+    }
+
+    if (loading) {
+        return (
+            <div className="p-4 text-center text-gray-500">
+                Loading team...
+            </div>
+        );
+    }
+
+    if (!team) {
+        return (
+            <div className="p-4 text-center text-red-500">
+                Team not found.
+            </div>
+        );
+    }
 
     return (
-        <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="max-w-4xl mx-auto px-4 py-6 font-[Poppins]">
             <div className="flex justify-between items-center mb-4">
                 <button
                     onClick={() => navigate('/dashboard')}
