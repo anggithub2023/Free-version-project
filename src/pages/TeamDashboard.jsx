@@ -1,82 +1,81 @@
+// TeamDashboard.jsx
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { BsCheckCircleFill, BsPeopleFill, BsCalendarEvent } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
+import { BsCheckCircleFill } from 'react-icons/bs';
+import { FaBasketballBall } from 'react-icons/fa';
 import supabase from '../lib/supabaseClient';
 
 export default function TeamDashboard() {
-    const { teamId } = useParams();
     const navigate = useNavigate();
-    const [team, setTeam] = useState(null);
+    const [teams, setTeams] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchTeam = async () => {
+        const fetchTeams = async () => {
             setLoading(true);
+            const {
+                data: { user },
+                error: userError
+            } = await supabase.auth.getUser();
+
+            if (userError || !user) {
+                setLoading(false);
+                return;
+            }
+
             const { data, error } = await supabase
                 .from('teams')
-                .select('name, location')
-                .eq('id', teamId)
-                .single();
+                .select('*')
+                .eq('created_by', user.id);
 
-            if (!error) setTeam(data);
+            if (!error) setTeams(data || []);
             setLoading(false);
         };
 
-        fetchTeam();
-    }, [teamId]);
-
-    const handleAddPlayers = () => navigate('/create-team');
-    const handleCreateEvent = () => navigate(`/team/${teamId}/events/create`);
-    const handleManageProfile = () => navigate('/coach-profile');
+        fetchTeams();
+    }, []);
 
     if (loading) {
-        return <div className="text-center mt-10 text-gray-600">Loading dashboard...</div>;
-    }
-
-    if (!team) {
-        return <div className="text-center mt-10 text-red-600">Team not found.</div>;
+        return <div className="text-center mt-10 text-gray-600">Loading teams...</div>;
     }
 
     return (
-        <div className="max-w-2xl mx-auto mt-10 font-poppins px-4">
-            {/* ✅ processwins header */}
+        <div className="max-w-4xl mx-auto px-4 py-8 font-poppins">
+            {/* ✅ App Header */}
             <div className="flex items-center justify-center gap-2 text-sm font-medium mb-8">
                 <BsCheckCircleFill className="text-black dark:text-white" />
                 <span>processwins.app</span>
             </div>
 
-            {/* ✅ Team card */}
-            <div className="bg-white shadow rounded-2xl p-6 mb-6 hover:shadow-lg transition">
-                <h2 className="text-lg font-bold mb-2">{team.name}</h2>
-                <p className="text-sm text-gray-600 mb-4">{team.location}</p>
-
-                <div className="flex flex-wrap gap-4">
-                    <button
-                        onClick={handleAddPlayers}
-                        className="flex items-center gap-2 px-4 py-2 border border-blue-600 text-blue-600 rounded-full hover:bg-blue-50"
+            {/* ✅ Team Grid */}
+            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2">
+                {teams.map((team) => (
+                    <div
+                        key={team.id}
+                        onClick={() => navigate(`/team/${team.id}/dashboard`)}
+                        className="bg-white rounded-xl shadow hover:shadow-md p-5 cursor-pointer transition"
                     >
-                        <BsPeopleFill /> Add Players
-                    </button>
-                    <button
-                        onClick={handleCreateEvent}
-                        className="flex items-center gap-2 px-4 py-2 border border-blue-600 text-blue-600 rounded-full hover:bg-blue-50"
-                    >
-                        <BsCalendarEvent /> Create Event
-                    </button>
-                </div>
+                        <div className="flex items-center gap-3 mb-3">
+                            <FaBasketballBall className="text-orange-500 text-xl" />
+                            <h3 className="text-lg font-semibold">{team.name}</h3>
+                        </div>
+                        <p className="text-sm text-gray-600">{team.location || 'No location set'}</p>
+                        <div className="mt-2 text-xs text-gray-400">0-0</div> {/* Static placeholder */}
+                    </div>
+                ))}
             </div>
 
             {/* ✅ Actions */}
-            <div className="mt-10 flex flex-col items-center gap-4">
+            <div className="mt-10 flex flex-col items-center">
                 <button
                     onClick={() => navigate('/create-team')}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
                 >
                     + Create New Team
                 </button>
 
                 <button
-                    onClick={handleManageProfile}
+                    onClick={() => navigate('/coach-profile')}
                     className="text-sm text-blue-600 hover:underline"
                 >
                     Manage Coach Profile
