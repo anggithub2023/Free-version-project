@@ -21,6 +21,7 @@ import RSVPEventPage from './pages/RSVPEventPage';
 import TeamDashboard from './pages/TeamDashboard';
 import CoachEventDashboard from './pages/CoachEventDashboard';
 import CreateTeamPage from './pages/CreateTeamPage'; // ✅ Added
+import JoinTeamPage from './pages/JoinTeamPage';
 
 export default function App() {
     return (
@@ -47,6 +48,7 @@ export default function App() {
                     <Route path="/team/:teamId/events/create" element={<CreateEventPage />} />
                     <Route path="/team/:teamId/events/:eventId" element={<RSVPEventPage />} />
                     <Route path="/team/:teamId/events/admin" element={<CoachEventDashboard />} />
+                    <Route path="/join-team" element={<JoinTeamPage />} />
 
                     {/* 👥 Team creation */}
                     <Route path="/create-team" element={<CreateTeamPage />} />
