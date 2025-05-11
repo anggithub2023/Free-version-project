@@ -1,21 +1,14 @@
-// src/components/Schedule/ScheduleList.jsx
-import React from 'react';
-
-const ScheduleList = ({ schedule }) => {
-    if (!schedule.length) return <p>No upcoming events.</p>;
+export default function ScheduleList({ events = [] }) {
+    if (!Array.isArray(events)) {
+        console.warn('Expected events to be an array, received:', events);
+        return null;
+    }
 
     return (
-        <section className="schedule-list">
-            <h2>Schedule</h2>
-            <ul>
-                {schedule.map(({ id, name, location, start_time }) => (
-                    <li key={id}>
-                        {name} @ {location?.name || 'TBD'} — {new Date(start_time).toLocaleString()}
-                    </li>
-                ))}
-            </ul>
-        </section>
+        <ul>
+            {events.map((event) => (
+                <li key={event.id}>{event.name}</li> // adjust to your structure
+            ))}
+        </ul>
     );
-};
-
-export default ScheduleList;
+}
