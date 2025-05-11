@@ -70,7 +70,7 @@ export default function TeamSubDashboard() {
 
             <div className="text-center mt-8">
                 <button
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate('/coach-dashboard')}
                     className="text-sm text-blue-600 hover:underline"
                 >
                     ← Back to All Teams
