@@ -4,11 +4,11 @@ import supabase from '../lib/supabaseClient';
 import ScheduleList from '../components/Schedule/ScheduleList';
 import ConfirmDeleteModal from '../components/common/ConfirmDeleteModal';
 import { MdDelete, MdKeyboardArrowLeft } from 'react-icons/md';
+import { ROUTES } from '../constants/routes';
 
 export default function TeamDashboard() {
     const { teamId: paramTeamId } = useParams();
     const navigate = useNavigate();
-
     const teamId = paramTeamId || localStorage.getItem('teamId');
 
     const [team, setTeam] = useState(null);
@@ -64,7 +64,7 @@ export default function TeamDashboard() {
             alert(`Error deleting team: ${error.message}`);
         } else {
             setShowDeleteModal(false);
-            navigate('/dashboard');
+            navigate(ROUTES.COACH_DASHBOARD);
         }
     };
 
@@ -96,7 +96,7 @@ export default function TeamDashboard() {
         <div className="max-w-4xl mx-auto px-4 py-6 font-[Poppins]">
             <div className="flex justify-between items-center mb-4">
                 <button
-                    onClick={() => navigate('/dashboard')}
+                    onClick={() => navigate(ROUTES.COACH_DASHBOARD)}
                     className="flex items-center text-sm font-medium text-gray-600 hover:text-blue-600"
                 >
                     <MdKeyboardArrowLeft size={20} />
