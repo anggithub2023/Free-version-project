@@ -1,109 +1,85 @@
-// src/pages/JoinTeamPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
-import useCurrentUserProfile from '../hooks/useCurrentUserProfile';
 
 export default function JoinTeamPage() {
-    const { profile, loading: profileLoading, error: profileError } = useCurrentUserProfile();
     const [joinCode, setJoinCode] = useState('');
-    const [team, setTeam] = useState(null);
-    const [feedback, setFeedback] = useState({ error: '', success: '' });
-    const [joining, setJoining] = useState(false);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleCheckCode = async () => {
-        setFeedback({ error: '', success: '' });
-        setTeam(null);
+    const handleJoin = async (e) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
 
-        const { data, error } = await supabase
-            .from('teams')
-            .select('*')
-            .eq('join_code', joinCode.trim())
-            .single();
+        // ✅ Get authenticated user
+        const { data: userData } = await supabase.auth.getUser();
+        const user = userData?.user;
 
-        if (error || !data) {
-            setFeedback({ error: 'Invalid join code. Please try again.', success: '' });
-        } else {
-            setTeam(data);
-        }
-    };
-
-    const handleJoinTeam = async () => {
-        setJoining(true);
-
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
-        if (authError || !user) {
-            setFeedback({ error: 'You must be logged in to join a team.', success: '' });
-            setJoining(false);
+        if (!user) {
+            setError('You must be logged in.');
+            setLoading(false);
             return;
         }
 
-        const { error } = await supabase
-            .from('users_auth')
-            .update({ team_id: team.id })
-            .eq('id', user.id);
+        // ✅ Find team with join code
+        const { data: teams, error: fetchErr } = await supabase
+            .from('teams')
+            .select('id')
+            .eq('join_code', joinCode.trim().toUpperCase())
+            .limit(1);
 
-        if (error) {
-            setFeedback({ error: 'Failed to join team. Try again.', success: '' });
-        } else {
-            setFeedback({ error: '', success: '✅ Successfully joined! Redirecting...' });
-            localStorage.setItem('team_id', team.id);
-            setTimeout(() => navigate('/dashboard'), 1500);
+        if (fetchErr || !teams?.length) {
+            setError('Invalid join code.');
+            setLoading(false);
+            return;
         }
 
-        setJoining(false);
+        const teamId = teams[0].id;
+
+        // ✅ Add user to team_memberships
+        const { error: insertErr } = await supabase
+            .from('team_memberships')
+            .insert({
+                user_id: user.id,
+                team_id: teamId,
+            });
+
+        if (insertErr) {
+            setError('Failed to join team. You may already be a member.');
+            setLoading(false);
+            return;
+        }
+
+        // ✅ Navigate to team dashboard
+        navigate(`/team/${teamId}/dashboard`);
     };
 
-    if (profileLoading) return <p className="text-center mt-10">Loading...</p>;
-    if (profileError) return <p className="text-red-500 text-center">{profileError.message}</p>;
-    if (profile?.team_id) {
-        return <p className="text-center mt-10 text-gray-500">You're already part of a team.</p>;
-    }
-
     return (
-        <div className="min-h-screen bg-white text-gray-800 p-6">
-            <h1 className="text-2xl font-bold text-center mb-6">Join a Team</h1>
+        <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow font-sans bg-white">
+            <h2 className="text-2xl font-semibold mb-6 text-center">Join a Team</h2>
 
-            <div className="max-w-sm mx-auto space-y-4">
+            <form onSubmit={handleJoin} className="space-y-4">
                 <input
                     type="text"
+                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400 uppercase"
+                    placeholder="Enter Join Code"
                     value={joinCode}
                     onChange={(e) => setJoinCode(e.target.value)}
-                    placeholder="Enter Join Code"
-                    className="w-full p-3 border border-gray-300 rounded-lg"
+                    required
                 />
 
                 <button
-                    onClick={handleCheckCode}
-                    className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-500 transition"
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700"
                 >
-                    Check Code
+                    {loading ? 'Joining...' : 'Join Team'}
                 </button>
 
-                {team && (
-                    <div className="p-4 border border-green-300 bg-green-50 rounded-lg">
-                        <p><strong>Team:</strong> {team.name}</p>
-                        <button
-                            onClick={handleJoinTeam}
-                            disabled={joining}
-                            className="mt-3 w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-500 transition"
-                        >
-                            {joining ? 'Joining...' : 'Confirm Join'}
-                        </button>
-                    </div>
-                )}
-
-                {feedback.error && <p className="text-red-500">{feedback.error}</p>}
-                {feedback.success && <p className="text-green-600">{feedback.success}</p>}
-
-                <p className="text-center text-sm text-gray-500 mt-4">
-                    Don’t have a team?{' '}
-                    <a href="/team/create" className="text-blue-600 hover:underline">
-                        Create one instead
-                    </a>
-                </p>
-            </div>
+                {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+            </form>
         </div>
     );
 }
