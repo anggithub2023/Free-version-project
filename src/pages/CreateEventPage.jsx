@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
-import { useTeamContext } from '../context/TeamContext';
 import EventForm from '../components/Schedule/EventForm';
 
 export default function CreateEventPage() {
-    const { teamId } = useTeamContext();
+    const { teamId } = useParams(); // 🔥 FIXED: get teamId from route params
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
