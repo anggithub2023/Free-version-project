@@ -1,4 +1,3 @@
-// src/pages/LoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
@@ -15,7 +14,6 @@ export default function LoginPage() {
         setErrorMsg('');
         setLoading(true);
 
-        // 🔐 Sign in the user
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
             email,
             password,
@@ -29,27 +27,20 @@ export default function LoginPage() {
 
         const user = authData.user;
 
-        // 🧠 Check for existing team membership
         const { data: teamMemberships, error: teamError } = await supabase
             .from('team_memberships')
             .select('team_id')
             .eq('user_id', user.id)
             .limit(1);
 
-        if (teamError) {
-            setErrorMsg('Error loading teams.');
+        if (teamError || !teamMemberships?.length) {
+            navigate('/create-team');
             setLoading(false);
             return;
         }
 
-        // ✅ Redirect based on presence of a team
-        if (teamMemberships?.length) {
-            const teamId = teamMemberships[0].team_id;
-            navigate(`/team/${teamId}/dashboard`);
-        } else {
-            navigate('/create-team');
-        }
-
+        const teamId = teamMemberships[0].team_id;
+        navigate(`/team/${teamId}/dashboard`);
         setLoading(false);
     };
 
@@ -83,11 +74,18 @@ export default function LoginPage() {
                 >
                     {loading ? 'Logging in...' : 'Login'}
                 </button>
+
+                {errorMsg && (
+                    <p className="text-red-500 mt-2 text-center text-sm">{errorMsg}</p>
+                )}
             </form>
 
-            {errorMsg && (
-                <p className="text-red-500 mt-4 text-center text-sm">{errorMsg}</p>
-            )}
+            <p className="mt-6 text-center text-sm">
+                Don’t have an account?{' '}
+                <a href="/signup" className="text-blue-600 hover:underline">
+                    Create one here
+                </a>
+            </p>
         </div>
     );
 }
