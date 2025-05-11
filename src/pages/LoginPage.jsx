@@ -26,7 +26,7 @@ export default function LoginPage() {
         }
 
         // ✅ Redirect to full dashboard with team cards
-        navigate('/dashboard');
+        navigate('/coach-dashboard'); // NOT '/dashboard'
         setLoading(false);
     };
 
