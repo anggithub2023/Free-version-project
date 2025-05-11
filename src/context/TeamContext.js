@@ -1,12 +1,8 @@
-// src/context/TeamContext.js
-
 import { createContext, useContext, useState } from 'react';
 
-// Create context
-const TeamContext = createContext(null);
+const TeamContext = createContext();
 
-// Provider component
-export const TeamProvider = ({ children }) => {
+export function TeamProvider({ children }) {
     const [team, setTeam] = useState(null);
 
     return (
@@ -14,13 +10,9 @@ export const TeamProvider = ({ children }) => {
             {children}
         </TeamContext.Provider>
     );
-};
+}
 
-// Custom hook to access team context
-export const useTeam = () => {
-    const context = useContext(TeamContext);
-    if (!context) {
-        throw new Error('useTeam must be used within a TeamProvider');
-    }
-    return context;
-};
+// ✅ Add this
+export function useTeamContext() {
+    return useContext(TeamContext);
+}
