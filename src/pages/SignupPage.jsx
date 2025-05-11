@@ -1,86 +1,89 @@
-// src/pages/SignupPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
 
-export default function SignupPage() {
+function SignupPage() {
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMsg, setErrorMsg] = useState('');
-    const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
+    const [submitted, setSubmitted] = useState(false);
+    const [error, setError] = useState('');
 
     const handleSignup = async (e) => {
         e.preventDefault();
-        setErrorMsg('');
-        setLoading(true);
+        setError('');
 
-        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        const { error } = await supabase.auth.signUp({
             email,
             password,
+            options: {
+                emailRedirectTo: 'https://www.processwins.app/login',
+            },
         });
 
-        if (signUpError || !signUpData?.user) {
-            setErrorMsg(signUpError?.message || 'Signup failed');
-            setLoading(false);
-            return;
-        }
-
-        // Optional: check team_memberships → redirect based on existence
-        const user = signUpData.user;
-
-        const { data: teamMemberships, error: teamError } = await supabase
-            .from('team_memberships')
-            .select('team_id')
-            .eq('user_id', user.id)
-            .limit(1);
-
-        if (teamError || !teamMemberships?.length) {
-            navigate('/create-team'); // No team yet
+        if (error) {
+            setError(error.message);
         } else {
-            const teamId = teamMemberships[0].team_id;
-            navigate(`/team/${teamId}/dashboard`);
+            setSubmitted(true);
         }
-
-        setLoading(false);
     };
 
     return (
-        <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow font-sans bg-white">
-            <h2 className="text-2xl font-semibold mb-6 text-center">Create Account</h2>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-white px-4">
+            <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
+                <h2 className="text-2xl font-bold mb-4 text-center text-indigo-700">Create Your Account</h2>
 
-            <form onSubmit={handleSignup} className="space-y-4">
-                <input
-                    type="email"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full border p-2 rounded"
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="w-full border p-2 rounded"
-                />
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-blue-600 text-white py-2 rounded"
-                >
-                    {loading ? 'Creating...' : 'Sign Up'}
-                </button>
-            </form>
+                {submitted ? (
+                    <div className="text-center text-green-700 font-medium">
+                        ✅ Check your email to verify your account.
+                    </div>
+                ) : (
+                    <form onSubmit={handleSignup} className="space-y-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Email</label>
+                            <input
+                                type="email"
+                                required
+                                className="mt-1 p-2 w-full border rounded-md"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
 
-            {errorMsg && <p className="text-red-500 text-sm mt-4 text-center">{errorMsg}</p>}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Password</label>
+                            <input
+                                type="password"
+                                required
+                                className="mt-1 p-2 w-full border rounded-md"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
 
-            <p className="mt-6 text-center text-sm">
-                Already have an account?{' '}
-                <a href="/login" className="text-blue-600 hover:underline">Log in</a>
-            </p>
+                        {error && <p className="text-sm text-red-600">{error}</p>}
+
+                        <button
+                            type="submit"
+                            className="w-full bg-indigo-600 text-white font-semibold py-2 rounded hover:bg-indigo-700 transition"
+                        >
+                            Sign Up
+                        </button>
+                    </form>
+                )}
+
+                <p className="text-sm text-center text-gray-600 mt-4">
+                    Already have an account?{' '}
+                    <button
+                        onClick={() => navigate('/login')}
+                        className="text-indigo-600 hover:underline font-medium"
+                    >
+                        Log in
+                    </button>
+                </p>
+            </div>
         </div>
     );
 }
+
+export default SignupPage;
