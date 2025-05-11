@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { BsCheckCircleFill } from 'react-icons/bs';
 import supabase from '../lib/supabaseClient';
 
 export default function TeamDashboard() {
@@ -33,10 +34,16 @@ export default function TeamDashboard() {
     }
 
     return (
-        <div className="max-w-2xl mx-auto mt-10 font-sans">
-            <h1 className="text-3xl font-bold mb-4 text-center">{team.name}</h1>
+        <div className="max-w-2xl mx-auto mt-10 font-sans px-4">
+            {/* 🔖 Site Header */}
+            <div className="flex items-center justify-center gap-2 text-sm font-medium mb-8">
+                <BsCheckCircleFill className="text-black dark:text-white" />
+                <span>processwins.app</span>
+            </div>
 
-            <div className="grid gap-5 mt-8">
+            <h1 className="text-3xl font-bold mb-6 text-center">{team.name}</h1>
+
+            <div className="grid gap-5">
                 <button
                     onClick={() => navigate('/create-event')}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded text-lg"
