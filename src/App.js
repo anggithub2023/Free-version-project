@@ -1,4 +1,3 @@
-// src/App.js
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import AppShell from './components/AppShell';
@@ -7,6 +6,7 @@ import { TeamProvider } from './context/TeamContext';
 // ✅ Pages
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage'; // 👈 New route
 import DashboardPage from './pages/DashboardPage';
 import ReflectionPage from './pages/ReflectionPage';
 import ReadinessPage from './pages/ReadinessPage';
@@ -20,8 +20,8 @@ import CreateEventPage from './pages/CreateEventPage';
 import RSVPEventPage from './pages/RSVPEventPage';
 import TeamDashboard from './pages/TeamDashboard';
 import CoachEventDashboard from './pages/CoachEventDashboard';
-import CreateTeamPage from './pages/CreateTeamPage'; // ✅ Added
-import JoinTeamPage from './pages/JoinTeamPage';
+import CreateTeamPage from './pages/CreateTeamPage';
+import JoinTeamPage from './pages/JoinTeamPage'; // 👈 Optional
 
 export default function App() {
     return (
@@ -31,6 +31,7 @@ export default function App() {
                     {/* 🌐 Public */}
                     <Route path="/" element={<HomePage />} />
                     <Route path="/login" element={<LoginPage />} />
+                    <Route path="/signup" element={<SignupPage />} /> {/* 👈 New */}
 
                     {/* 📊 Core Pages */}
                     <Route path="/dashboard" element={<DashboardPage />} />
@@ -48,10 +49,10 @@ export default function App() {
                     <Route path="/team/:teamId/events/create" element={<CreateEventPage />} />
                     <Route path="/team/:teamId/events/:eventId" element={<RSVPEventPage />} />
                     <Route path="/team/:teamId/events/admin" element={<CoachEventDashboard />} />
-                    <Route path="/join-team" element={<JoinTeamPage />} />
 
-                    {/* 👥 Team creation */}
+                    {/* 👥 Team management */}
                     <Route path="/create-team" element={<CreateTeamPage />} />
+                    <Route path="/join-team" element={<JoinTeamPage />} />
 
                     {/* ❌ 404 fallback */}
                     <Route path="*" element={<div className="p-6 text-center">Page not found</div>} />
