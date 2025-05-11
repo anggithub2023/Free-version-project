@@ -1,92 +1,90 @@
-// src/pages/CoachProfilePage.jsx
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import supabase from '../lib/supabaseClient';
 
 export default function CoachProfilePage() {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
+    const [fullName, setFullName] = useState('');
     const [loading, setLoading] = useState(true);
-    const [saving, setSaving] = useState(false);
-    const [successMsg, setSuccessMsg] = useState('');
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchProfile = async () => {
             const {
                 data: { user },
+                error: userError,
             } = await supabase.auth.getUser();
 
-            const { data } = await supabase
+            if (userError || !user) return;
+
+            const { data, error } = await supabase
                 .from('users_auth')
-                .select('first_name, last_name')
+                .select('full_name')
                 .eq('id', user.id)
                 .single();
 
-            if (data) {
-                setFirstName(data.first_name || '');
-                setLastName(data.last_name || '');
-            }
-
+            if (!error && data?.full_name) setFullName(data.full_name);
             setLoading(false);
         };
 
         fetchProfile();
     }, []);
 
-    const handleSave = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setSaving(true);
-        setSuccessMsg('');
+        setError(null);
+        setSuccess(false);
+        setLoading(true);
 
         const {
             data: { user },
+            error: userError,
         } = await supabase.auth.getUser();
 
-        await supabase
+        if (userError || !user) return setError('User not found');
+
+        const { error: updateError } = await supabase
             .from('users_auth')
-            .update({ first_name: firstName, last_name: lastName })
+            .update({ full_name: fullName.trim() })
             .eq('id', user.id);
 
-        setSaving(false);
-        setSuccessMsg('✅ Profile updated successfully');
+        if (updateError) {
+            setError('Failed to update profile');
+        } else {
+            setSuccess(true);
+        }
+
+        setLoading(false);
     };
 
-    if (loading) {
-        return <div className="p-6 text-center">Loading profile...</div>;
-    }
-
     return (
-        <div className="max-w-md mx-auto mt-10 p-6 border bg-white rounded shadow">
+        <div className="max-w-md mx-auto mt-20 p-6 border rounded shadow font-sans bg-white">
             <h2 className="text-2xl font-semibold mb-6 text-center">Coach Profile</h2>
 
-            <form onSubmit={handleSave} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
                 <input
                     type="text"
-                    placeholder="First Name"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    className="w-full border p-2 rounded"
+                    className="w-full border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    placeholder="Full Name"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
                     required
                 />
-                <input
-                    type="text"
-                    placeholder="Last Name"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    className="w-full border p-2 rounded"
-                    required
-                />
+
                 <button
                     type="submit"
-                    disabled={saving}
+                    disabled={loading}
                     className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
                 >
-                    {saving ? 'Saving...' : 'Save Profile'}
+                    {loading ? 'Saving...' : 'Save Profile'}
                 </button>
-            </form>
 
-            {successMsg && (
-                <p className="text-green-600 mt-4 text-center text-sm">{successMsg}</p>
-            )}
+                {success && (
+                    <p className="text-green-600 text-center text-sm">Profile updated!</p>
+                )}
+                {error && (
+                    <p className="text-red-600 text-center text-sm">{error}</p>
+                )}
+            </form>
         </div>
     );
 }
