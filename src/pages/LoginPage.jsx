@@ -25,8 +25,26 @@ export default function LoginPage() {
             return;
         }
 
-        // ✅ Redirect to full dashboard with team cards
-        navigate('/coach-dashboard'); // NOT '/dashboard'
+        const userId = authData.user.id;
+
+        // ✅ Fetch user's default team_id from users_auth
+        const { data: userProfile, error: userError } = await supabase
+            .from('users_auth')
+            .select('team_id')
+            .eq('id', userId)
+            .single();
+
+        if (userError || !userProfile?.team_id) {
+            setErrorMsg('Could not retrieve team info. Please contact support.');
+            setLoading(false);
+            return;
+        }
+
+        // ✅ Store team_id for fallback usage across app
+        localStorage.setItem('teamId', userProfile.team_id);
+
+        // ✅ Redirect
+        navigate('/coach-dashboard');
         setLoading(false);
     };
 
