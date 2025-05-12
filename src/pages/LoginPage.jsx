@@ -29,11 +29,10 @@ export default function LoginPage() {
         const user = authData.user;
 
         // 🧠 Check team membership
-        const { data: teamMemberships, error: teamError } = await supabase
-            .from('team_memberships')
-            .select('team_id')
-            .eq('user_id', user.id)
-            .limit(1);
+        import { resolveTeamAccess } from '../services/resolveTeamAccess';
+
+// Inside handleLogin()
+        const teamMemberships = await resolveTeamAccess(user.id, user.email);
 
         if (teamError) {
             setErrorMsg('Error loading teams.');
