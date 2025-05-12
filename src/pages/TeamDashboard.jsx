@@ -1,90 +1,150 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { BsCheckCircleFill, BsFillPeopleFill } from 'react-icons/bs';
+import { useParams, useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
+import ConfirmDeleteModal from '../components/common/ConfirmDeleteModal';
+import { MdDelete, MdKeyboardArrowLeft } from 'react-icons/md';
 
 export default function TeamDashboard() {
+    const { teamId: paramTeamId } = useParams();
     const navigate = useNavigate();
-    const [teams, setTeams] = useState([]);
+    const teamId = paramTeamId || localStorage.getItem('teamId');
+
+    const [team, setTeam] = useState(null);
+    const [events, setEvents] = useState([]);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchTeams = async () => {
-            setLoading(true);
+        if (!teamId) return;
 
-            const {
-                data: { user },
-                error: userError,
-            } = await supabase.auth.getUser();
-
-            const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-
-            if (userError || !user) {
-                if (sessionError || !sessionData?.session?.user) {
-                    setLoading(false);
-                    return;
-                }
-            }
-
-            const userId = sessionData.session.user.id;
-
-            const { data } = await supabase
+        const fetchTeam = async () => {
+            const { data, error } = await supabase
                 .from('teams')
                 .select('*')
-                .eq('created_by', userId);
+                .eq('id', teamId)
+                .single();
 
-            if (data) setTeams(data);
-
-            setLoading(false);
+            if (error) {
+                console.error('Error fetching team:', error);
+                setTeam(null);
+            } else {
+                setTeam(data);
+            }
         };
 
-        fetchTeams();
-    }, []);
+        const fetchEvents = async () => {
+            const { data, error } = await supabase
+                .from('events')
+                .select('*')
+                .eq('team_id', teamId)
+                .order('event_date', { ascending: true });
+
+            if (error) {
+                console.error('Error fetching events:', error);
+            } else {
+                setEvents(data);
+            }
+        };
+
+        fetchTeam();
+        fetchEvents();
+        setLoading(false);
+    }, [teamId]);
+
+    const handleDeleteTeam = async () => {
+        const { error } = await supabase
+            .from('teams')
+            .delete()
+            .eq('id', teamId);
+
+        if (error) {
+            console.error('Error deleting team:', error);
+            alert(`Error deleting team: ${error.message}`);
+        } else {
+            setShowDeleteModal(false);
+            navigate('/coach-dashboard');
+        }
+    };
+
+    if (!teamId) {
+        return (
+            <div className="p-4 text-center text-red-500">
+                Error: No team selected. Please go back to the dashboard.
+            </div>
+        );
+    }
+
+    if (loading) {
+        return (
+            <div className="p-4 text-center text-gray-500">
+                Loading team...
+            </div>
+        );
+    }
+
+    if (!team) {
+        return (
+            <div className="p-4 text-center text-red-500">
+                Team not found.
+            </div>
+        );
+    }
 
     return (
-        <div className="max-w-3xl mx-auto mt-10 font-poppins px-4">
-            <div className="flex items-center justify-center gap-2 text-sm font-medium mb-8">
-                <BsCheckCircleFill className="text-black dark:text-white" />
-                <span>processwins.app</span>
+        <div className="max-w-4xl mx-auto px-4 py-6 font-[Poppins]">
+            <div className="flex justify-between items-center mb-4">
+                <button
+                    onClick={() => navigate('/coach-dashboard')}
+                    className="flex items-center text-sm font-medium text-gray-600 hover:text-blue-600"
+                >
+                    <MdKeyboardArrowLeft size={20} />
+                    Back to Dashboard
+                </button>
+                <button
+                    onClick={() => setShowDeleteModal(true)}
+                    className="text-red-600 hover:text-red-800 text-sm font-semibold flex items-center gap-1"
+                >
+                    <MdDelete size={18} />
+                    Delete Team
+                </button>
             </div>
 
-            <h1 className="text-2xl font-semibold mb-6">Your Teams</h1>
+            <h1 className="text-xl font-semibold text-gray-800 mb-1">{team.name}</h1>
+            <p className="text-sm text-gray-500 mb-4">Location: {team.location}</p>
 
-            {loading ? (
-                <div className="text-center text-gray-500">Loading teams...</div>
-            ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {teams.map((team) => (
-                        <div
-                            key={team.id}
-                            onClick={() => navigate(`/team/${team.id}/dashboard`)}
-                            className="cursor-pointer bg-white shadow-md rounded-xl p-5 hover:shadow-lg transition"
-                        >
-                            <div className="flex items-center gap-3 mb-2">
-                                <BsFillPeopleFill className="text-blue-600 text-lg" />
-                                <h2 className="text-lg font-bold">{team.name}</h2>
+            <div className="mt-6">
+                <h2 className="text-lg font-semibold text-gray-700 mb-3">Upcoming Events</h2>
+                {events.length === 0 ? (
+                    <p className="text-sm text-gray-500">No events scheduled yet.</p>
+                ) : (
+                    <div className="space-y-3">
+                        {events.map((event) => (
+                            <div
+                                key={event.id}
+                                onClick={() => navigate(`/event/${event.id}/edit`)}
+                                className="bg-white p-4 rounded-lg shadow border border-gray-200 hover:shadow-md transition cursor-pointer"
+                            >
+                                <div className="text-sm font-semibold text-gray-700">
+                                    {new Date(event.event_date).toLocaleDateString(undefined, {
+                                        weekday: 'short', month: 'short', day: 'numeric'
+                                    })} — vs. {event.opponent || 'TBD'}
+                                </div>
+                                <div className="text-xs text-gray-500 mt-1">
+                                    {new Date(event.event_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </div>
                             </div>
-                            <p className="text-sm text-gray-600">{team.location}</p>
-                        </div>
-                    ))}
-                </div>
-            )}
-
-            <div className="mt-10 flex flex-col items-center">
-                <button
-                    onClick={() => navigate('/create-team')}
-                    className="mb-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                    + Create New Team
-                </button>
-
-                <button
-                    onClick={() => navigate('/coach-profile')}
-                    className="text-sm text-blue-600 hover:underline"
-                >
-                    Manage Coach Profile
-                </button>
+                        ))}
+                    </div>
+                )}
             </div>
+
+            <ConfirmDeleteModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={handleDeleteTeam}
+                itemName={team.name}
+                itemType="team"
+            />
         </div>
     );
 }
