@@ -1,4 +1,3 @@
-// src/pages/TeamSubDashboard.jsx
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
@@ -20,16 +19,18 @@ export default function TeamSubDashboard() {
                 .eq('id', teamId)
                 .single();
 
-            if (error) {
-                console.error('Error fetching team:', error);
-            } else {
-                setTeam(data);
+            if (error || !data) {
+                console.warn('No valid team found. Redirecting...');
+                navigate('/create-team');
+                return;
             }
+
+            setTeam(data);
             setLoading(false);
         };
 
         fetchTeam();
-    }, [teamId]);
+    }, [teamId, navigate]);
 
     const handleDelete = async () => {
         const { error } = await supabase
@@ -45,7 +46,9 @@ export default function TeamSubDashboard() {
     };
 
     if (loading) return <div className="p-6 text-center">Loading team...</div>;
-    if (!team) return <div className="p-6 text-center">Team not found</div>;
+    if (!team && !loading) {
+        return <div className="p-6 text-center">Team not found. Please create one.</div>;
+    }
 
     return (
         <div className="max-w-2xl mx-auto mt-10 px-4 font-[Poppins]">
