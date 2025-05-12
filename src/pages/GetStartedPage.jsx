@@ -5,22 +5,38 @@ export default function GetStartedPage() {
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-screen bg-white dark:bg-gray-900 p-6 text-gray-800 dark:text-white">
-            <h1 className="text-3xl font-bold text-center mb-6">Ready To Get Started?</h1>
+        <div className="min-h-screen bg-gray-50 px-4 py-8 font-[Poppins]">
+            {/* Header */}
+            <div className="text-center mb-10">
+                <h1 className="text-2xl font-bold text-gray-800 mb-2">Ready To Get Started?</h1>
+                <p className="text-sm text-gray-500">Choose an option below to begin setting up your team</p>
+            </div>
 
-            <div className="max-w-md mx-auto space-y-4">
-                <button
+            {/* Action Cards */}
+            <div className="space-y-4 max-w-lg mx-auto">
+                <div
                     onClick={() => navigate('/create-team')}
-                    className="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-lg font-semibold transition"
+                    className="cursor-pointer bg-white shadow-md p-5 rounded-xl border border-gray-200 hover:shadow-lg transition"
                 >
-                    Create New Team
-                </button>
-                <button
+                    <h2 className="font-semibold text-lg text-blue-600 mb-1">Create New Team</h2>
+                    <p className="text-sm text-gray-600">Add a roster from scratch</p>
+                </div>
+
+                <div
                     onClick={() => navigate('/join-team')}
-                    className="w-full bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-white py-3 rounded-lg font-semibold transition"
+                    className="cursor-pointer bg-white shadow-md p-5 rounded-xl border border-gray-200 hover:shadow-lg transition"
                 >
-                    Join Existing Team
-                </button>
+                    <h2 className="font-semibold text-lg text-blue-600 mb-1">Find Your Team</h2>
+                    <p className="text-sm text-gray-600">Join an existing team</p>
+                </div>
+
+                <div
+                    onClick={() => navigate('/create-organization')}
+                    className="cursor-pointer bg-white shadow-md p-5 rounded-xl border border-gray-200 hover:shadow-lg transition"
+                >
+                    <h2 className="font-semibold text-lg text-blue-600 mb-1">Create an Organization</h2>
+                    <p className="text-sm text-gray-600">For leagues, clubs, or tournament admins</p>
+                </div>
             </div>
         </div>
     );
