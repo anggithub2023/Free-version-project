@@ -1,69 +1,67 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import AppShell from './components/AppShell';
-import { TeamProvider } from './context/TeamContext';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-// ✅ Pages
+// Pages
 import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import SignupPage from './pages/SignupPage'; // 👈 New route
-import DashboardPage from './pages/DashboardPage';
 import ReflectionPage from './pages/ReflectionPage';
-import ReadinessPage from './pages/ReadinessPage';
-import InjuryPage from './pages/InjuryPage';
-import PlayerStatsPage from './pages/PlayerStatsPage';
-import VideosPage from './pages/VideosPage';
-import WorkoutsPage from './pages/WorkoutsPage';
-import AnalyticsDashboard from './pages/AnalyticsDashboard';
-import ResultsPage from './pages/ResultsPage';
-import CreateEventPage from './pages/CreateEventPage';
-import RSVPEventPage from './pages/RSVPEventPage';
-import TeamDashboard from './pages/TeamDashboard';
-import CoachEventDashboard from './pages/CoachEventDashboard';
 import CreateTeamPage from './pages/CreateTeamPage';
-import JoinTeamPage from './pages/JoinTeamPage'; // 👈 Optional
-import CoachProfilePage from './pages/CoachProfilePage';
+import JoinTeamPage from './pages/JoinTeamPage';
 import TeamSubDashboard from './pages/TeamSubDashboard';
+import CreateEventPage from './pages/CreateEventPage';
+import CoachEventDashboard from './pages/CoachEventDashboard';
+import RSVPEventPage from './pages/RSVPEventPage';
+import PlayerStatsPage from './pages/PlayerStatsPage';
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import WorkoutsPage from './pages/WorkoutsPage';
+import InjuryPage from './pages/InjuryPage';
+import VideosPage from './pages/VideosPage';
+import ResultsPage from './pages/ResultsPage';
+import CoachProfilePage from './pages/CoachProfilePage';
+import SignupPage from './pages/SignupPage';
+import LoginPage from './pages/LoginPage';
 import GetStartedPage from './pages/GetStartedPage';
+import CoachDashboard from './pages/CoachDashboard';
+
+// Hooks
+import useTeamMembershipRedirect from './hooks/useTeamMembershipRedirect';
 
 export default function App() {
+    // ⛔ Uncomment if using route guards via redirect (e.g. from /coach-dashboard)
+    // useTeamMembershipRedirect();
+
     return (
-        <TeamProvider>
-            <AppShell>
-                <Routes>
-                    {/* 🌐 Public */}
-                    <Route path="/" element={<HomePage />} />
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/signup" element={<SignupPage />} /> {/* 👈 New */}
+        <Router>
+            <Routes>
+                {/* Public Routes */}
+                <Route path="/" element={<HomePage />} />
+                <Route path="/reflect" element={<ReflectionPage />} />
+                <Route path="/signup" element={<SignupPage />} />
+                <Route path="/login" element={<LoginPage />} />
 
-                    {/* 📊 Core Pages */}
-                    <Route path="/dashboard" element={<DashboardPage />} />
-                    <Route path="/reflect" element={<ReflectionPage />} />
-                    <Route path="/readiness" element={<ReadinessPage />} />
-                    <Route path="/injury" element={<InjuryPage />} />
-                    <Route path="/playerstats" element={<PlayerStatsPage />} />
-                    <Route path="/videos" element={<VideosPage />} />
-                    <Route path="/workouts" element={<WorkoutsPage />} />
-                    <Route path="/analytics" element={<AnalyticsDashboard />} />
-                    <Route path="/results" element={<ResultsPage />} />
+                {/* Coach or Authenticated User Routes */}
+                <Route path="/coach-dashboard" element={<CoachDashboard />} />
+                <Route path="/team/:teamId/dashboard" element={<TeamSubDashboard />} />
+                <Route path="/team/:teamId/events/create" element={<CreateEventPage />} />
+                <Route path="/team/:teamId/events/admin" element={<CoachEventDashboard />} />
+                <Route path="/team/:teamId/events/:eventId/rsvp" element={<RSVPEventPage />} />
+                <Route path="/team/:teamId/players" element={<PlayerStatsPage />} />
 
-                    {/* 🧠 Scheduling + Teams */}
-                    <Route path="/coach-dashboard" element={<TeamDashboard />} />
-                    <Route path="/team/:teamId/events/create" element={<CreateEventPage />} />
-                    <Route path="/team/:teamId/events/:eventId" element={<RSVPEventPage />} />
-                    <Route path="/team/:teamId/events/admin" element={<CoachEventDashboard />} />
+                {/* Utilities */}
+                <Route path="/analytics" element={<AnalyticsDashboard />} />
+                <Route path="/workouts" element={<WorkoutsPage />} />
+                <Route path="/injury" element={<InjuryPage />} />
+                <Route path="/videos" element={<VideosPage />} />
+                <Route path="/results" element={<ResultsPage />} />
+                <Route path="/coach-profile" element={<CoachProfilePage />} />
 
-                    {/* 👥 Team management */}
-                    <Route path="/create-team" element={<CreateTeamPage />} />
-                    <Route path="/join-team" element={<JoinTeamPage />} />
-                    <Route path="/coach-profile" element={<CoachProfilePage />} />
-                    <Route path="/team/:teamId/dashboard" element={<TeamSubDashboard />} /> // ✅ Sub-dashboard for a single team
-                    <Route path="/get-started" element={<GetStartedPage />} />
+                {/* Team Management */}
+                <Route path="/create-team" element={<CreateTeamPage />} />
+                <Route path="/join-team" element={<JoinTeamPage />} />
+                <Route path="/get-started" element={<GetStartedPage />} />
 
-                    {/* ❌ 404 fallback */}
-                    <Route path="*" element={<div className="p-6 text-center">Page not found</div>} />
-                </Routes>
-            </AppShell>
-        </TeamProvider>
+                {/* Catch-all */}
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </Router>
     );
 }
