@@ -14,6 +14,7 @@ export default function LoginPage() {
         setErrorMsg('');
         setLoading(true);
 
+        // 🔐 Sign in
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
             email,
             password,
@@ -25,9 +26,29 @@ export default function LoginPage() {
             return;
         }
 
-        // ✅ Redirect to full dashboard with team cards
-        navigate('/dashboard');
-        navigate('/coach-dashboard'); // NOT '/dashboard'
+        const user = authData.user;
+
+        // 🧠 Check team membership
+        const { data: teamMemberships, error: teamError } = await supabase
+            .from('team_memberships')
+            .select('team_id')
+            .eq('user_id', user.id)
+            .limit(1);
+
+        if (teamError) {
+            setErrorMsg('Error loading teams.');
+            setLoading(false);
+            return;
+        }
+
+        // 🚦 Redirect
+        if (teamMemberships?.length) {
+            const teamId = teamMemberships[0].team_id;
+            navigate(`/team/${teamId}/admin`);
+        } else {
+            navigate('/create-team');
+        }
+
         setLoading(false);
     };
 
