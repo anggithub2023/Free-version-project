@@ -1,44 +1,30 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import supabase from '../lib/supabaseClient';
+useEffect(() => {
+    const redirectIfNoTeam = async () => {
+        const { data: session } = await supabase.auth.getSession();
+        const userId = session?.session?.user?.id;
 
-export default function useTeamMembershipRedirect() {
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+        if (!userId) {
+            setLoading(false);
+            return;
+        }
 
-    useEffect(() => {
-        const redirectIfNoTeam = async () => {
-            try {
-                const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-                const userId = sessionData?.session?.user?.id;
+        const { data: memberships, error } = await supabase
+            .from('team_memberships')
+            .select('team_id')
+            .eq('user_id', userId);
 
-                if (!userId || sessionError) {
-                    console.warn('No user session found');
-                    setLoading(false);
-                    return;
-                }
+        if (error) {
+            console.error('Error fetching team memberships:', error.message);
+            setLoading(false);
+            return;
+        }
 
-                const { data: memberships, error: fetchError } = await supabase
-                    .from('team_memberships')
-                    .select('team_id')
-                    .eq('user_id', userId);
+        setLoading(false);
 
-                if (fetchError) {
-                    console.error('Error fetching team memberships:', fetchError.message);
-                }
+        if (!memberships?.length) {
+            navigate('/create-team');
+        }
+    };
 
-                if (!memberships || memberships.length === 0) {
-                    navigate('/create-team');
-                }
-            } catch (err) {
-                console.error('Unexpected error in useTeamMembershipRedirect:', err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        redirectIfNoTeam();
-    }, [navigate]);
-
-    return loading;
-}
+    redirectIfNoTeam();
+}, [navigate]);
