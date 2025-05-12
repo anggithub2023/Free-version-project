@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
+import { resolveTeamAccess } from '../services/resolveTeamAccess'; // ✅ top-level import
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -14,7 +15,6 @@ export default function LoginPage() {
         setErrorMsg('');
         setLoading(true);
 
-        // 🔐 Sign in
         const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
             email,
             password,
@@ -28,20 +28,15 @@ export default function LoginPage() {
 
         const user = authData.user;
 
-        // 🧠 Check team membership
-        import { resolveTeamAccess } from '../services/resolveTeamAccess';
-
-// Inside handleLogin()
         const teamMemberships = await resolveTeamAccess(user.id, user.email);
 
-        if (teamError) {
+        if (!teamMemberships) {
             setErrorMsg('Error loading teams.');
             setLoading(false);
             return;
         }
 
-        // 🚦 Redirect
-        if (teamMemberships?.length) {
+        if (teamMemberships.length > 0) {
             const teamId = teamMemberships[0].team_id;
             navigate(`/team/${teamId}/admin`);
         } else {
