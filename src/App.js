@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 // Pages
+import DashboardPage from './pages/DashboardPage';
 import HomePage from './pages/HomePage';
 import ReflectionPage from './pages/ReflectionPage';
 import CreateTeamPage from './pages/CreateTeamPage';
@@ -31,6 +32,7 @@ export default function App() {
         <Router>
             <Routes>
                 {/* Public Routes */}
+                <Route path="/dashboard" element={<DashboardPage />} />
                 <Route path="/" element={<HomePage />} />
                 <Route path="/reflect" element={<ReflectionPage />} />
                 <Route path="/signup" element={<SignupPage />} />
