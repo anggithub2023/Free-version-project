@@ -1,39 +1,36 @@
-// src/hooks/useTeamMembershipRedirect.js
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import supabase from '../lib/supabaseClient';
 
 export default function useTeamMembershipRedirect() {
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
-        const checkMembership = async () => {
-            const { data: authData, error: userErr } = await supabase.auth.getUser();
-            const user = authData?.user;
+        const redirectIfNoTeam = async () => {
+            const { data: session } = await supabase.auth.getSession();
+            const userId = session?.session?.user?.id;
 
-            if (!user || userErr) {
-                console.warn('No authenticated user found.');
-                return;
-            }
+            if (!userId) return;
 
-            const { data: memberships, error: fetchErr } = await supabase
+            const { data: memberships, error } = await supabase
                 .from('team_memberships')
                 .select('team_id')
-                .eq('user_id', user.id);
+                .eq('user_id', userId);
 
-            if (fetchErr) {
-                console.error('Error checking team memberships:', fetchErr.message);
-                return;
+            if (error) {
+                console.error('Error fetching team memberships:', error.message);
             }
 
-            if (!memberships || memberships.length === 0) {
-                navigate('/get-started');
-            } else if (memberships.length === 1) {
-                navigate(`/team/${memberships[0].team_id}/dashboard`);
+            if (!memberships?.length) {
+                navigate('/create-team');
             }
-            // Else: stay on current route or show a picker later
+
+            setLoading(false);
         };
 
-        checkMembership();
+        redirectIfNoTeam();
     }, [navigate]);
+
+    return loading;
 }
