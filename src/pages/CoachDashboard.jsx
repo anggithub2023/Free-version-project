@@ -4,7 +4,7 @@ import supabase from '../lib/supabaseClient';
 import ConfirmDeleteModal from '../components/common/ConfirmDeleteModal';
 import { MdDelete, MdKeyboardArrowLeft } from 'react-icons/md';
 
-export default function TeamDashboard() {
+export default function CoachDashboard() {
     const { teamId: paramTeamId } = useParams();
     const navigate = useNavigate();
     const teamId = paramTeamId || localStorage.getItem('teamId');
