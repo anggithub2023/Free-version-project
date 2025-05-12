@@ -8,25 +8,33 @@ export default function useTeamMembershipRedirect() {
 
     useEffect(() => {
         const redirectIfNoTeam = async () => {
-            const { data: session } = await supabase.auth.getSession();
-            const userId = session?.session?.user?.id;
+            try {
+                const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+                const userId = sessionData?.session?.user?.id;
 
-            if (!userId) return;
+                if (!userId || sessionError) {
+                    console.warn('No user session found');
+                    setLoading(false);
+                    return;
+                }
 
-            const { data: memberships, error } = await supabase
-                .from('team_memberships')
-                .select('team_id')
-                .eq('user_id', userId);
+                const { data: memberships, error: fetchError } = await supabase
+                    .from('team_memberships')
+                    .select('team_id')
+                    .eq('user_id', userId);
 
-            if (error) {
-                console.error('Error fetching team memberships:', error.message);
+                if (fetchError) {
+                    console.error('Error fetching team memberships:', fetchError.message);
+                }
+
+                if (!memberships || memberships.length === 0) {
+                    navigate('/create-team');
+                }
+            } catch (err) {
+                console.error('Unexpected error in useTeamMembershipRedirect:', err);
+            } finally {
+                setLoading(false);
             }
-
-            if (!memberships?.length) {
-                navigate('/create-team');
-            }
-
-            setLoading(false);
         };
 
         redirectIfNoTeam();
