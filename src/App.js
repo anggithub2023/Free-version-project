@@ -22,8 +22,6 @@ import LoginPage from './pages/LoginPage';
 import GetStartedPage from './pages/GetStartedPage';
 import CoachDashboard from './pages/CoachDashboard';
 
-// Hooks
-import useTeamMembershipRedirect from './hooks/useTeamMembershipRedirect';
 
 export default function App() {
     // ⛔ Uncomment if using route guards via redirect (e.g. from /coach-dashboard)
@@ -40,7 +38,7 @@ export default function App() {
 
                 {/* Coach or Authenticated User Routes */}
                 <Route path="/coach-dashboard" element={<CoachDashboard />} />
-                <Route path="/team/:teamId/dashboard" element={<TeamSubDashboard />} />
+                <Route path="/team/:teamId/admin" element={<TeamSubDashboard />} />
                 <Route path="/team/:teamId/events/create" element={<CreateEventPage />} />
                 <Route path="/team/:teamId/events/admin" element={<CoachEventDashboard />} />
                 <Route path="/team/:teamId/events/:eventId/rsvp" element={<RSVPEventPage />} />
