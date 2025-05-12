@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 // Pages
 import HomePage from './pages/HomePage';
@@ -20,7 +20,7 @@ import CoachProfilePage from './pages/CoachProfilePage';
 import SignupPage from './pages/SignupPage';
 import LoginPage from './pages/LoginPage';
 import GetStartedPage from './pages/GetStartedPage';
-import CoachDashboard from './pages/CoachDashboard';
+import CoachDashboard from './pages/TeamDashboard';
 
 export default function App() {
     return (
