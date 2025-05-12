@@ -1,31 +1,22 @@
 import supabase from '../lib/supabaseClient';
 
 /**
- * Resolves team access for a logged-in user by:
- * 1. Linking any pending invites (matching invited_email).
- * 2. Returning all teams this user belongs to.
- *
- * @param {string} userId - Supabase Auth User ID
- * @param {string} email - Authenticated user's email
- * @returns {Promise<Array>} Array of team memberships
+ * Links invited_email to user_id and returns all teams user belongs to
  */
 export async function resolveTeamAccess(userId, email) {
-    if (!userId || !email) {
-        console.warn('resolveTeamAccess: Missing userId or email');
-        return [];
-    }
+    if (!userId || !email) return [];
 
-    // Step 1: Link any pending invites
+    // Step 1: Claim any invited slots
     await supabase
         .from('team_memberships')
         .update({ user_id: userId })
         .eq('invited_email', email)
-        .is('user_id', null); // only update unclaimed invites
+        .is('user_id', null);
 
-    // Step 2: Fetch all team memberships for this user
+    // Step 2: Get all team memberships
     const { data, error } = await supabase
         .from('team_memberships')
-        .select('team_id, role, teams (name, location)')
+        .select('team_id')
         .eq('user_id', userId);
 
     if (error) {
