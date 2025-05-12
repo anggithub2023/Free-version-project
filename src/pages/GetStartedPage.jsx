@@ -1,42 +1,35 @@
+// src/pages/GetStartedPage.jsx
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BsFillPeopleFill, BsPlusCircle, BsBoxArrowInRight } from 'react-icons/bs';
 
 export default function GetStartedPage() {
     const navigate = useNavigate();
 
     return (
-        <div className="min-h-screen bg-gray-50 px-4 py-8 font-[Poppins]">
-            {/* Header */}
-            <div className="text-center mb-10">
-                <h1 className="text-2xl font-bold text-gray-800 mb-2">Ready To Get Started?</h1>
-                <p className="text-sm text-gray-500">Choose an option below to begin setting up your team</p>
-            </div>
+        <div className="max-w-md mx-auto mt-24 px-4 text-center font-[Poppins]">
+            <BsFillPeopleFill className="text-4xl mx-auto text-blue-600 mb-4" />
+            <h1 className="text-2xl font-semibold mb-2">Welcome to ProcessWins</h1>
+            <p className="text-sm text-gray-600 mb-8">
+                Get started by creating or joining a team.
+            </p>
 
-            {/* Action Cards */}
-            <div className="space-y-4 max-w-lg mx-auto">
-                <div
+            <div className="flex flex-col gap-4">
+                <button
                     onClick={() => navigate('/create-team')}
-                    className="cursor-pointer bg-white shadow-md p-5 rounded-xl border border-gray-200 hover:shadow-lg transition"
+                    className="flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
                 >
-                    <h2 className="font-semibold text-lg text-blue-600 mb-1">Create New Team</h2>
-                    <p className="text-sm text-gray-600">Add a roster from scratch</p>
-                </div>
+                    <BsPlusCircle className="text-lg" />
+                    Create a Team
+                </button>
 
-                <div
+                <button
                     onClick={() => navigate('/join-team')}
-                    className="cursor-pointer bg-white shadow-md p-5 rounded-xl border border-gray-200 hover:shadow-lg transition"
+                    className="flex items-center justify-center gap-2 px-4 py-3 border border-blue-600 text-blue-600 rounded hover:bg-blue-50 transition"
                 >
-                    <h2 className="font-semibold text-lg text-blue-600 mb-1">Find Your Team</h2>
-                    <p className="text-sm text-gray-600">Join an existing team</p>
-                </div>
-
-                <div
-                    onClick={() => navigate('/create-organization')}
-                    className="cursor-pointer bg-white shadow-md p-5 rounded-xl border border-gray-200 hover:shadow-lg transition"
-                >
-                    <h2 className="font-semibold text-lg text-blue-600 mb-1">Create an Organization</h2>
-                    <p className="text-sm text-gray-600">For leagues, clubs, or tournament admins</p>
-                </div>
+                    <BsBoxArrowInRight className="text-lg" />
+                    Join with a Code
+                </button>
             </div>
         </div>
     );
