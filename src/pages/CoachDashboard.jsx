@@ -9,20 +9,25 @@ export default function CoachDashboard() {
     const [teams, setTeams] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [authLoading, setAuthLoading] = useState(true); // 👈 new
 
     useEffect(() => {
         const fetchTeams = async () => {
             setLoading(true);
             setError(null);
+            setAuthLoading(true);
 
             const { data: authData, error: userError } = await supabase.auth.getUser();
-
             const userId = authData?.user?.id;
+
             if (!userId || userError) {
                 setError('Unable to fetch user session.');
                 setLoading(false);
+                setAuthLoading(false);
                 return;
             }
+
+            setAuthLoading(false); // ✅ auth is confirmed
 
             const { data, error: fetchError } = await supabase
                 .from('teams')
@@ -36,7 +41,7 @@ export default function CoachDashboard() {
             }
 
             if (data.length === 0) {
-                navigate('/create-team'); // GC-style redirect for new coach
+                navigate('/create-team');
                 return;
             }
 
@@ -46,6 +51,11 @@ export default function CoachDashboard() {
 
         fetchTeams();
     }, [navigate]);
+
+    // ✅ Prevent early render until auth check completes
+    if (authLoading) {
+        return <div className="p-6 text-center text-gray-500">Authenticating...</div>;
+    }
 
     return (
         <div className="max-w-3xl mx-auto mt-10 font-poppins px-4">
