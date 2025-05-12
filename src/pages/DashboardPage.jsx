@@ -6,7 +6,7 @@ import { MdHealthAndSafety, MdOutlineEditNote } from 'react-icons/md';
 import useAnonymousUser from '../hooks/useAnonymousUser';
 import { ensureUserExists } from '../services/syncService';
 
-function HomePage() {
+function DashboardPage() {
     const navigate = useNavigate();
     const userId = useAnonymousUser();
     const [hideHeader, setHideHeader] = useState(false);
@@ -125,4 +125,4 @@ function HomePage() {
     );
 }
 
-export default HomePage;
+export default DashboardPage;
