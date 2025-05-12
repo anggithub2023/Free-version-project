@@ -122,3 +122,22 @@ export const ensureUserExists = async (userId) => {
         if (error) throw error;
     }
 };
+
+// ✅ Save process-oriented reflection
+export const saveProcess = async (processEntry) => {
+    const userId = getUserId();
+    if (!userId) throw new Error('Missing user ID');
+
+    const normalizedProcess = {
+        ...processEntry,
+        user_id: userId,
+    };
+
+    console.log('🔄 Saving process reflection:', normalizedProcess);
+
+    const { error } = await supabase.from('process_reflections').insert([normalizedProcess]);
+    if (error) {
+        console.error('❌ Supabase error saving process:', error.message);
+        throw error;
+    }
+};
