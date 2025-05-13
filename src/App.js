@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 
 import HomePage from './pages/HomePage';
 import ReflectionPage from './pages/ReflectionPage';
+import ProcessPage from './pages/ProcessPage';
 import ReadinessPage from './pages/ReadinessPage';
 import InjuryPage from './pages/InjuryPage';
 import PlayerStatsPage from './pages/PlayerStatsPage';
@@ -20,6 +21,7 @@ function App() {
         <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/reflect" element={<ReflectionPage />} />
+            <Route path="/process" element={<ProcessPage />} />
             <Route path="/readiness" element={<ReadinessPage />} />
             <Route path="/injury" element={<InjuryPage />} />
             <Route path="/playerstats" element={<PlayerStatsPage />} />
