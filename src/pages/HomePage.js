@@ -19,7 +19,7 @@ export default function HomePage() {
     }, [userId]);
 
     return (
-        <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-black text-black dark:text-white px-6 py-8 font-sans">
+        <div className="min-h-screen bg-gray-100 dark:bg-black text-black dark:text-white px-6 py-8 font-sans">
             {/* Header */}
             <div className="flex items-center justify-center gap-2 text-sm font-medium mb-4">
                 <BsCheckCircleFill className="text-black dark:text-white" />
@@ -27,7 +27,7 @@ export default function HomePage() {
             </div>
 
             {/* Main Content */}
-            <main className="flex-grow mt-8">
+            <main className="mt-8">
                 {/* Arrow Above First Section */}
                 <div className="flex justify-center mb-6 animate-fade-up">
                     <HiOutlineArrowDown className="text-4xl text-gray-400 dark:text-gray-500" />
@@ -99,7 +99,7 @@ export default function HomePage() {
             )}
 
             {/* Footer */}
-            <footer className="text-center text-[10px] text-gray-500 dark:text-gray-400 py-2 mt-2">
+            <footer className="text-center text-[10px] text-gray-500 dark:text-gray-400 mt-8">
                 <p>© {new Date().getFullYear()} processwins.app</p>
                 <a
                     href="https://docs.google.com/forms/d/e/1FAIpQLSeopJAyVo6uA4CEKw0bVEbgTEDHwQr2S8Xev17D1KkUZcFDIQ/viewform?usp=dialog"
