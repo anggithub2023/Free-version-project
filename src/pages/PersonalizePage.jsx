@@ -148,7 +148,7 @@ export default function PersonalizePage() {
                             <li>Get a more personal experience with saved stats and progress</li>
                         </ul>
                         <p className="text-sm mb-4">
-                            No email or login needed — just your name and a simple PIN.
+                            No email or login needed — just a nickname and a simple PIN.
                         </p>
                         <div className="text-center">
                             <button
