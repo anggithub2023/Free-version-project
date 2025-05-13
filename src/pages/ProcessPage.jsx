@@ -1,112 +1,53 @@
-// src/pages/ProcessPage.jsx
+// src/components/Process/SectionBlockProcess.jsx
 
-import React, { useReducer, useEffect, useState } from 'react';
-import PROCESS_CATEGORIES from '../data/PROCESS_CATEGORIES';
-import getRandomProcessCategories from '../helpers/getRandomProcessCategories';
-import getRandomQuestionsPerCategory from '../helpers/getRandomQuestionsPerCategory';
-import SectionBlockProcess from '../components/Process/SectionBlockProcess';
-import { saveProcess } from '../services/syncService';
-import answersReducer from '../reducers/answersReducer';
+import React from 'react';
 
-function ProcessPage() {
-    const [categories, setCategories] = useState(() => {
-        const saved = localStorage.getItem('randomProcessCategories');
-        return saved ? JSON.parse(saved) : null;
-    });
-
-    const [answers, dispatch] = useReducer(
-        answersReducer,
-        {},
-        () => JSON.parse(localStorage.getItem('processAnswers')) || {}
-    );
-
-    const [showModal, setShowModal] = useState(false);
-
-    useEffect(() => {
-        if (!categories) {
-            const selected = getRandomProcessCategories(PROCESS_CATEGORIES, 4);
-            const randomized = getRandomQuestionsPerCategory(selected, 3);
-            localStorage.setItem('randomProcessCategories', JSON.stringify(randomized));
-            setCategories(randomized);
-        }
-    }, [categories]);
-
-    useEffect(() => {
-        localStorage.setItem('processAnswers', JSON.stringify(answers));
-    }, [answers]);
-
-    const handleAnswer = (section, idx, value) => {
-        const key = `${section}-${idx}`;
-        dispatch({ type: 'SET_ANSWER', key, value });
-    };
-
-    const handleSubmit = async () => {
-        const response = categories.map((cat) => ({
-            key: cat.key,
-            title: cat.title,
-            questions: cat.questions.map((q, idx) => {
-                const key = `${cat.key}-${idx}`;
-                return { question: q, ...answers[key] };
-            })
-        }));
-
-        const processData = {
-            categories: response,
-            created_at: new Date().toISOString()
-        };
-
-        try {
-            await saveProcess(processData);
-        } catch (err) {
-            const queue = JSON.parse(localStorage.getItem('unsyncedProcesses') || '[]');
-            queue.push(processData);
-            localStorage.setItem('unsyncedProcesses', JSON.stringify(queue));
-        }
-
-        localStorage.setItem('latestProcess', JSON.stringify(processData));
-        setShowModal(true);
-        dispatch({ type: 'RESET' });
-    };
-
-    if (!categories) {
-        return <div className="text-center p-10">Loading your process journey...</div>;
-    }
-
+function SectionBlockProcess({ title, description, questions, sectionKey, answers, handleAnswer }) {
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white p-6 font-poppins">
-            <div className="max-w-4xl mx-auto">
-                <h1 className="text-4xl font-bold text-center mb-1">Own Your Process</h1>
-                <p className="text-center text-sm text-gray-500 mb-6">Take Control. Build Habits. See Results</p>
+        <div className="mb-12">
+            <div className="mb-4">
+                <h2 className="text-xl font-bold">{title}</h2>
+                <p className="text-gray-600 italic text-sm">{description}</p>
+            </div>
 
-                {categories.map((cat) => (
-                    <SectionBlockProcess
-                        key={cat.key}
-                        title={cat.title}
-                        description={cat.description}
-                        questions={cat.questions}
-                        sectionKey={cat.key}
-                        answers={answers}
-                        handleAnswer={handleAnswer}
-                    />
-                ))}
+            <div className="space-y-6">
+                {questions.map((question, idx) => {
+                    const key = `${sectionKey}-${idx}`;
+                    const entry = answers[key] || { rating: 0, note: '' };
 
-                <div className="flex justify-center mt-8">
-                    <button
-                        onClick={handleSubmit}
-                        className="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-6 rounded-full shadow"
-                    >
-                        Submit Process
-                    </button>
-                </div>
+                    return (
+                        <div key={key} className="p-4 border rounded-xl bg-white dark:bg-gray-800 shadow">
+                            <p className="font-medium text-gray-900 dark:text-white mb-2">{question}</p>
 
-                {showModal && (
-                    <div className="text-center mt-6 text-green-600 font-semibold">
-                        Process submitted successfully!
-                    </div>
-                )}
+                            <div className="flex flex-wrap items-center gap-2 mb-3">
+                                {[1, 2, 3, 4, 5].map((num) => (
+                                    <button
+                                        key={num}
+                                        onClick={() => handleAnswer(sectionKey, idx, { ...entry, rating: num })}
+                                        className={`w-10 h-10 rounded-full border font-bold transition-all
+                      ${entry.rating === num
+                                            ? 'bg-indigo-600 text-white border-indigo-700 scale-105'
+                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                                    >
+                                        {num}
+                                    </button>
+                                ))}
+
+                                <input
+                                    type="text"
+                                    value={entry.note}
+                                    onChange={(e) => handleAnswer(sectionKey, idx, { ...entry, note: e.target.value })}
+                                    className="flex-1 min-w-[150px] md:min-w-[200px] border p-2 rounded-md text-sm dark:bg-gray-900 dark:text-white"
+                                    placeholder="Optional note (max 50 chars)"
+                                    maxLength={50}
+                                />
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
 }
 
-export default ProcessPage;
+export default SectionBlockProcess;
