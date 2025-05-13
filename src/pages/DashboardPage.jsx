@@ -5,6 +5,7 @@ import { GiLevelEndFlag, GiMuscleUp } from 'react-icons/gi';
 import { MdHealthAndSafety, MdOutlineEditNote } from 'react-icons/md';
 import useAnonymousUser from '../hooks/useAnonymousUser';
 import { ensureUserExists } from '../services/syncService';
+import StickyCtaBar from '../components/StickyCtaBar';
 
 function DashboardPage() {
     const navigate = useNavigate();
@@ -12,7 +13,6 @@ function DashboardPage() {
     const [hideHeader, setHideHeader] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
 
-    // 🔍 Check dev mode
     const devMode = localStorage.getItem('devMode') === 'true';
 
     useEffect(() => {
@@ -90,10 +90,10 @@ function DashboardPage() {
             shadow: 'hover:shadow-teal-300',
             description: 'Watch practice footage, breakdowns, or motivational clips.',
         }
-    ].filter(Boolean); // remove `false` entries when devMode is false
+    ].filter(Boolean);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white dark:from-gray-900 dark:to-gray-800">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-white dark:from-gray-900 dark:to-gray-800 pb-24">
             <header className={`w-full text-center py-6 bg-white dark:bg-gray-900 bg-opacity-80 shadow-sm sticky top-0 z-50 transition-transform duration-300 sm:translate-y-0 ${hideHeader ? '-translate-y-full' : 'translate-y-0'}`}>
                 <h1 className="flex items-center justify-center gap-2 text-3xl sm:text-4xl font-bold text-indigo-700 dark:text-indigo-200 tracking-tight">
                     <GiLevelEndFlag className="text-white bg-indigo-500 rounded-full p-2 text-5xl" /> Elevate
@@ -129,6 +129,8 @@ function DashboardPage() {
             <footer className="mt-12 text-center text-xs text-gray-500 dark:text-gray-400 px-4 pb-6">
                 © {new Date().getFullYear()} Process Reflection™ — processwins.app. All rights reserved.
             </footer>
+
+            <StickyCtaBar onHome={() => navigate('/')} />
         </div>
     );
 }
