@@ -71,9 +71,10 @@ function ProcessPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white p-6">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white p-6 font-poppins">
             <div className="max-w-4xl mx-auto">
-                <h1 className="text-4xl font-bold text-center mb-4">Process Reflection</h1>
+                <h1 className="text-4xl font-bold text-center mb-1">Own Your Process</h1>
+                <p className="text-center text-sm text-gray-500 mb-6">Take Control. Build Habits. See Results</p>
 
                 {categories.map((cat) => (
                     <SectionBlockProcess
