@@ -69,7 +69,10 @@ export default function PersonalizePage() {
 
             <div className="max-w-xl w-full mx-auto">
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-10">
-                    <h2 className="text-xl font-semibold mb-4 text-center">Save My Progress</h2>
+                    <h2 className="text-xl font-semibold mb-1">Create My Profile</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                        This helps us remember who you are and connect your data.
+                    </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
                         <input
                             type="text"
@@ -99,7 +102,10 @@ export default function PersonalizePage() {
 
             <div className="max-w-xl w-full mx-auto">
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-10">
-                    <h2 className="text-xl font-semibold mb-4 text-center">Restore My Progress</h2>
+                    <h2 className="text-xl font-semibold mb-1">Restore My Profile</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                        Enter your nickname and PIN to reconnect your data.
+                    </p>
                     <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
                         <input
                             type="text"
