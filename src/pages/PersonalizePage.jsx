@@ -93,21 +93,25 @@ export default function PersonalizePage() {
                     </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
-                    <input
-                        type="text"
-                        placeholder="Nickname"
-                        value={nickname}
-                        onChange={(e) => setNickname(e.target.value)}
-                        className="p-2 rounded border w-full max-w-xs"
-                    />
-                    <input
-                        type="password"
-                        placeholder="4-digit PIN"
-                        value={pin}
-                        onChange={(e) => setPin(e.target.value)}
-                        className="p-2 rounded border w-full max-w-xs"
-                        maxLength={4}
-                    />
+                    <div className="w-full sm:w-auto">
+                        <input
+                            type="text"
+                            placeholder="Nickname"
+                            value={nickname}
+                            onChange={(e) => setNickname(e.target.value)}
+                            className="p-2 rounded border w-full max-w-xs"
+                        />
+                    </div>
+                    <div className="w-full sm:w-auto">
+                        <input
+                            type="password"
+                            placeholder="4-digit PIN"
+                            value={pin}
+                            onChange={(e) => setPin(e.target.value)}
+                            maxLength={4}
+                            className="p-2 rounded border w-full max-w-[140px]"
+                        />
+                    </div>
                 </div>
                 <button
                     onClick={handleSave}
@@ -127,21 +131,25 @@ export default function PersonalizePage() {
                     </p>
                 </div>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
-                    <input
-                        type="text"
-                        placeholder="Nickname"
-                        value={restoreNickname}
-                        onChange={(e) => setRestoreNickname(e.target.value)}
-                        className="p-2 rounded border w-full max-w-xs"
-                    />
-                    <input
-                        type="password"
-                        placeholder="PIN"
-                        value={restorePin}
-                        onChange={(e) => setRestorePin(e.target.value)}
-                        className="p-2 rounded border w-full max-w-xs"
-                        maxLength={4}
-                    />
+                    <div className="w-full sm:w-auto">
+                        <input
+                            type="text"
+                            placeholder="Nickname"
+                            value={restoreNickname}
+                            onChange={(e) => setRestoreNickname(e.target.value)}
+                            className="p-2 rounded border w-full max-w-xs"
+                        />
+                    </div>
+                    <div className="w-full sm:w-auto">
+                        <input
+                            type="password"
+                            placeholder="PIN"
+                            value={restorePin}
+                            onChange={(e) => setRestorePin(e.target.value)}
+                            maxLength={4}
+                            className="p-2 rounded border w-full max-w-[140px]"
+                        />
+                    </div>
                 </div>
                 <button
                     onClick={handleRestore}
