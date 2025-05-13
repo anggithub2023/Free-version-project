@@ -69,7 +69,7 @@ function ProcessPage() {
         setShowModal(true);
         dispatch({ type: 'RESET' });
 
-        setTimeout(() => navigate('/dashboard'), 2500);
+        setTimeout(() => navigate('/dashboard'), 3500);
     };
 
     if (!categories) {
@@ -106,13 +106,17 @@ function ProcessPage() {
                 {showModal && (
                     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
                         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl text-center max-w-md w-full">
-                            <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">Reflection Saved!</h2>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">
-                                You're being redirected to your dashboard.
-                            </p>
-                        </div>
+                            <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
+                                Process saved.
+                                <br />
+                                <span className="text-base font-normal">Trust it. Follow it. Perform with purpose.</span>
+                            </h2>
+                        <p className="text-sm text-gray-600 dark:text-gray-300">
+                            You're being redirected to your dashboard.
+                        </p>
                     </div>
-                )}
+                    </div>
+                    )}
             </div>
         </div>
     );
