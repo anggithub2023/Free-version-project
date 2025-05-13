@@ -67,6 +67,7 @@ export default function PersonalizePage() {
         if (error || !data) {
             setMessage('❌ Could not find a matching record.');
         } else {
+            localStorage.setItem('uuid', data.user_id);
             localStorage.setItem('userId', data.user_id);
             setMessage('✅ Progress restored!');
             navigate('/dashboard');
@@ -86,14 +87,12 @@ export default function PersonalizePage() {
             </div>
 
             <div className="max-w-xl w-full mx-auto">
-                <div className="text-center mb-6">
-                    <h2 className="text-xl font-semibold mb-1">Create My Profile</h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-10">
+                    <h2 className="text-xl font-semibold mb-2 text-center">Create My Profile</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
                         This helps us remember who you are and connect your data.
                     </p>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
-                    <div className="w-full sm:w-auto">
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
                         <input
                             type="text"
                             placeholder="Nickname"
@@ -101,37 +100,31 @@ export default function PersonalizePage() {
                             onChange={(e) => setNickname(e.target.value)}
                             className="p-2 rounded border w-full max-w-xs"
                         />
-                    </div>
-                    <div className="w-full sm:w-auto">
                         <input
                             type="password"
                             placeholder="4-digit PIN"
                             value={pin}
                             onChange={(e) => setPin(e.target.value)}
+                            className="p-2 rounded border w-full max-w-xs"
                             maxLength={4}
-                            className="p-2 rounded border w-full max-w-[140px]"
                         />
                     </div>
+                    <button
+                        onClick={handleSave}
+                        className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded w-full max-w-xs mx-auto block"
+                    >
+                        Save Personalization
+                    </button>
                 </div>
-                <button
-                    onClick={handleSave}
-                    className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded w-full max-w-xs mx-auto block"
-                >
-                    Save Personalization
-                </button>
-            </div>
 
-            <div className="text-center text-sm text-gray-500 dark:text-gray-400 my-4">— OR —</div>
+                <div className="text-center text-sm text-gray-500 dark:text-gray-400 my-4">— OR —</div>
 
-            <div className="max-w-xl w-full mx-auto">
-                <div className="text-center mb-6">
-                    <h2 className="text-xl font-semibold mb-1">Restore My Profile</h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-10">
+                    <h2 className="text-xl font-semibold mb-2 text-center">Restore My Profile</h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
                         Enter your nickname and PIN to reconnect your data and continue where you left off.
                     </p>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
-                    <div className="w-full sm:w-auto">
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
                         <input
                             type="text"
                             placeholder="Nickname"
@@ -139,24 +132,22 @@ export default function PersonalizePage() {
                             onChange={(e) => setRestoreNickname(e.target.value)}
                             className="p-2 rounded border w-full max-w-xs"
                         />
-                    </div>
-                    <div className="w-full sm:w-auto">
                         <input
                             type="password"
                             placeholder="PIN"
                             value={restorePin}
                             onChange={(e) => setRestorePin(e.target.value)}
+                            className="p-2 rounded border w-full max-w-xs"
                             maxLength={4}
-                            className="p-2 rounded border w-full max-w-[140px]"
                         />
                     </div>
+                    <button
+                        onClick={handleRestore}
+                        className="bg-green-600 hover:bg-green-500 text-white font-semibold py-2 px-4 rounded w-full max-w-xs mx-auto block"
+                    >
+                        Restore Progress
+                    </button>
                 </div>
-                <button
-                    onClick={handleRestore}
-                    className="bg-green-600 hover:bg-green-500 text-white font-semibold py-2 px-4 rounded w-full max-w-xs mx-auto block"
-                >
-                    Restore Progress
-                </button>
             </div>
 
             {message && (
