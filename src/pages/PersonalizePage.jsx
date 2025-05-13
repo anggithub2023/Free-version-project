@@ -13,6 +13,7 @@ export default function PersonalizePage() {
     const [restorePin, setRestorePin] = useState('');
     const [message, setMessage] = useState('');
     const [showInfo, setShowInfo] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     const handleSave = async () => {
         if (!nickname || !pin || !userId) {
@@ -27,8 +28,13 @@ export default function PersonalizePage() {
         if (error) {
             setMessage(`Error: ${error.message}`);
         } else {
-            localStorage.setItem('nickname', nickname);
-            setMessage('✅ Personalization saved successfully.');
+            setShowSuccessModal(true);
+            setNickname('');
+            setPin('');
+            setTimeout(() => {
+                setShowSuccessModal(false);
+                navigate('/');
+            }, 2500);
         }
     };
 
@@ -61,7 +67,6 @@ export default function PersonalizePage() {
                 </button>
             </div>
 
-            {/* Save My Progress Block */}
             <div className="max-w-xl w-full mx-auto">
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-10">
                     <h2 className="text-xl font-semibold mb-4 text-center">Save My Progress</h2>
@@ -92,7 +97,6 @@ export default function PersonalizePage() {
 
             <div className="text-center text-sm text-gray-500 dark:text-gray-400 my-4">— OR —</div>
 
-            {/* Restore My Progress Block */}
             <div className="max-w-xl w-full mx-auto">
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-10">
                     <h2 className="text-xl font-semibold mb-4 text-center">Restore My Progress</h2>
@@ -134,7 +138,7 @@ export default function PersonalizePage() {
                 </button>
             </div>
 
-            {/* Modal */}
+            {/* Why personalize modal */}
             {showInfo && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
                     <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-6 rounded-lg shadow-xl max-w-md w-full">
@@ -148,7 +152,7 @@ export default function PersonalizePage() {
                             <li>Get a more personal experience with saved stats and progress</li>
                         </ul>
                         <p className="text-sm mb-4">
-                            No email or login needed — just a nickname and a simple PIN.
+                            No email or login needed — just your name and a simple PIN.
                         </p>
                         <div className="text-center">
                             <button
@@ -158,6 +162,16 @@ export default function PersonalizePage() {
                                 Got it
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Success modal after save */}
+            {showSuccessModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
+                    <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
+                        <p className="text-base font-medium">Personalization saved successfully.</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Redirecting to home...</p>
                     </div>
                 </div>
             )}
