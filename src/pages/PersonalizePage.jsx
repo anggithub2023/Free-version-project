@@ -49,7 +49,7 @@ export default function PersonalizePage() {
         if (error || !data) {
             setMessage('❌ Could not find a matching record.');
         } else {
-            localStorage.setItem('uuid', data.user_id);
+            localStorage.setItem('userId', data.user_id); // ✅ Fixed here
             setMessage('✅ Progress restored!');
             navigate('/dashboard');
         }
