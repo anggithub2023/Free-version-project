@@ -59,20 +59,22 @@ export default function PersonalizePage() {
 
             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-10">
                 <h2 className="text-xl font-semibold mb-4 text-center">Save My Progress</h2>
-                <input
-                    type="text"
-                    placeholder="Nickname"
-                    value={nickname}
-                    onChange={(e) => setNickname(e.target.value)}
-                    className="w-full max-w-xs mx-auto mb-3 p-2 rounded border"
-                />
-                <input
-                    type="password"
-                    placeholder="4-digit PIN"
-                    value={pin}
-                    onChange={(e) => setPin(e.target.value)}
-                    className="w-full max-w-xs mx-auto mb-3 p-2 rounded border"
-                />
+                <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
+                    <input
+                        type="text"
+                        placeholder="Nickname"
+                        value={nickname}
+                        onChange={(e) => setNickname(e.target.value)}
+                        className="flex-1 max-w-xs p-2 rounded border"
+                    />
+                    <input
+                        type="password"
+                        placeholder="4-digit PIN"
+                        value={pin}
+                        onChange={(e) => setPin(e.target.value)}
+                        className="flex-1 max-w-xs p-2 rounded border"
+                    />
+                </div>
                 <button
                     onClick={handleSave}
                     className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded w-full max-w-xs mx-auto block"
@@ -85,20 +87,22 @@ export default function PersonalizePage() {
 
             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-10">
                 <h2 className="text-xl font-semibold mb-4 text-center">Restore My Progress</h2>
-                <input
-                    type="text"
-                    placeholder="Nickname"
-                    value={restoreNickname}
-                    onChange={(e) => setRestoreNickname(e.target.value)}
-                    className="w-full max-w-xs mx-auto mb-3 p-2 rounded border"
-                />
-                <input
-                    type="password"
-                    placeholder="PIN"
-                    value={restorePin}
-                    onChange={(e) => setRestorePin(e.target.value)}
-                    className="w-full max-w-xs mx-auto mb-3 p-2 rounded border"
-                />
+                <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
+                    <input
+                        type="text"
+                        placeholder="Nickname"
+                        value={restoreNickname}
+                        onChange={(e) => setRestoreNickname(e.target.value)}
+                        className="flex-1 max-w-xs p-2 rounded border"
+                    />
+                    <input
+                        type="password"
+                        placeholder="PIN"
+                        value={restorePin}
+                        onChange={(e) => setRestorePin(e.target.value)}
+                        className="flex-1 max-w-xs p-2 rounded border"
+                    />
+                </div>
                 <button
                     onClick={handleRestore}
                     className="bg-green-600 hover:bg-green-500 text-white font-semibold py-2 px-4 rounded w-full max-w-xs mx-auto block"
