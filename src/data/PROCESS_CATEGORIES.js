@@ -1,71 +1,88 @@
 // src/data/PROCESS_CATEGORIES.js
 
-/**
- * Categories used in process-oriented reflection.
- * Each contains a unique key, title, description, and questions.
- */
 const PROCESS_CATEGORIES = [
     {
         key: "preparation",
         title: "Preparation & Planning",
-        description: "How you physically and mentally prepare before practice or competition.",
+        description: "Physically and mentally prepare yourself before training or competition.",
         questions: [
-            "Did I follow my warm-up and preparation routines?",
-            "Was I focused and ready when the session started?"
+            "Am I following a routine that helps me feel prepared?",
+            "Am I managing my energy through proper rest, nutrition, and hydration?",
+            "Am I visualizing success and specific actions before starting?",
+            "Am I showing up mentally and physically on time?",
+            "Am I proactively checking my mindset before beginning?"
         ]
     },
     {
         key: "effort",
         title: "Effort & Engagement",
-        description: "Your energy, hustle, and commitment during training or competition.",
+        description: "Consistently bring energy, hustle, and commitment during every activity.",
         questions: [
-            "Did I give consistent effort regardless of score or conditions?",
-            "Was I fully engaged the entire time?"
+            "Am I bringing consistent energy to everything I do?",
+            "Am I pushing myself, especially when it’s challenging?",
+            "Am I staying actively involved throughout the entire session?",
+            "Am I choosing effort over excuses?",
+            "Am I taking responsibility for my level of effort?"
         ]
     },
     {
         key: "focus",
         title: "Focus & Execution",
-        description: "Concentrating on doing the small tasks and skills correctly.",
+        description: "Stay concentrated on performing each task and skill effectively.",
         questions: [
-            "Did I stay focused on the fundamentals?",
-            "Did I avoid distractions and stay locked in?"
+            "Am I paying attention to small details in my technique?",
+            "Am I staying locked in on the current rep rather than past results?",
+            "Am I consistently following the game plan or instructions?",
+            "Am I quickly adjusting when I lose focus?",
+            "Am I treating every rep as important?"
         ]
     },
     {
         key: "adaptability",
         title: "Adaptability & Responsiveness",
-        description: "Adjusting effectively to changes, challenges, or adversity.",
+        description: "Effectively respond and adjust to changes, challenges, or unexpected situations.",
         questions: [
-            "Did I respond positively when things didn’t go as planned?",
-            "Did I adjust quickly when needed?"
+            "Am I remaining calm when things don’t go as planned?",
+            "Am I quickly adapting my approach when necessary?",
+            "Am I proactively finding solutions instead of getting stuck?",
+            "Am I responding positively to feedback in real-time?",
+            "Am I flexible and open-minded when circumstances change?"
         ]
     },
     {
         key: "communication",
         title: "Communication & Team Interaction",
-        description: "Supportive and effective interactions with teammates and coaches.",
+        description: "Engage in supportive, clear, and effective interactions with teammates and coaches.",
         questions: [
-            "Did I communicate clearly and support my team?",
-            "Did I listen to and apply feedback?"
+            "Am I listening actively before speaking?",
+            "Am I sharing clear, helpful information?",
+            "Am I demonstrating to teammates they can rely on me?",
+            "Am I using my voice positively to enhance team performance?",
+            "Am I maintaining positivity and respect, especially under pressure?"
         ]
     },
     {
         key: "resilience",
         title: "Mental Toughness & Resilience",
-        description: "Staying composed and focused through challenges.",
+        description: "Maintain composure, confidence, and focus through challenges and adversity.",
         questions: [
-            "Did I bounce back after mistakes?",
-            "Did I keep my emotions under control?"
+            "Am I keeping my body language confident after mistakes?",
+            "Am I bouncing back quickly from setbacks?",
+            "Am I separating my emotions from my performance?",
+            "Am I remaining composed under pressure?",
+            "Am I actively finding ways to stay resilient during difficulty?"
         ]
     },
     {
-        key: "reflection",
-        title: "Reflection & Continuous Improvement",
-        description: "Learning from experiences to improve future efforts.",
+        key: "learning",
+        title: "Continuous Learning & Growth",
+        description: "Consistently learn and apply insights to improve future performances.",
         questions: [
-            "Did I think about what went well and what I could improve?",
-            "Did I apply something I learned recently?"
+            "Am I being honest with myself about my progress?",
+            "Am I actively seeking to learn something new each session?",
+            "Am I asking meaningful questions to facilitate growth?",
+            "Am I reflecting on past successes to inform my approach today?",
+            "Am I intentionally focusing on improving one small aspect today?"
         ]
     }
 ];
