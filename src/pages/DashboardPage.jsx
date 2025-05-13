@@ -35,6 +35,14 @@ function DashboardPage() {
 
     const sections = [
         {
+            label: 'Own Your Process',
+            route: '/process',
+            icon: <GiLevelEndFlag className="text-white bg-blue-500 rounded-full p-1 text-4xl" />,
+            color: 'text-blue-700',
+            shadow: 'hover:shadow-blue-300',
+            description: 'Start your session with intention by owning your preparation, focus, and mindset.',
+        },
+        {
             label: 'Reflection',
             route: '/reflect',
             icon: <MdOutlineEditNote className="text-white bg-indigo-500 rounded-full p-1 text-4xl" />,
