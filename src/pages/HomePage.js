@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { BsCheckCircleFill } from 'react-icons/bs';
 import { HiOutlineArrowDown } from 'react-icons/hi';
 import useAnonymousUser from '../hooks/useAnonymousUser';
 import { ensureUserExists } from '../services/syncService';
@@ -22,9 +21,13 @@ export default function HomePage() {
         <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-black text-black dark:text-white px-6 py-8 font-sans">
             <div className="min-h-screen bg-gray-100 dark:bg-black text-black dark:text-white px-6 py-8 font-sans">
                 {/* Header */}
-                <div className="flex items-center justify-center gap-2 text-sm font-medium mb-4">
-                    <BsCheckCircleFill className="text-black dark:text-white" />
-                    <span>processwins.app</span>
+                <div className="flex justify-center mb-4">
+                    <button
+                        onClick={() => navigate('/personalize')}
+                        className="text-xs sm:text-sm font-medium px-4 py-1 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+                    >
+                        Personalize your journey
+                    </button>
                 </div>
 
                 {/* Main Content */}
