@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import supabase from '../lib/supabaseClient'; // adjust path as needed
+import supabase from '../lib/supabaseClient';
 import useAnonymousUser from '../hooks/useAnonymousUser';
 
 export default function PersonalizePage() {
@@ -49,28 +49,33 @@ export default function PersonalizePage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-black text-black dark:text-white px-6 py-10">
-            <h1 className="text-3xl font-bold text-center mb-6">🎯 Personalize or Restore</h1>
+        <div className="min-h-screen bg-gray-100 dark:bg-black text-black dark:text-white px-6 py-10 font-poppins">
+            <h1 className="text-3xl font-bold text-center mb-6 flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-8 h-8 text-indigo-600">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2" />
+                </svg>
+                Personalize or Restore
+            </h1>
 
             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-10">
-                <h2 className="text-xl font-semibold mb-4">Save My Progress</h2>
+                <h2 className="text-xl font-semibold mb-4 text-center">Save My Progress</h2>
                 <input
                     type="text"
                     placeholder="Nickname"
                     value={nickname}
                     onChange={(e) => setNickname(e.target.value)}
-                    className="w-full mb-3 p-2 rounded border"
+                    className="w-full max-w-xs mx-auto mb-3 p-2 rounded border"
                 />
                 <input
                     type="password"
                     placeholder="4-digit PIN"
                     value={pin}
                     onChange={(e) => setPin(e.target.value)}
-                    className="w-full mb-3 p-2 rounded border"
+                    className="w-full max-w-xs mx-auto mb-3 p-2 rounded border"
                 />
                 <button
                     onClick={handleSave}
-                    className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded w-full"
+                    className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded w-full max-w-xs mx-auto block"
                 >
                     Save Personalization
                 </button>
@@ -79,24 +84,24 @@ export default function PersonalizePage() {
             <div className="text-center text-sm text-gray-500 dark:text-gray-400 my-4">— OR —</div>
 
             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-10">
-                <h2 className="text-xl font-semibold mb-4">Restore My Progress</h2>
+                <h2 className="text-xl font-semibold mb-4 text-center">Restore My Progress</h2>
                 <input
                     type="text"
                     placeholder="Nickname"
                     value={restoreNickname}
                     onChange={(e) => setRestoreNickname(e.target.value)}
-                    className="w-full mb-3 p-2 rounded border"
+                    className="w-full max-w-xs mx-auto mb-3 p-2 rounded border"
                 />
                 <input
                     type="password"
                     placeholder="PIN"
                     value={restorePin}
                     onChange={(e) => setRestorePin(e.target.value)}
-                    className="w-full mb-3 p-2 rounded border"
+                    className="w-full max-w-xs mx-auto mb-3 p-2 rounded border"
                 />
                 <button
                     onClick={handleRestore}
-                    className="bg-green-600 hover:bg-green-500 text-white font-semibold py-2 px-4 rounded w-full"
+                    className="bg-green-600 hover:bg-green-500 text-white font-semibold py-2 px-4 rounded w-full max-w-xs mx-auto block"
                 >
                     Restore Progress
                 </button>
