@@ -3,6 +3,7 @@
 import React, { useReducer, useEffect, useState } from 'react';
 import PROCESS_CATEGORIES from '../data/PROCESS_CATEGORIES';
 import getRandomProcessCategories from '../helpers/getRandomProcessCategories';
+import getRandomQuestionsPerCategory from '../helpers/getRandomQuestionsPerCategory';
 import SectionBlockProcess from '../components/Process/SectionBlockProcess';
 import { saveProcess } from '../services/syncService';
 import answersReducer from '../reducers/answersReducer';
@@ -24,8 +25,9 @@ function ProcessPage() {
     useEffect(() => {
         if (!categories) {
             const selected = getRandomProcessCategories(PROCESS_CATEGORIES, 4);
-            localStorage.setItem('randomProcessCategories', JSON.stringify(selected));
-            setCategories(selected);
+            const randomized = getRandomQuestionsPerCategory(selected, 3);
+            localStorage.setItem('randomProcessCategories', JSON.stringify(randomized));
+            setCategories(randomized);
         }
     }, [categories]);
 
