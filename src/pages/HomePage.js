@@ -26,52 +26,55 @@ export default function HomePage() {
                 <span>processwins.app</span>
             </div>
 
-            {/* Arrow Above First Section */}
-            <div className="flex justify-center mb-6 animate-fade-up">
-                <HiOutlineArrowDown className="text-4xl text-gray-400 dark:text-gray-500" />
-            </div>
+            {/* Main Content */}
+            <main className="flex-grow mt-8">
+                {/* Arrow Above First Section */}
+                <div className="flex justify-center mb-6 animate-fade-up">
+                    <HiOutlineArrowDown className="text-4xl text-gray-400 dark:text-gray-500" />
+                </div>
 
-            {/* Section 1: Own Your Process */}
-            <div className="text-center mb-12 animate-fade-up">
-                <h2 className="font-heading text-3xl sm:text-4xl font-extrabold mb-2">Own your process.</h2>
-                <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-4">
-                    Build intentional habits before you compete.
-                </p>
-                <button
-                    onClick={() => navigate('/process')}
-                    className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-3 px-6 rounded-xl shadow w-full max-w-xs mx-auto"
-                >
-                    Start Process
-                </button>
-            </div>
-
-            {/* Optional Divider or Arrow */}
-            <div className="flex justify-center my-6 animate-fade-up">
-                <HiOutlineArrowDown className="text-4xl text-gray-400 dark:text-gray-500" />
-            </div>
-
-            {/* Section 2: Reflect on Your Performance */}
-            <div className="text-center mb-6 animate-fade-up">
-                <h2 className="font-heading text-3xl sm:text-4xl font-extrabold mb-2">Reflect on your performance.</h2>
-                <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-4">
-                    Turn self-awareness into progress.
-                </p>
-                <button
-                    onClick={() => navigate('/reflect')}
-                    className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-xl shadow w-full max-w-xs mx-auto"
-                >
-                    Start Reflection
-                </button>
-
-                <div className="flex justify-center gap-6 text-sm text-gray-500 mt-6">
-                    <button onClick={() => setShowIntroModal(true)} className="hover:text-blue-500">
-                        What is this?
-                    </button>
-                    <button onClick={() => navigate('/dashboard')} className="hover:text-blue-500">
-                        Skip for now →
+                {/* Section 1: Own Your Process */}
+                <div className="text-center mb-20 animate-fade-up">
+                    <h2 className="font-heading text-3xl sm:text-4xl font-extrabold mb-2">Own your process.</h2>
+                    <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-4">
+                        Build intentional habits before you compete.
+                    </p>
+                    <button
+                        onClick={() => navigate('/process')}
+                        className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-3 px-6 rounded-xl shadow w-full max-w-xs mx-auto"
+                    >
+                        Start Process
                     </button>
                 </div>
-            </div>
+
+                {/* Divider Arrow */}
+                <div className="flex justify-center my-6 animate-fade-up">
+                    <HiOutlineArrowDown className="text-4xl text-gray-400 dark:text-gray-500" />
+                </div>
+
+                {/* Section 2: Reflect on Your Performance */}
+                <div className="text-center mb-6 animate-fade-up">
+                    <h2 className="font-heading text-3xl sm:text-4xl font-extrabold mb-2">Reflect on your performance.</h2>
+                    <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300 mb-4">
+                        Turn self-awareness into progress.
+                    </p>
+                    <button
+                        onClick={() => navigate('/reflect')}
+                        className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-xl shadow w-full max-w-xs mx-auto"
+                    >
+                        Start Reflection
+                    </button>
+
+                    <div className="flex justify-center gap-6 text-sm text-gray-500 mt-6">
+                        <button onClick={() => setShowIntroModal(true)} className="hover:text-blue-500">
+                            What is this?
+                        </button>
+                        <button onClick={() => navigate('/dashboard')} className="hover:text-blue-500">
+                            Skip for now →
+                        </button>
+                    </div>
+                </div>
+            </main>
 
             {/* Modal */}
             {showIntroModal && (
