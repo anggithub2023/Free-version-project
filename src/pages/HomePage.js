@@ -9,7 +9,9 @@ import { ensureUserExists } from '../services/syncService';
 export default function HomePage() {
     const navigate = useNavigate();
     const userId = useAnonymousUser();
-    const [hasNickname, setHasNickname] = useState(false);
+
+    // ✅ Immediately read localStorage to avoid layout flicker
+    const [hasNickname] = useState(() => !!localStorage.getItem('nickname'));
 
     useEffect(() => {
         if (userId) {
@@ -17,9 +19,6 @@ export default function HomePage() {
                 console.error('Failed to sync user:', err.message)
             );
         }
-
-        const stored = localStorage.getItem('nickname');
-        setHasNickname(!!stored);
     }, [userId]);
 
     return (
