@@ -1,212 +1,101 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import supabase from '../lib/supabaseClient';
+import { FaChartLine, FaLightbulb, FaCheckDouble } from 'react-icons/fa';
+import { BsCheckCircleFill } from 'react-icons/bs';
+import { HiOutlineArrowDown } from 'react-icons/hi';
 import useAnonymousUser from '../hooks/useAnonymousUser';
+import { ensureUserExists } from '../services/syncService';
 
-export default function PersonalizePage() {
+export default function HomePage() {
     const navigate = useNavigate();
     const userId = useAnonymousUser();
+    const [hasNickname, setHasNickname] = useState(false);
 
-    const [nickname, setNickname] = useState('');
-    const [pin, setPin] = useState('');
-    const [restoreNickname, setRestoreNickname] = useState('');
-    const [restorePin, setRestorePin] = useState('');
-    const [message, setMessage] = useState('');
-    const [showInfo, setShowInfo] = useState(false);
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
-
-    const handleSave = async () => {
-        if (!nickname || !pin || !userId) {
-            setMessage('Nickname, PIN, and User ID are required.');
-            return;
+    useEffect(() => {
+        if (userId) {
+            ensureUserExists(userId).catch(err =>
+                console.error('Failed to sync user:', err.message)
+            );
         }
 
-        if (!/^\d{4}$/.test(pin)) {
-            setMessage('PIN must be exactly 4 digits.');
-            return;
-        }
-
-        const { data: existing } = await supabase
-            .from('identity_links')
-            .select('id')
-            .eq('nickname', nickname)
-            .eq('pin', pin)
-            .maybeSingle();
-
-        if (existing) {
-            setMessage('That nickname and PIN are already in use.');
-            return;
-        }
-
-        const { error } = await supabase.from('identity_links').insert([
-            { nickname, pin, user_id: userId }
-        ]);
-
-        if (error) {
-            setMessage(`Error: ${error.message}`);
-        } else {
-            localStorage.setItem('nickname', nickname);
-            setShowSuccessModal(true);
-            setNickname('');
-            setPin('');
-            setTimeout(() => {
-                setShowSuccessModal(false);
-                navigate('/');
-            }, 2500);
-        }
-    };
-
-    const handleRestore = async () => {
-        const { data, error } = await supabase
-            .from('identity_links')
-            .select('user_id')
-            .eq('nickname', restoreNickname)
-            .eq('pin', restorePin)
-            .single();
-
-        if (error || !data) {
-            setMessage('❌ Could not find a matching record.');
-        } else {
-            localStorage.setItem('uuid', data.user_id);
-            localStorage.setItem('userId', data.user_id);
-            setMessage('✅ Progress restored!');
-            navigate('/dashboard');
-        }
-    };
+        const stored = localStorage.getItem('nickname');
+        setHasNickname(!!stored);
+    }, [userId]);
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-black text-black dark:text-white px-6 py-10 font-poppins">
-            <h1 className="text-3xl font-bold text-center mb-1">Personalize or Restore</h1>
-            <div className="text-center mb-6">
-                <button
-                    onClick={() => setShowInfo(true)}
-                    className="text-sm underline text-gray-500 dark:text-gray-400 hover:text-indigo-500"
-                >
-                    Why personalize?
-                </button>
+        <div className="min-h-screen bg-gray-100 dark:bg-black text-black dark:text-white px-6 py-8 font-poppins">
+            {/* Header */}
+            <div className="flex items-center justify-center gap-2 text-sm font-medium mb-6">
+                <BsCheckCircleFill className="text-black dark:text-white" />
+                <span>processwins.app</span>
             </div>
 
-            <div className="max-w-xl w-full mx-auto">
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-10">
-                    <h2 className="text-xl font-semibold mb-2 text-center">Create My Profile</h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
-                        This helps us remember who you are and connect your data.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
-                        <input
-                            type="text"
-                            placeholder="Nickname"
-                            value={nickname}
-                            onChange={(e) => setNickname(e.target.value)}
-                            className="p-2 rounded border w-full max-w-xs"
-                        />
-                        <input
-                            type="password"
-                            placeholder="4-digit PIN"
-                            value={pin}
-                            onChange={(e) => setPin(e.target.value)}
-                            className="p-2 rounded border w-full max-w-xs"
-                            maxLength={4}
-                        />
-                    </div>
+            {/* Personalize Prompt if nickname exists */}
+            {hasNickname && (
+                <div className="text-center mb-6 animate-fade-up">
+                    <HiOutlineArrowDown className="text-3xl text-indigo-400 mx-auto mb-1" />
                     <button
-                        onClick={handleSave}
-                        className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 px-4 rounded w-full max-w-xs mx-auto block"
+                        onClick={() => navigate('/personalize')}
+                        className="text-sm text-indigo-600 underline hover:text-indigo-400 transition"
                     >
-                        Save Personalization
+                        Personalize your journey
                     </button>
-                </div>
-
-                <div className="text-center text-sm text-gray-500 dark:text-gray-400 my-4">— OR —</div>
-
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow mb-10">
-                    <h2 className="text-xl font-semibold mb-2 text-center">Restore My Profile</h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 text-center mb-4">
-                        Enter your nickname and PIN to reconnect your data and continue where you left off.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
-                        <input
-                            type="text"
-                            placeholder="Nickname"
-                            value={restoreNickname}
-                            onChange={(e) => setRestoreNickname(e.target.value)}
-                            className="p-2 rounded border w-full max-w-xs"
-                        />
-                        <input
-                            type="password"
-                            placeholder="PIN"
-                            value={restorePin}
-                            onChange={(e) => setRestorePin(e.target.value)}
-                            className="p-2 rounded border w-full max-w-xs"
-                            maxLength={4}
-                        />
-                    </div>
-                    <button
-                        onClick={handleRestore}
-                        className="bg-green-600 hover:bg-green-500 text-white font-semibold py-2 px-4 rounded w-full max-w-xs mx-auto block"
-                    >
-                        Restore Progress
-                    </button>
-                </div>
-            </div>
-
-            {message && (
-                <div
-                    className={`text-center text-sm mt-4 ${
-                        message.startsWith('✅') ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                    }`}
-                >
-                    {message}
                 </div>
             )}
 
-            <div className="mt-8 text-center">
+            {/* Hero Section */}
+            <div className="text-center mb-4 animate-fade-up">
+                <h1 className="font-heading text-4xl sm:text-5xl font-extrabold tracking-tight leading-tight mb-4">
+                    Reflect on<br />your<br />performance.
+                </h1>
+                <p className="text-lg sm:text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
+                    Turn self-awareness<br />into progress.
+                </p>
+            </div>
+
+            {/* Arrow + CTA */}
+            <div className="flex justify-center my-4 animate-fade-up">
+                <HiOutlineArrowDown className="text-3xl text-gray-400 dark:text-gray-500" />
+            </div>
+
+            <div className="flex justify-center mb-6 animate-fade-up">
                 <button
-                    onClick={() => navigate('/')}
-                    className="text-sm underline text-gray-600 dark:text-gray-300 hover:text-indigo-500"
+                    onClick={() => navigate('/reflect')}
+                    className="bg-amber-500 text-white hover:bg-amber-400 rounded-xl px-6 py-4 w-full font-bold text-lg max-w-xs shadow hover:scale-105 transition animate-pulse-slow"
                 >
-                    ← Back to Home
+                    Start Reflection
                 </button>
             </div>
 
-            {/* Why personalize modal */}
-            {showInfo && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
-                    <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-6 rounded-lg shadow-xl max-w-md w-full">
-                        <h3 className="text-lg font-bold mb-2">Why Personalize?</h3>
-                        <p className="text-sm mb-4">
-                            Personalizing your experience lets you save your progress across sessions — even if your device data is
-                            cleared.
-                        </p>
-                        <ul className="text-sm list-disc pl-5 space-y-1 mb-4">
-                            <li>Keep track of your reflections and performance</li>
-                            <li>Restore your session on any device</li>
-                            <li>Get a more personal experience with saved stats and progress</li>
-                        </ul>
-                        <p className="text-sm mb-4">
-                            No email or login needed — just your name and a simple PIN.
-                        </p>
-                        <div className="text-center">
-                            <button
-                                onClick={() => setShowInfo(false)}
-                                className="text-sm underline text-indigo-600 dark:text-indigo-400 hover:text-indigo-800"
-                            >
-                                Got it
-                            </button>
+            {/* Optional Tools */}
+            <div className="flex justify-between gap-3 mt-10 mb-10 animate-fade-up">
+                {['Track Progress', 'Get Insights', 'Build Consistency'].map((label, idx) => {
+                    const icons = [FaChartLine, FaLightbulb, FaCheckDouble];
+                    const Icon = icons[idx];
+                    return (
+                        <div
+                            key={idx}
+                            className="bg-white dark:bg-gray-800 rounded-xl p-4 flex-1 shadow-sm text-center"
+                        >
+                            <Icon className="text-2xl mx-auto mb-2" />
+                            <p className="text-xs font-medium leading-tight">{label}</p>
                         </div>
-                    </div>
-                </div>
-            )}
+                    );
+                })}
+            </div>
 
-            {/* Success modal after save */}
-            {showSuccessModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center px-4">
-                    <div className="bg-white dark:bg-gray-900 text-gray-900 dark:text-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center">
-                        <p className="text-base font-medium">Personalization saved successfully.</p>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Redirecting to home...</p>
-                    </div>
-                </div>
-            )}
+            {/* Footer */}
+            <div className="text-center text-[10px] text-gray-500 dark:text-gray-400 mt-12">
+                <p>© {new Date().getFullYear()} processwins.app</p>
+                <a
+                    href="https://docs.google.com/forms/d/e/1FAIpQLSeopJAyVo6uA4CEKw0bVEbgTEDHwQr2S8Xev17D1KkUZcFDIQ/viewform?usp=dialog"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline text-xs hover:text-pink-600 transition block mt-1"
+                >
+                    Feedback
+                </a>
+            </div>
         </div>
     );
 }
