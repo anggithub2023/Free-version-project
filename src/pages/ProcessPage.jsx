@@ -1,6 +1,7 @@
 // src/pages/ProcessPage.jsx
 
 import React, { useReducer, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PROCESS_CATEGORIES from '../data/PROCESS_CATEGORIES';
 import getRandomProcessCategories from '../helpers/getRandomProcessCategories';
 import getRandomQuestionsPerCategory from '../helpers/getRandomQuestionsPerCategory';
@@ -21,6 +22,7 @@ function ProcessPage() {
     );
 
     const [showModal, setShowModal] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!categories) {
@@ -66,6 +68,8 @@ function ProcessPage() {
         localStorage.setItem('latestProcess', JSON.stringify(processData));
         setShowModal(true);
         dispatch({ type: 'RESET' });
+
+        setTimeout(() => navigate('/dashboard'), 2500);
     };
 
     if (!categories) {
@@ -100,8 +104,13 @@ function ProcessPage() {
                 </div>
 
                 {showModal && (
-                    <div className="text-center mt-6 text-green-600 font-semibold">
-                        Process submitted successfully!
+                    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+                        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl text-center max-w-md w-full">
+                            <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">Reflection Saved!</h2>
+                            <p className="text-sm text-gray-600 dark:text-gray-300">
+                                You're being redirected to your dashboard.
+                            </p>
+                        </div>
                     </div>
                 )}
             </div>
