@@ -31,7 +31,7 @@ export default function HomePage() {
             {/* Brain & Buttons Section */}
             <main className="flex-grow flex flex-col items-center justify-center gap-8">
                 <img
-                    src={brainImage}
+                    src="/assets/brain_only_colored.svg"
                     alt="Brain Diagram"
                     className="w-24 sm:w-32 mb-2 animate-fade-in"
                 />
