@@ -1,12 +1,10 @@
-// src/pages/ReadinessPage.js
-
 import React, { useReducer, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdHome } from 'react-icons/md';
 import READINESS_CATEGORIES from '../data/READINESS_CATEGORIES';
 import getRandomQuestionsPerCategory from '../helpers/getRandomQuestionsPerCategory';
 import SectionBlockReadiness from '../components/Readiness/SectionBlockReadiness';
-import { saveReadinessToDB } from '../services/syncService';
+import { saveReadiness } from '../services/syncService';
 import answersReducer from '../reducers/answersReducer';
 import StickyCtaBar from '../components/StickyCtaBar';
 
@@ -53,13 +51,12 @@ function ReadinessPage() {
         }));
 
         const readinessData = {
-            id: crypto.randomUUID(),
             categories: response,
             created_at: new Date().toISOString()
         };
 
         try {
-            await saveReadinessToDB(readinessData);
+            await saveReadiness(readinessData);
         } catch (err) {
             const queue = JSON.parse(localStorage.getItem('unsyncedReadiness') || '[]');
             queue.push(readinessData);
@@ -69,15 +66,17 @@ function ReadinessPage() {
         localStorage.setItem('latestReadiness', JSON.stringify(readinessData));
         setShowModal(true);
         dispatch({ type: 'RESET' });
-        setTimeout(() => navigate('/dashboard'), 3000);
+
+        setTimeout(() => navigate('/dashboard'), 3500);
     };
 
     if (!categories) {
-        return <div className="text-center p-10">Loading readiness questions...</div>;
+        return <div className="text-center p-10">Loading your readiness check...</div>;
     }
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-poppins pb-24">
+            {/* Sticky Header */}
             <div className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-sm px-4 py-3 flex items-center">
                 <button
                     onClick={() => navigate('/')}
@@ -91,8 +90,8 @@ function ReadinessPage() {
             </div>
 
             <div className="max-w-4xl mx-auto p-6">
-                <h1 className="text-3xl sm:text-4xl font-bold text-center mb-1">Center Yourself</h1>
-                <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">
+                <h1 className="text-4xl font-bold text-center mb-1">Center Yourself</h1>
+                <p className="text-center text-sm text-gray-500 mb-6">
                     How ready are you — mentally, physically, emotionally?
                 </p>
 
