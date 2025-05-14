@@ -17,9 +17,9 @@ export default function HomePage() {
     }, [userId]);
 
     return (
-        <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-black text-black dark:text-white px-6 py-8 font-sans">
-            {/* Header */}
-            <div className="flex justify-center mb-4">
+        <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-black text-black dark:text-white px-6 py-10 font-sans">
+            {/* CTA Button Top */}
+            <div className="flex justify-center mb-8">
                 <button
                     onClick={() => navigate('/personalize')}
                     className="text-xs sm:text-sm font-medium px-4 py-1 rounded-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition"
@@ -28,42 +28,59 @@ export default function HomePage() {
                 </button>
             </div>
 
-            {/* Main Content */}
-            <main className="flex-grow flex flex-col items-center justify-start gap-10 mt-10 sm:mt-16">
-                {/* Brain Image */}
-                <img
-                    src="/assets/brain_only_colored.svg"
-                    alt="Brain Diagram"
-                    className="w-24 sm:w-32 animate-fade-in"
-                />
+            {/* Additional button (space preserved) */}
+            <div className="flex justify-center mb-6">
+                <button
+                    className="bg-rose-500 text-white px-4 py-2 rounded-full font-semibold text-xs sm:text-sm shadow hover:bg-rose-400"
+                    onClick={() => navigate('/readiness')}
+                >
+                    Readiness Check-In
+                </button>
+            </div>
 
-                {/* Process & Reflect Buttons */}
-                <div className="flex flex-col sm:flex-row gap-8">
+            {/* Brain image */}
+            <div className="flex justify-center mb-8">
+                <img src="/assets/brain_only_colored.svg" alt="Brain" className="w-24 sm:w-32 animate-fade-in" />
+            </div>
+
+            {/* Buttons Grid */}
+            <div className="flex flex-col sm:flex-row justify-center gap-10 px-4 mb-10 animate-fade-up">
+                <div className="text-center">
+                    <h2 className="font-heading text-2xl sm:text-3xl font-extrabold mb-2">Own your process.</h2>
+                    <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-3">
+                        Build intentional habits before you compete.
+                    </p>
                     <button
                         onClick={() => navigate('/process')}
-                        className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-3 px-6 rounded-xl shadow w-56 text-center"
+                        className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-3 px-6 rounded-xl shadow w-52"
                     >
-                        Own Your Process
+                        Start Process
                     </button>
+                </div>
 
+                <div className="text-center">
+                    <h2 className="font-heading text-2xl sm:text-3xl font-extrabold mb-2">Reflect on your performance.</h2>
+                    <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-3">
+                        Turn self-awareness into progress.
+                    </p>
                     <button
                         onClick={() => navigate('/reflect')}
-                        className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-xl shadow w-56 text-center"
+                        className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-xl shadow w-52"
                     >
-                        Reflect on Performance
+                        Start Reflection
                     </button>
                 </div>
+            </div>
 
-                {/* Links Below */}
-                <div className="flex justify-center gap-6 text-sm text-gray-500">
-                    <button onClick={() => setShowIntroModal(true)} className="hover:text-blue-500">
-                        What is this?
-                    </button>
-                    <button onClick={() => navigate('/dashboard')} className="hover:text-blue-500">
-                        Skip for now →
-                    </button>
-                </div>
-            </main>
+            {/* Bottom Links */}
+            <div className="flex justify-center gap-6 text-sm text-gray-500">
+                <button onClick={() => setShowIntroModal(true)} className="hover:text-blue-500">
+                    What is this?
+                </button>
+                <button onClick={() => navigate('/dashboard')} className="hover:text-blue-500">
+                    Skip for now →
+                </button>
+            </div>
 
             {/* Modal */}
             {showIntroModal && (
