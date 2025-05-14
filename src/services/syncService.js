@@ -141,3 +141,23 @@ export const saveProcess = async (processEntry) => {
         throw error;
     }
 };
+// ✅ Save readiness check-in
+export const saveReadiness = async (readinessEntry) => {
+    const userId = getUserId();
+    if (!userId) throw new Error('Missing user ID');
+
+    const payload = {
+        id: crypto.randomUUID(),
+        user_id: userId,
+        categories: readinessEntry.categories,
+        created_at: readinessEntry.created_at,
+    };
+
+    console.log('🧠 Saving readiness check:', payload);
+
+    const { error } = await supabase.from('readiness').insert([payload]);
+    if (error) {
+        console.error('❌ Supabase error saving readiness:', error.message);
+        throw error;
+    }
+};
