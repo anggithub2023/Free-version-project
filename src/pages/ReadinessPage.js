@@ -1,7 +1,6 @@
 // src/pages/ReadinessPage.js
 import React, { useReducer, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdHome } from 'react-icons/md';
 import READINESS_CATEGORIES from '../data/READINESS_CATEGORIES';
 import getRandomReadinessQuestions from '../helpers/getRandomReadinessQuestions';
 import SectionBlockReadiness from '../components/Readiness/SectionBlockReadiness';
@@ -77,19 +76,6 @@ function ReadinessPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-poppins pb-32">
-            {/* Header */}
-            <div className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-sm px-4 py-3 flex items-center">
-                <button
-                    onClick={() => navigate('/')}
-                    className="text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-white transition"
-                >
-                    <MdHome className="text-2xl" />
-                </button>
-                <span className="ml-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Readiness Check
-                </span>
-            </div>
-
             <div className="max-w-4xl mx-auto p-6">
                 <h1 className="text-4xl font-bold text-center mb-1">Center Yourself</h1>
                 <p className="text-center text-sm text-gray-500 mb-6">
