@@ -1,37 +1,27 @@
 import React, { useReducer, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdHome } from 'react-icons/md';
+import useAnonymousUser from '../hooks/useAnonymousUser';
+import StickyCtaBar from '../components/StickyCtaBar';
 import READINESS_CATEGORIES from '../data/READINESS_CATEGORIES';
 import getRandomQuestionsPerCategory from '../helpers/getRandomQuestionsPerCategory';
 import SectionBlockReadiness from '../components/Readiness/SectionBlockReadiness';
 import { saveReadiness } from '../services/syncService';
 import answersReducer from '../reducers/answersReducer';
-import StickyCtaBar from '../components/StickyCtaBar';
 
-export default function ReadinessPage() {
+function ReadinessPage() {
     const navigate = useNavigate();
+    const userId = useAnonymousUser();
 
     const [categories, setCategories] = useState(() => {
-        try {
-            const saved = localStorage.getItem('randomReadinessCategories');
-            return saved ? JSON.parse(saved) : null;
-        } catch {
-            localStorage.removeItem('randomReadinessCategories');
-            return null;
-        }
+        const saved = localStorage.getItem('randomReadinessCategories');
+        return saved ? JSON.parse(saved) : null;
     });
 
     const [answers, dispatch] = useReducer(
         answersReducer,
         {},
-        () => {
-            try {
-                return JSON.parse(localStorage.getItem('readinessAnswers')) || {};
-            } catch {
-                localStorage.removeItem('readinessAnswers');
-                return {};
-            }
-        }
+        () => JSON.parse(localStorage.getItem('readinessAnswers')) || {}
     );
 
     const [showModal, setShowModal] = useState(false);
@@ -63,7 +53,6 @@ export default function ReadinessPage() {
             })
         }));
 
-        const userId = localStorage.getItem('userId') || null;
         const readinessData = {
             user_id: userId,
             categories: response,
@@ -90,8 +79,8 @@ export default function ReadinessPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-poppins pb-28">
-            {/* Header */}
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-poppins pb-24">
+            {/* Sticky Header */}
             <div className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-sm px-4 py-3 flex items-center">
                 <button
                     onClick={() => navigate('/')}
@@ -104,13 +93,11 @@ export default function ReadinessPage() {
         </span>
             </div>
 
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-                <div className="min-h-[30vh] flex flex-col justify-center text-center mb-8">
-                    <h1 className="text-4xl font-bold mb-1">Center Yourself</h1>
-                    <p className="text-sm text-gray-500">
-                        How ready are you — mentally, physically, emotionally?
-                    </p>
-                </div>
+            <div className="max-w-4xl mx-auto px-4 py-8">
+                <h1 className="text-4xl font-bold text-center mb-1">Center Yourself</h1>
+                <p className="text-center text-sm text-gray-500 dark:text-gray-400 mb-6">
+                    How ready are you — mentally, physically, emotionally?
+                </p>
 
                 {categories.map((cat) => (
                     <SectionBlockReadiness
@@ -134,11 +121,10 @@ export default function ReadinessPage() {
                 </div>
 
                 {showModal && (
-                    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
                         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl text-center max-w-md w-full">
                             <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
-                                Readiness saved.
-                                <br />
+                                Readiness saved.<br />
                                 <span className="text-base font-normal">You’ve shown up with intention.</span>
                             </h2>
                             <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -149,8 +135,9 @@ export default function ReadinessPage() {
                 )}
             </div>
 
-            {/* Sticky CTA Bar */}
             <StickyCtaBar onHome={() => navigate('/')} />
         </div>
     );
 }
+
+export default ReadinessPage;
