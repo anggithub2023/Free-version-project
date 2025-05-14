@@ -1,3 +1,4 @@
+// src/components/Readiness/SectionBlockReadiness.js
 import React from 'react';
 
 function SectionBlockReadiness({
@@ -18,25 +19,39 @@ function SectionBlockReadiness({
                 const current = answers[key] || {};
 
                 return (
-                    <div key={key} className="mb-4">
-                        <p className="text-sm mb-1">{q}</p>
-                        <div className="flex gap-2">
-                            {[1, 2, 3, 4, 5].map((val) => (
-                                <button
-                                    key={val}
-                                    onClick={() =>
-                                        handleAnswer(sectionKey, idx, { value: val })
-                                    }
-                                    className={`w-10 h-10 rounded-full text-sm font-semibold ${
-                                        current?.value === val
-                                            ? 'bg-indigo-600 text-white'
-                                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-indigo-100 dark:hover:bg-indigo-700'
-                                    }`}
-                                >
-                                    {val}
-                                </button>
-                            ))}
-                        </div>
+                    <div key={key} className="mb-6">
+                        <p className="text-sm font-medium mb-2 text-gray-800 dark:text-gray-100">{q}</p>
+
+                        {/* Special case: Intention & Purpose */}
+                        {sectionKey === 'intention' ? (
+                            <textarea
+                                rows={2}
+                                value={current.comment || ''}
+                                onChange={(e) => handleAnswer(sectionKey, idx, 'comment', e.target.value)}
+                                className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                placeholder="What's your focus or mindset today?"
+                            />
+                        ) : (
+                            <>
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="100"
+                                    step="1"
+                                    value={current.value || 50}
+                                    onChange={(e) => handleAnswer(sectionKey, idx, 'value', Number(e.target.value))}
+                                    className="w-full mb-2 accent-indigo-600"
+                                />
+                                <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">{current.value || 50}%</div>
+                                <input
+                                    type="text"
+                                    placeholder="Optional context..."
+                                    value={current.comment || ''}
+                                    onChange={(e) => handleAnswer(sectionKey, idx, 'comment', e.target.value)}
+                                    className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                                />
+                            </>
+                        )}
                     </div>
                 );
             })}
