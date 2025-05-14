@@ -30,12 +30,14 @@ export default function HomePage() {
 
             {/* Additional button (space preserved) */}
             <div className="flex justify-center mb-6">
-                <button
-                    className="bg-rose-500 text-white px-4 py-2 rounded-full font-semibold text-xs sm:text-sm shadow hover:bg-rose-400"
-                    onClick={() => navigate('/readiness')}
-                >
-                    Readiness Check-In
-                </button>
+                <div className="flex justify-center mb-6">
+                    <button
+                        onClick={() => navigate('/readiness')}
+                        className="bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-xl shadow w-56 text-center"
+                    >
+                        Readiness Check-In
+                    </button>
+                </div>
             </div>
 
             {/* Brain image */}
