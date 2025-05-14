@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
 import useAnonymousUser from '../hooks/useAnonymousUser';
 import { ensureUserExists } from '../services/syncService';
+import brainImage from '/assets/brain_only_colored.svg';
 
 export default function HomePage() {
     const navigate = useNavigate();
@@ -16,8 +16,8 @@ export default function HomePage() {
     }, [userId]);
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-black text-black dark:text-white px-6 py-10 font-poppins relative overflow-hidden">
-            {/* Personalize CTA */}
+        <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-black text-black dark:text-white px-6 py-8 font-sans">
+            {/* Header CTA */}
             <div className="flex justify-center mb-6">
                 <button
                     onClick={() => navigate('/personalize')}
@@ -27,65 +27,46 @@ export default function HomePage() {
                 </button>
             </div>
 
-            {/* Readiness Section */}
-            <div className="flex justify-center z-10 relative">
-                <button
-                    onClick={() => navigate('/readiness')}
-                    className="bg-white dark:bg-gray-800 border-2 border-black text-red-500 px-6 py-3 rounded-xl font-semibold shadow-md hover:scale-105 transition"
-                >
-                    Readiness
-                </button>
-            </div>
-
-            {/* Brain Image */}
-            <div className="flex justify-center my-8 relative z-0">
+            {/* Brain image */}
+            <div className="flex justify-center mb-6 animate-fade-up">
                 <img
-                    src="/assets/brain_only_colored.svg"
+                    src={brainImage}
                     alt="Brain"
-                    className="w-32 h-32 object-contain z-10"
+                    className="w-24 sm:w-28 md:w-32"
                 />
-
-                {/* SVG Arrows */}
-                <svg className="absolute left-[20%] -top-8 rotate-[15deg]" width="120" height="120">
-                    <path
-                        d="M100,10 Q10,60 90,110"
-                        stroke="black"
-                        strokeWidth="2"
-                        fill="transparent"
-                        markerEnd="url(#arrowhead)"
-                    />
-                </svg>
-
-                <svg className="absolute right-[20%] -top-8 rotate-[-15deg]" width="120" height="120">
-                    <path
-                        d="M20,10 Q110,60 30,110"
-                        stroke="black"
-                        strokeWidth="2"
-                        fill="transparent"
-                        markerEnd="url(#arrowhead)"
-                    />
-                </svg>
             </div>
 
-            {/* Lower Buttons */}
-            <div className="flex justify-center gap-6 z-10">
-                <button
-                    onClick={() => navigate('/process')}
-                    className="bg-white dark:bg-gray-800 border-2 border-black text-blue-600 px-5 py-3 rounded-xl font-semibold shadow-md hover:scale-105 transition"
-                >
-                    Own Your Process
-                </button>
+            {/* Dual CTA Boxes */}
+            <div className="flex flex-col sm:flex-row justify-center gap-6 items-stretch text-center animate-fade-up">
+                <div className="flex-1 max-w-xs bg-white dark:bg-gray-800 rounded-xl shadow p-6">
+                    <h2 className="font-heading text-2xl font-bold mb-2">Own your process.</h2>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
+                        Build intentional habits before you compete.
+                    </p>
+                    <button
+                        onClick={() => navigate('/process')}
+                        className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-4 rounded-xl shadow w-full"
+                    >
+                        Start Process
+                    </button>
+                </div>
 
-                <button
-                    onClick={() => navigate('/reflect')}
-                    className="bg-white dark:bg-gray-800 border-2 border-black text-indigo-600 px-5 py-3 rounded-xl font-semibold shadow-md hover:scale-105 transition"
-                >
-                    Reflect on Performance
-                </button>
+                <div className="flex-1 max-w-xs bg-white dark:bg-gray-800 rounded-xl shadow p-6">
+                    <h2 className="font-heading text-2xl font-bold mb-2">Reflect on your performance.</h2>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 mb-4">
+                        Turn self-awareness into progress.
+                    </p>
+                    <button
+                        onClick={() => navigate('/reflect')}
+                        className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded-xl shadow w-full"
+                    >
+                        Start Reflection
+                    </button>
+                </div>
             </div>
 
             {/* Footer */}
-            <footer className="text-center text-[10px] text-gray-500 dark:text-gray-400 mt-12">
+            <footer className="text-center text-[10px] text-gray-500 dark:text-gray-400 mt-10">
                 <p>© {new Date().getFullYear()} processwins.app</p>
                 <a
                     href="https://docs.google.com/forms/d/e/1FAIpQLSeopJAyVo6uA4CEKw0bVEbgTEDHwQr2S8Xev17D1KkUZcFDIQ/viewform?usp=dialog"
