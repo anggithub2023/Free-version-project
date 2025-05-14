@@ -1,12 +1,12 @@
+// src/pages/ReadinessPage.js
 import React, { useReducer, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdHome } from 'react-icons/md';
+import StickyCtaBar from '../components/StickyCtaBar';
 import READINESS_CATEGORIES from '../data/READINESS_CATEGORIES';
 import getRandomQuestionsPerCategory from '../helpers/getRandomQuestionsPerCategory';
 import SectionBlockReadiness from '../components/Readiness/SectionBlockReadiness';
 import { saveReadiness } from '../services/syncService';
 import answersReducer from '../reducers/answersReducer';
-import StickyCtaBar from '../components/StickyCtaBar';
 
 function ReadinessPage() {
     const [categories, setCategories] = useState(() => {
@@ -52,7 +52,7 @@ function ReadinessPage() {
 
         const readinessData = {
             categories: response,
-            created_at: new Date().toISOString()
+            created_at: new Date().toISOString(),
         };
 
         try {
@@ -76,13 +76,13 @@ function ReadinessPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-poppins pb-24">
-            {/* Sticky Header */}
+            {/* Header */}
             <div className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-sm px-4 py-3 flex items-center">
                 <button
                     onClick={() => navigate('/')}
                     className="text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-white transition"
                 >
-                    <MdHome className="text-2xl" />
+                    <span className="text-xl font-bold">← Home</span>
                 </button>
                 <span className="ml-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
           Readiness Check
