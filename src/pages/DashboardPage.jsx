@@ -12,9 +12,7 @@ function DashboardPage() {
     const userId = useAnonymousUser();
     const [hideHeader, setHideHeader] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
-
-    const devMode = localStorage.getItem('devMode') === 'true';
-
+    localStorage.getItem('devMode') === 'true';
     useEffect(() => {
         const handleScroll = () => {
             const currentY = window.scrollY;
@@ -50,7 +48,7 @@ function DashboardPage() {
             shadow: 'hover:shadow-indigo-300',
             description: 'Complete your daily reflection to stay focused on the process and track progress over time.',
         },
-        devMode && {
+        {
             label: 'Readiness',
             route: '/readiness',
             icon: <FaBrain className="text-white bg-purple-500 rounded-full p-1 text-4xl" />,
@@ -58,7 +56,7 @@ function DashboardPage() {
             shadow: 'hover:shadow-purple-300',
             description: 'Check in on your mental and physical readiness before each session.',
         },
-        devMode && {
+        {
             label: 'Injury Prevention',
             route: '/injury',
             icon: <MdHealthAndSafety className="text-white bg-rose-500 rounded-full p-1 text-4xl" />,
@@ -74,7 +72,7 @@ function DashboardPage() {
             shadow: 'hover:shadow-green-300',
             description: 'Track your performance, see averages, and download your progress.',
         },
-        devMode && {
+        {
             label: 'Workouts',
             route: '/workouts',
             icon: <GiMuscleUp className="text-white bg-yellow-500 rounded-full p-1 text-4xl" />,
@@ -82,7 +80,7 @@ function DashboardPage() {
             shadow: 'hover:shadow-yellow-300',
             description: 'Explore training plans aligned with your goals.',
         },
-        devMode && {
+        {
             label: 'Videos',
             route: '/videos',
             icon: <FaVideo className="text-white bg-teal-500 rounded-full p-1 text-4xl" />,
