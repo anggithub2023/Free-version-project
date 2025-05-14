@@ -59,7 +59,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="text-center">
-                    <h2 className="font-heading text-2xl sm:text-3xl font-extrabold mb-2">Reflect on your performance.</h2>
+                    <h2 className="font-heading text-2xl sm:text-3xl font-extrabold mb-2">Reflect</h2>
                     <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-3">
                         Turn self-awareness into progress.
                     </p>
