@@ -16,8 +16,8 @@ export default function HomePage() {
     }, [userId]);
 
     return (
-        <div className="min-h-screen bg-gray-100 dark:bg-black text-black dark:text-white px-6 py-10 font-sans relative overflow-hidden">
-            {/* Top CTA */}
+        <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-black text-black dark:text-white px-6 py-10 font-sans">
+            {/* CTA */}
             <div className="flex justify-center mb-6">
                 <button
                     onClick={() => navigate('/personalize')}
@@ -27,53 +27,51 @@ export default function HomePage() {
                 </button>
             </div>
 
-            {/* Diagram Layout */}
-            <div className="relative max-w-3xl mx-auto flex flex-col items-center gap-8">
-                {/* Top box */}
+            {/* Readiness section */}
+            <div className="text-center mb-10">
                 <button
                     onClick={() => navigate('/readiness')}
-                    className="text-red-500 border-2 border-black px-6 py-3 rounded-xl bg-white font-semibold shadow-md hover:scale-105 transition"
+                    className="text-red-500 text-lg sm:text-xl font-semibold border-2 border-black px-6 py-2 rounded-xl bg-white dark:bg-gray-900 shadow-md hover:scale-105 transition"
                 >
                     readiness
                 </button>
+            </div>
 
-                {/* Arrows + brain image */}
-                <div className="relative w-full h-40 flex justify-center items-center">
-                    {/* SVG Arrows */}
-                    <svg className="absolute left-1/4 top-0" width="100" height="100" viewBox="0 0 100 100">
-                        <path d="M90,10 Q10,50 60,90" stroke="black" strokeWidth="2" fill="transparent" />
-                    </svg>
-                    <svg className="absolute right-1/4 top-0" width="100" height="100" viewBox="0 0 100 100">
-                        <path d="M10,10 Q90,50 40,90" stroke="black" strokeWidth="2" fill="transparent" />
-                    </svg>
+            {/* Center image and arrows */}
+            <div className="relative flex justify-center items-center mb-10 h-48">
+                <img
+                    src="/assets/brain_only_colored.svg"
+                    alt="Brain"
+                    className="w-24 sm:w-28 z-10"
+                />
 
-                    {/* Brain image */}
-                    <img
-                        src="/assets/brain_only_colored.svg"
-                        alt="Brain"
-                        className="w-24 z-10"
-                    />
-                </div>
+                {/* SVG arrows */}
+                <svg className="absolute left-0 top-1/2 transform -translate-y-1/2" width="100" height="100">
+                    <path d="M90,10 Q10,50 60,90" stroke="black" strokeWidth="2" fill="transparent" />
+                </svg>
+                <svg className="absolute right-0 top-1/2 transform -translate-y-1/2" width="100" height="100">
+                    <path d="M10,10 Q90,50 40,90" stroke="black" strokeWidth="2" fill="transparent" />
+                </svg>
+            </div>
 
-                {/* Bottom Buttons */}
-                <div className="flex justify-center gap-8">
-                    <button
-                        onClick={() => navigate('/process')}
-                        className="text-red-500 border-2 border-black px-6 py-3 rounded-xl bg-white font-semibold shadow-md hover:scale-105 transition"
-                    >
-                        Own your process
-                    </button>
-                    <button
-                        onClick={() => navigate('/reflect')}
-                        className="text-red-500 border-2 border-black px-6 py-3 rounded-xl bg-white font-semibold shadow-md hover:scale-105 transition"
-                    >
-                        reflection
-                    </button>
-                </div>
+            {/* Bottom row buttons */}
+            <div className="flex flex-col sm:flex-row justify-center gap-6 mb-12">
+                <button
+                    onClick={() => navigate('/process')}
+                    className="text-red-500 text-sm sm:text-base font-semibold border-2 border-black px-6 py-3 rounded-xl bg-white dark:bg-gray-900 shadow-md hover:scale-105 transition"
+                >
+                    Own your process
+                </button>
+                <button
+                    onClick={() => navigate('/reflect')}
+                    className="text-red-500 text-sm sm:text-base font-semibold border-2 border-black px-6 py-3 rounded-xl bg-white dark:bg-gray-900 shadow-md hover:scale-105 transition"
+                >
+                    reflection
+                </button>
             </div>
 
             {/* Footer */}
-            <footer className="text-center text-[10px] text-gray-500 dark:text-gray-400 mt-12">
+            <footer className="text-center text-[10px] text-gray-500 dark:text-gray-400 mt-auto">
                 <p>© {new Date().getFullYear()} processwins.app</p>
                 <a
                     href="https://docs.google.com/forms/d/e/1FAIpQLSeopJAyVo6uA4CEKw0bVEbgTEDHwQr2S8Xev17D1KkUZcFDIQ/viewform?usp=dialog"
