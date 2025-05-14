@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import useAnonymousUser from '../hooks/useAnonymousUser';
 import { ensureUserExists } from '../services/syncService';
-import brainImage from '../assets/brain_only_colored.svg';
+<img src="/assets/brain_only_colored.svg" alt="Brain" className="w-24 mx-auto" />
 
 export default function HomePage() {
     const navigate = useNavigate();
