@@ -28,43 +28,34 @@ export default function HomePage() {
                 </button>
             </div>
 
-            {/* Brain & Buttons Section */}
-            <main className="flex-grow flex flex-col items-center justify-center gap-10">
+            {/* Main Content */}
+            <main className="flex-grow flex flex-col items-center justify-start gap-10 mt-10 sm:mt-16">
+                {/* Brain Image */}
                 <img
                     src="/assets/brain_only_colored.svg"
                     alt="Brain Diagram"
                     className="w-24 sm:w-32 animate-fade-in"
                 />
 
+                {/* Process & Reflect Buttons */}
                 <div className="flex flex-col sm:flex-row gap-8">
-                    <div className="text-center">
-                        <h2 className="text-xl sm:text-2xl font-extrabold mb-2">Own Your Process</h2>
-                        <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-3">
-                            Build intentional habits before you compete.
-                        </p>
-                        <button
-                            onClick={() => navigate('/process')}
-                            className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-5 rounded-xl shadow w-48"
-                        >
-                            Start Process
-                        </button>
-                    </div>
+                    <button
+                        onClick={() => navigate('/process')}
+                        className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-3 px-6 rounded-xl shadow w-56 text-center"
+                    >
+                        Own Your Process
+                    </button>
 
-                    <div className="text-center">
-                        <h2 className="text-xl sm:text-2xl font-extrabold mb-2">Reflect on Performance</h2>
-                        <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 mb-3">
-                            Turn self-awareness into progress.
-                        </p>
-                        <button
-                            onClick={() => navigate('/reflect')}
-                            className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-5 rounded-xl shadow w-48"
-                        >
-                            Start Reflection
-                        </button>
-                    </div>
+                    <button
+                        onClick={() => navigate('/reflect')}
+                        className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-xl shadow w-56 text-center"
+                    >
+                        Reflect on Performance
+                    </button>
                 </div>
 
-                <div className="flex justify-center gap-6 text-sm text-gray-500 mt-6">
+                {/* Links Below */}
+                <div className="flex justify-center gap-6 text-sm text-gray-500">
                     <button onClick={() => setShowIntroModal(true)} className="hover:text-blue-500">
                         What is this?
                     </button>
@@ -96,19 +87,6 @@ export default function HomePage() {
                     </div>
                 </div>
             )}
-
-            {/* Footer */}
-            <footer className="text-center text-[10px] text-gray-500 dark:text-gray-400 mt-8 pb-4">
-                <p>© {new Date().getFullYear()} processwins.app</p>
-                <a
-                    href="https://docs.google.com/forms/d/e/1FAIpQLSeopJAyVo6uA4CEKw0bVEbgTEDHwQr2S8Xev17D1KkUZcFDIQ/viewform?usp=dialog"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline text-xs hover:text-pink-600 transition block mt-1"
-                >
-                    Feedback
-                </a>
-            </footer>
         </div>
     );
 }
