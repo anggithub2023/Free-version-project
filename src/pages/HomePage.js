@@ -1,11 +1,13 @@
 import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { HiOutlineArrowDown } from 'react-icons/hi';
 import useAnonymousUser from '../hooks/useAnonymousUser';
 import { ensureUserExists } from '../services/syncService';
 
 export default function HomePage() {
     const navigate = useNavigate();
     const userId = useAnonymousUser();
+    const [showIntroModal, setShowIntroModal] = useState(false);
 
     useEffect(() => {
         if (userId) {
@@ -17,7 +19,7 @@ export default function HomePage() {
 
     return (
         <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-black text-black dark:text-white px-6 py-10 font-sans">
-            {/* CTA */}
+            {/* Header CTA */}
             <div className="flex justify-center mb-6">
                 <button
                     onClick={() => navigate('/personalize')}
@@ -27,51 +29,84 @@ export default function HomePage() {
                 </button>
             </div>
 
-            {/* Readiness section */}
-            <div className="text-center mb-10">
+            {/* Readiness Box */}
+            <div className="text-center mb-4 animate-fade-up">
                 <button
                     onClick={() => navigate('/readiness')}
-                    className="text-red-500 text-lg sm:text-xl font-semibold border-2 border-black px-6 py-2 rounded-xl bg-white dark:bg-gray-900 shadow-md hover:scale-105 transition"
+                    className="bg-white dark:bg-gray-800 border-2 border-black px-6 py-3 rounded-xl font-semibold text-red-500 shadow hover:scale-105 transition"
                 >
-                    readiness
+                    Readiness
                 </button>
             </div>
 
-            {/* Center image and arrows */}
-            <div className="relative flex justify-center items-center mb-10 h-48">
-                <img
-                    src="/assets/brain_only_colored.svg"
-                    alt="Brain"
-                    className="w-24 sm:w-28 z-10"
-                />
-
-                {/* SVG arrows */}
-                <svg className="absolute left-0 top-1/2 transform -translate-y-1/2" width="100" height="100">
-                    <path d="M90,10 Q10,50 60,90" stroke="black" strokeWidth="2" fill="transparent" />
-                </svg>
-                <svg className="absolute right-0 top-1/2 transform -translate-y-1/2" width="100" height="100">
-                    <path d="M10,10 Q90,50 40,90" stroke="black" strokeWidth="2" fill="transparent" />
-                </svg>
+            {/* Arrows + Brain Image */}
+            <div className="relative my-10 flex justify-center items-center">
+                <div className="absolute left-1/4 top-0">
+                    <HiOutlineArrowDown className="text-3xl text-gray-400 dark:text-gray-500 rotate-[-45deg]" />
+                </div>
+                <div className="z-10">
+                    <img
+                        src="/assets/brain_only_colored.svg"
+                        alt="Brain Diagram"
+                        className="w-24 sm:w-32 mx-auto"
+                    />
+                </div>
+                <div className="absolute right-1/4 top-0">
+                    <HiOutlineArrowDown className="text-3xl text-gray-400 dark:text-gray-500 rotate-[45deg]" />
+                </div>
             </div>
 
-            {/* Bottom row buttons */}
-            <div className="flex flex-col sm:flex-row justify-center gap-6 mb-12">
+            {/* Process and Reflection */}
+            <div className="flex justify-center gap-4 flex-wrap mb-10 animate-fade-up">
                 <button
                     onClick={() => navigate('/process')}
-                    className="text-red-500 text-sm sm:text-base font-semibold border-2 border-black px-6 py-3 rounded-xl bg-white dark:bg-gray-900 shadow-md hover:scale-105 transition"
+                    className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-3 px-6 rounded-xl shadow w-full max-w-xs"
                 >
-                    Own your process
+                    Own Your Process
                 </button>
                 <button
                     onClick={() => navigate('/reflect')}
-                    className="text-red-500 text-sm sm:text-base font-semibold border-2 border-black px-6 py-3 rounded-xl bg-white dark:bg-gray-900 shadow-md hover:scale-105 transition"
+                    className="bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-xl shadow w-full max-w-xs"
                 >
-                    reflection
+                    Reflect on Performance
                 </button>
             </div>
 
+            {/* Links Below */}
+            <div className="text-center text-sm text-gray-500 mt-4">
+                <button onClick={() => setShowIntroModal(true)} className="hover:text-blue-500 mr-4">
+                    What is this?
+                </button>
+                <button onClick={() => navigate('/dashboard')} className="hover:text-blue-500">
+                    Skip for now →
+                </button>
+            </div>
+
+            {/* Intro Modal */}
+            {showIntroModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white dark:bg-gray-900 text-black dark:text-white p-6 rounded-lg max-w-md w-full shadow-xl text-center">
+                        <h3 className="text-xl font-bold mb-4">Welcome</h3>
+                        <p className="text-sm leading-relaxed">
+                            This isn’t just another sports app.<br />
+                            It’s a tool to help you grow.<br />
+                            Before you compete, own your habits.<br />
+                            After you compete, reflect with purpose.<br />
+                            Every time you show up with intention,<br />
+                            you move closer to the athlete you’re becoming.
+                        </p>
+                        <button
+                            onClick={() => setShowIntroModal(false)}
+                            className="mt-6 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded"
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Footer */}
-            <footer className="text-center text-[10px] text-gray-500 dark:text-gray-400 mt-auto">
+            <footer className="text-center text-[10px] text-gray-500 dark:text-gray-400 mt-12">
                 <p>© {new Date().getFullYear()} processwins.app</p>
                 <a
                     href="https://docs.google.com/forms/d/e/1FAIpQLSeopJAyVo6uA4CEKw0bVEbgTEDHwQr2S8Xev17D1KkUZcFDIQ/viewform?usp=dialog"
