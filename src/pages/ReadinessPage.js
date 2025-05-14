@@ -1,12 +1,13 @@
 // src/pages/ReadinessPage.js
 import React, { useReducer, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import StickyCtaBar from '../components/StickyCtaBar';
+import { MdHome } from 'react-icons/md';
 import READINESS_CATEGORIES from '../data/READINESS_CATEGORIES';
 import getRandomQuestionsPerCategory from '../helpers/getRandomQuestionsPerCategory';
 import SectionBlockReadiness from '../components/Readiness/SectionBlockReadiness';
 import { saveReadiness } from '../services/syncService';
 import answersReducer from '../reducers/answersReducer';
+import StickyCtaBar from '../components/StickyCtaBar';
 
 function ReadinessPage() {
     const [categories, setCategories] = useState(() => {
@@ -35,9 +36,9 @@ function ReadinessPage() {
         localStorage.setItem('readinessAnswers', JSON.stringify(answers));
     }, [answers]);
 
-    const handleAnswer = (section, idx, value) => {
+    const handleAnswer = (section, idx, field, value) => {
         const key = `${section}-${idx}`;
-        dispatch({ type: 'SET_ANSWER', key, value });
+        dispatch({ type: 'SET_ANSWER', key, field, value });
     };
 
     const handleSubmit = async () => {
@@ -52,7 +53,7 @@ function ReadinessPage() {
 
         const readinessData = {
             categories: response,
-            created_at: new Date().toISOString(),
+            created_at: new Date().toISOString()
         };
 
         try {
@@ -75,14 +76,13 @@ function ReadinessPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-poppins pb-24">
-            {/* Header */}
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-poppins pb-28">
             <div className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-sm px-4 py-3 flex items-center">
                 <button
                     onClick={() => navigate('/')}
                     className="text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-white transition"
                 >
-                    <span className="text-xl font-bold">← Home</span>
+                    <MdHome className="text-2xl" />
                 </button>
                 <span className="ml-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
           Readiness Check
@@ -120,8 +120,7 @@ function ReadinessPage() {
                     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
                         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl text-center max-w-md w-full">
                             <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
-                                Readiness saved.
-                                <br />
+                                Readiness saved.<br />
                                 <span className="text-base font-normal">You’ve shown up with intention.</span>
                             </h2>
                             <p className="text-sm text-gray-600 dark:text-gray-300">
