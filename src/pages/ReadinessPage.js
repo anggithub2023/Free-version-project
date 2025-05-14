@@ -3,7 +3,7 @@ import React, { useReducer, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdHome } from 'react-icons/md';
 import READINESS_CATEGORIES from '../data/READINESS_CATEGORIES';
-import getRandomQuestionsPerCategory from '../helpers/getRandomQuestionsPerCategory';
+import getRandomReadinessQuestions from '../helpers/getRandomReadinessQuestions';
 import SectionBlockReadiness from '../components/Readiness/SectionBlockReadiness';
 import { saveReadiness } from '../services/syncService';
 import answersReducer from '../reducers/answersReducer';
@@ -26,7 +26,7 @@ function ReadinessPage() {
 
     useEffect(() => {
         if (!categories) {
-            const randomized = getRandomQuestionsPerCategory(READINESS_CATEGORIES, 2);
+            const randomized = getRandomReadinessQuestions(READINESS_CATEGORIES, 2);
             localStorage.setItem('randomReadinessCategories', JSON.stringify(randomized));
             setCategories(randomized);
         }
