@@ -1,4 +1,3 @@
-// src/pages/ReadinessPage.js
 import React, { useReducer, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdHome } from 'react-icons/md';
@@ -36,9 +35,9 @@ function ReadinessPage() {
         localStorage.setItem('readinessAnswers', JSON.stringify(answers));
     }, [answers]);
 
-    const handleAnswer = (section, idx, field, value) => {
+    const handleAnswer = (section, idx, value) => {
         const key = `${section}-${idx}`;
-        dispatch({ type: 'SET_ANSWER', key, field, value });
+        dispatch({ type: 'SET_ANSWER', key, value });
     };
 
     const handleSubmit = async () => {
@@ -76,7 +75,8 @@ function ReadinessPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-poppins pb-28">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-poppins pb-32">
+            {/* Header */}
             <div className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-sm px-4 py-3 flex items-center">
                 <button
                     onClick={() => navigate('/')}
@@ -120,7 +120,8 @@ function ReadinessPage() {
                     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
                         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl text-center max-w-md w-full">
                             <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
-                                Readiness saved.<br />
+                                Readiness saved.
+                                <br />
                                 <span className="text-base font-normal">You’ve shown up with intention.</span>
                             </h2>
                             <p className="text-sm text-gray-600 dark:text-gray-300">
