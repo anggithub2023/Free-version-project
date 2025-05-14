@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import useAnonymousUser from '../hooks/useAnonymousUser';
 import { ensureUserExists } from '../services/syncService';
-import brainImage from '../assets/brain_only_colored.jpeg';
 
 export default function HomePage() {
     const navigate = useNavigate();
@@ -42,13 +41,18 @@ export default function HomePage() {
                 <div className="relative w-full h-40 flex justify-center items-center">
                     {/* SVG Arrows */}
                     <svg className="absolute left-1/4 top-0" width="100" height="100" viewBox="0 0 100 100">
-                        <path d="M90,10 Q10,50 60,90" stroke="black" strokeWidth="2" fill="transparent" markerEnd="url(#arrow)" />
+                        <path d="M90,10 Q10,50 60,90" stroke="black" strokeWidth="2" fill="transparent" />
                     </svg>
                     <svg className="absolute right-1/4 top-0" width="100" height="100" viewBox="0 0 100 100">
-                        <path d="M10,10 Q90,50 40,90" stroke="black" strokeWidth="2" fill="transparent" markerEnd="url(#arrow)" />
+                        <path d="M10,10 Q90,50 40,90" stroke="black" strokeWidth="2" fill="transparent" />
                     </svg>
-                    {/* Brain */}
-                    <img src={brainImage} alt="Brain" className="w-24 z-10" />
+
+                    {/* Brain image */}
+                    <img
+                        src="/assets/brain_only_colored.svg"
+                        alt="Brain"
+                        className="w-24 z-10"
+                    />
                 </div>
 
                 {/* Bottom Buttons */}
