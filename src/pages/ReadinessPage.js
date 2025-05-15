@@ -1,4 +1,4 @@
-// src/pages/ReadinessPage.js
+// ✅ src/pages/ReadinessPage.js
 import React, { useReducer, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import READINESS_CATEGORIES from '../data/READINESS_CATEGORIES';
@@ -37,7 +37,15 @@ function ReadinessPage() {
 
     const handleAnswer = (section, idx, field, value) => {
         const key = `${section}-${idx}`;
-        dispatch({ type: 'SET_ANSWER_FIELD', key, field, value });
+        const existing = answers[key] || {};
+        dispatch({
+            type: 'SET_ANSWER',
+            key,
+            value: {
+                ...existing,
+                [field]: value
+            }
+        });
     };
 
     const handleSubmit = async () => {
