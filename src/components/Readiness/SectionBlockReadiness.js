@@ -18,40 +18,48 @@ function SectionBlockReadiness({
                 const key = `${sectionKey}-${idx}`;
                 const current = answers[key] || {};
 
+                // Special case: "Intention" category — text only
+                if (sectionKey === 'intention') {
+                    return (
+                        <div key={key} className="mb-6">
+                            <p className="text-sm mb-2">{q}</p>
+                            <textarea
+                                value={current.note || ''}
+                                onChange={(e) => handleAnswer(sectionKey, idx, 'note', e.target.value)}
+                                placeholder="What's your intention today?"
+                                className="w-full border rounded-md p-2 bg-gray-50 dark:bg-gray-700 text-sm text-gray-800 dark:text-white"
+                            />
+                        </div>
+                    );
+                }
+
+                // Default: slider + optional comment
                 return (
                     <div key={key} className="mb-6">
-                        <p className="text-sm font-medium mb-2 text-gray-800 dark:text-gray-100">{q}</p>
+                        <p className="text-sm mb-2">{q}</p>
 
-                        {/* Special case: Intention & Purpose */}
-                        {sectionKey === 'intention' ? (
-                            <textarea
-                                rows={2}
-                                value={current.comment || ''}
-                                onChange={(e) => handleAnswer(sectionKey, idx, 'comment', e.target.value)}
-                                className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                                placeholder="What's your focus or mindset today?"
+                        {/* Slider */}
+                        <div className="flex items-center gap-3 mb-2">
+                            <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={current.value || 0}
+                                onChange={(e) =>
+                                    handleAnswer(sectionKey, idx, 'value', Number(e.target.value))
+                                }
+                                className="w-full"
                             />
-                        ) : (
-                            <>
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="100"
-                                    step="1"
-                                    value={current.value || 50}
-                                    onChange={(e) => handleAnswer(sectionKey, idx, 'value', Number(e.target.value))}
-                                    className="w-full mb-2 accent-indigo-600"
-                                />
-                                <div className="text-xs text-gray-500 dark:text-gray-400 mb-2">{current.value || 50}%</div>
-                                <input
-                                    type="text"
-                                    placeholder="Optional context..."
-                                    value={current.comment || ''}
-                                    onChange={(e) => handleAnswer(sectionKey, idx, 'comment', e.target.value)}
-                                    className="w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-800 dark:text-white p-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                                />
-                            </>
-                        )}
+                            <span className="text-sm w-10 text-right">{current.value || 0}%</span>
+                        </div>
+
+                        {/* Optional Note */}
+                        <textarea
+                            value={current.note || ''}
+                            onChange={(e) => handleAnswer(sectionKey, idx, 'note', e.target.value)}
+                            placeholder="Optional note..."
+                            className="w-full border rounded-md p-2 bg-gray-50 dark:bg-gray-700 text-sm text-gray-800 dark:text-white"
+                        />
                     </div>
                 );
             })}
