@@ -1,13 +1,22 @@
-const handleAnswer = (section, idx, field, value) => {
-    const key = `${section}-${idx}`;
-    const existing = answers[key] || {};
+const answersReducer = (state, action) => {
+    switch (action.type) {
+        case 'SET_ANSWER':
+            return { ...state, [action.key]: action.value };
 
-    dispatch({
-        type: 'SET_ANSWER',
-        key,
-        value: {
-            ...existing,
-            [field]: value
+        case 'SET_ANSWER_FIELD': {
+            const { key, field, value } = action;
+            return {
+                ...state,
+                [key]: {
+                    ...state[key],
+                    [field]: value,
+                },
+            };
         }
-    });
+
+        case 'RESET':
+            return {};
+        default:
+            return state;
+    }
 };
