@@ -1,22 +1,19 @@
+// ✅ src/reducers/answersReducer.js
+
 const answersReducer = (state, action) => {
     switch (action.type) {
-        case 'SET_ANSWER':
-            return { ...state, [action.key]: action.value };
-
-        case 'SET_ANSWER_FIELD': {
-            const { key, field, value } = action;
+        case 'SET_ANSWER': {
             return {
                 ...state,
-                [key]: {
-                    ...state[key],
-                    [field]: value,
-                },
+                [action.key]: action.value
             };
         }
-
-        case 'RESET':
+        case 'RESET': {
             return {};
+        }
         default:
             return state;
     }
 };
+
+export default answersReducer;
