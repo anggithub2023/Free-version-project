@@ -1,6 +1,7 @@
+// src/pages/ProcessPage.jsx
+
 import React, { useReducer, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdHome } from 'react-icons/md';
 import PROCESS_CATEGORIES from '../data/PROCESS_CATEGORIES';
 import getRandomProcessCategories from '../helpers/getRandomProcessCategories';
 import getRandomQuestionsPerCategory from '../helpers/getRandomQuestionsPerCategory';
@@ -77,25 +78,10 @@ function ProcessPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white pb-28 font-poppins">
-            {/* Sticky Header */}
-            <div className="sticky top-0 z-50 bg-white dark:bg-gray-900 shadow-sm px-4 py-3 flex items-center">
-                <button
-                    onClick={() => navigate('/')}
-                    className="text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-white transition"
-                >
-                    <MdHome className="text-2xl" />
-                </button>
-                <span className="ml-3 text-sm font-semibold text-gray-700 dark:text-gray-300">
-                    Process Builder
-                </span>
-            </div>
-
-            <div className="max-w-4xl mx-auto p-6">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white p-6 font-poppins pb-32">
+            <div className="max-w-4xl mx-auto">
                 <h1 className="text-4xl font-bold text-center mb-1">Own Your Process</h1>
-                <p className="text-center text-sm text-gray-500 mb-6">
-                    Take Control. Build Habits. See Results
-                </p>
+                <p className="text-center text-sm text-gray-500 mb-6">Take Control. Build Habits. See Results</p>
 
                 {categories.map((cat) => (
                     <SectionBlockProcess
@@ -124,9 +110,7 @@ function ProcessPage() {
                             <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
                                 Process saved.
                                 <br />
-                                <span className="text-base font-normal">
-                                    Trust it. Follow it. Perform with purpose.
-                                </span>
+                                <span className="text-base font-normal">Trust it. Follow it. Perform with purpose.</span>
                             </h2>
                             <p className="text-sm text-gray-600 dark:text-gray-300">
                                 You're being redirected to your dashboard.
@@ -135,7 +119,6 @@ function ProcessPage() {
                     </div>
                 )}
             </div>
-
             <StickyCtaBar onHome={() => navigate('/')} />
         </div>
     );
